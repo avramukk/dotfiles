@@ -80,14 +80,15 @@ alias lab='cd $LAB'
 alias dot='cd $REPOS/dotfiles'
 alias repos='cd $REPOS'
 alias c="clear"
-alias homelab='cd $REPOS/github.com/na/homelab/'
-alias hl='homelab'
+alias homelab='cd $REPOS/homelab/'
+alias hl='cd $REPOS/homelab'
 alias hlp='cd $REPOS/github.com/na/homelab-private/'
 alias hlps='cd $REPOS/github.com/na/homelab-private-staging/'
 alias hlpp='cd $REPOS/github.com/na/homelab-private-production/'
 
 # ls
 alias ls='ls --color=auto'
+alias l='ls -la'
 alias ll='ls -la'
 alias la='ls -lathr'
 
@@ -100,6 +101,8 @@ alias t='tmux'
 alias e='exit'
 alias syu='sudo pacman -Syu'
 
+# playwright
+alias pw='npx playwright'
 # git
 alias gp='git pull'
 alias gs='git status'
@@ -130,6 +133,8 @@ alias kgp='kubectl get pods'
 alias kc='kubectx'
 alias kn='kubens'
 
+# eks
+. <(eksctl completion bash)
 # alias kcs='kubectl config use-context admin@homelab-staging'
 # alias kcp='kubectl config use-context admin@homelab-production'
 
