@@ -1,5 +1,5 @@
 # CodeWhisperer pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.pre.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.pre.bash"
+# [[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.pre.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.pre.bash"
 
 #
 # ~/.bashrc
@@ -8,8 +8,8 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-# PS1='[\u@\h \W]\$ '
-
+#PS1='[\u@\h \W]\$ '
+PS1="\[\033[32m\]\w\[\033[33m\]\$(GIT_PS1_SHOWUNTRACKEDFILES=1 GIT_PS1_SHOWDIRTYSTATE=1 __git_ps1)\[\033[00m\] $ "
 # Set to superior editing mode
 # set -o vi
 
@@ -109,21 +109,17 @@ alias gs='git status'
 alias lg='lazygit'
 
 # ricing
-alias et='v ~/.config/awesome/themes/powerarrow/theme-personal.lua'
-alias ett='v ~/.config/awesome/themes/powerarrow-dark/theme-personal.lua'
-alias er='v ~/.config/awesome/rc.lua'
-alias ez='v ~/.zshrc'
+# alias et='v ~/.config/awesome/themes/powerarrow/theme-personal.lua'
+# alias ett='v ~/.config/awesome/themes/powerarrow-dark/theme-personal.lua'
+# alias er='v ~/.config/awesome/rc.lua'
+# alias ez='v ~/.zshrc'
 alias eb='v ~/.bashrc'
 alias ev='cd ~/.config/nvim/ && v init.lua'
-alias sz='source ~/.zshrc'
 alias sbr='source ~/.bashrc'
 
 # terraform
 alias tf='terraform'
 alias tp='terraform plan'
-
-# fun
-alias fishies=asciiquarium
 
 # python
 alias python='python3'
@@ -136,7 +132,7 @@ alias kc='kubectx'
 alias kn='kubens'
 
 # eks
-. <(eksctl completion bash)
+# . <(eksctl completion bash)
 # alias kcs='kubectl config use-context admin@homelab-staging'
 # alias kcp='kubectl config use-context admin@homelab-production'
 
@@ -183,4 +179,25 @@ export PATH="/Users/na/.rd/bin:$PATH"
 # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
 # CodeWhisperer post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash"
+# [[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash"
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+# if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+# 	debian_chroot=$(cat /etc/debian_chroot)
+# fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+# case "$TERM" in
+# xterm-color | *-256color) color_prompt=yes ;;
+# esac
