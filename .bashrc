@@ -8,8 +8,28 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Prompt
+
+# install git-prompt
+# curl -o ~/.git-prompt.sh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+
+# for ubuntu only
+# if [ -f ~/.git-prompt.sh ]; then
+# . ~/.git-prompt.sh
+# fi
+
+# git prompt
+#export GIT_PS1_SHOWDIRTYSTATE=1
+#export GIT_PS1_SHOWSTASHSTATE=1
+export GIT_PS1_SHOWUNTRACKEDFILES=1
+
+# Explicitly unset color (default anyhow). Use 1 to set it.
+export GIT_PS1_SHOWCOLORHINTS=1
+export GIT_PS1_DESCRIBE_STYLE="branch"
+
+# export GIT_PS1_SHOWUPSTREAM="auto git"
 #PS1='[\u@\h \W]\$ '
-PS1="\[\033[32m\]\w\[\033[33m\]\$(GIT_PS1_SHOWUNTRACKEDFILES=1 GIT_PS1_SHOWDIRTYSTATE=1 __git_ps1)\[\033[00m\] $ "
+PS1="\[\033[32m\]\w\[\033[33m\]\$(__git_ps1)\[\033[00m\] $ "
 # Set to superior editing mode
 # set -o vi
 
