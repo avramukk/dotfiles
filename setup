@@ -11,7 +11,7 @@ mkdir -p "$XDG_CONFIG_HOME/alacritty/themes"
 mkdir -p "$XDG_CONFIG_HOME/k9s"
 
 # Clone alacritty themes
-git clone https://github.com/alacritty/alacritty-theme "$XDG_CONFIG_HOME/alacritty/themes"
+# git clone https://github.com/alacritty/alacritty-theme "$XDG_CONFIG_HOME/alacritty/themes"
 
 # Create symbolic links
 ln -sf "$PWD/alacritty.toml" "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
@@ -21,3 +21,26 @@ ln -sf "$PWD/.bashrc" "$HOME/.bashrc"
 # ln -sf "$PWD/.inputrc" "$HOME/.inputrc"
 ln -sf "$PWD/.tmux.conf" "$HOME/.tmux.conf"
 ln -sf "$PWD/nvim" "$XDG_CONFIG_HOME/nvim"
+
+# install theme if ubuntu
+
+# clone the repo into "$HOME/src/gogh"
+mkdir -p "$HOME/src"
+cd "$HOME/src"
+git clone https://github.com/Gogh-Co/Gogh.git gogh
+cd gogh
+
+# necessary in the Gnome terminal on ubuntu
+export TERMINAL=gnome-terminal
+
+# necessary in the Alacritty terminal
+pip install -r requirements.txt
+export TERMINAL=alacritty
+
+# Enter theme installs dir
+cd installs
+
+# Install the themes
+
+# gruvbox dark
+./gruvbox-dark.sh
