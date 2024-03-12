@@ -9,7 +9,7 @@ select opt in "${options[@]}"; do
     "Mac")
       echo "Installing packages for Mac..."
       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      brew install git node yarn python pipenv postgresql redis mongodb docker docker-compose kubectl helm awscli terraform packer ansible vault consul nomad vagrant alacritty tmux
+      brew install git node yarn python pipenv postgresql redis mongodb docker docker-compose kubectl helm awscli terraform packer ansible vault consul nomad vagrant alacritty tmux bash-git-prompt
       break
       ;;
     "Ubuntu")
