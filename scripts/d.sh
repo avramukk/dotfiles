@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# Масив з назвами S3 buckets для видалення
+buckets=(
+    "645334e7d987bc3ab8445eff"
+    "6470cac3c404840c082b4e5e"
+    "64bd637440846b0c0b07bdc0"
+    "64c2cb0440846b0c0b07bf58"
+    "64cbf322ae70d77eb962574c"
+    "64ce36bbae70d77eb9625812"
+    "64d96e22ae70d77eb9625a05"
+    "64e3046680b9173a8f91841e"
+    "64e369059b2abd5329b65642"
+    "64e4576ecb29d2323d1ee4a7"
+    "64e49d3e80b9173a8f9185f7"
+    "64e710d40b93b13a08e8d897"
+    "64e85f73ad063a0dcc48c8e8"
+    "64e9b5d774036c79e2c70529"
+    "64eb03b0275a9402d4beda71"
+    "64ecc7eb08c2da55b388d752"
+    "64eccc7a87f3b70bb015fd7b"
+    "64ecd37587f3b70bb015fd8c"
+    "64ecd5a67e72c22c13b34292"
+    "64ecd727c3795e31425cc6ed"
+    "64ecd7d7c3795e31425cc6f0"
+    "64ecd822c3795e31425cc6f3"
+    "64ecdaa9e8adf43ecdd52fb1"
+    "64eda129ba1c6e2e156bc850"
+    "64edbd83426151be80a26842"
+    "64edbf89426151be80a26855"
+    "64edff5e4ccf316c90e62ecd"
+    "64ee00144ccf316c90e62edf"
+    "64ee058c4ccf316c90e62ef2"
+    "64f1d5c28bdc896259820df9"
+    "64f70e4c58846d355b3b2aa6"
+    "64f8746e3112f74ce6681528"
+    "64f9cb0f5e5c440c8a86bf33"
+    "64f9cf13b2a1df19945ff0f6"
+    "64f9dd04f0dfbf5b61e2abd5"
+    "64f9f3b756740e0c12ec64dc"
+    "64fee22bb63764cb718b9b81"
+    "64ff4fd156740e0c12ec6537"
+    "64ff516656740e0c12ec653f"
+    "65002461f9700a35ed435eea"
+    "650420a44d37c16eb07c657b"
+    "650423724d37c16eb07c6580"
+    "65043be43148a776e864b10a"
+    "6504986a934f8406f2ff3f82"
+    "65088b3b934f8406f2ff3fc5"
+    "650c270d465da163ff3eb289"
+    "650d68a818d2b27c425eefc3"
+    "6513f1afc2a2334e001fda69"
+    "6513f781c2a2334e001fda7b"
+    "65146c19c2a2334e001fda85"
+    "65147d02c2a2334e001fda96"
+    "6515d2b71543a15700ca7a14"
+    "6515e7451543a15700ca7a26"
+    "651aaaa022bdb30c0fab6fb5"
+    "651cdeae22bdb30c0fab7008"
+    "651d25b922bdb30c0fab7036"
+    "651e895422bdb30c0fab7078"
+    "651f7e4922bdb30c0fab70d4"
+    "651f954322bdb30c0fab70e9"
+    "651fdcd422bdb30c0fab7117"
+)
+
+# Видалення кожного bucket
+for bucket in "${buckets[@]}"; do
+    echo "Видалення всіх файлів у bucket $bucket"
+    aws s3 rm "s3://$bucket" --recursive --profile switcher.ai
+
+    echo "Видалення bucket $bucket"
+    aws s3 rb "s3://$bucket" --force --profile switcher.ai
+done
+
+echo "Всі вказані buckets були видалені."
+

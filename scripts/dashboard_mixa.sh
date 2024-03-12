@@ -1,0 +1,18 @@
+k#!/bin/bash
+
+# Function to fetch and display EC2 instance details
+fetch_instances() {
+	echo "Fetching EC2 instances..."
+	aws ec2 describe-instances \
+		--query 'Reservations[*].Instances[*].[Tags[?Key==`Name`].Value | [0], State.Name, LaunchTime, InstanceType, InstanceId]' \
+		--output table \
+		--profile mixa |
+		sort -k2
+}
+
+# Main loop to update the dashboard every 1 minute
+while true; do
+	clear
+	fetch_instances
+	sleep 30
+done

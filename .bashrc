@@ -125,6 +125,8 @@ alias tp='terraform plan'
 # fun
 alias fishies=asciiquarium
 
+# python
+alias python='python3'
 # kubectl
 alias k='kubectl'
 source <(kubectl completion bash)
