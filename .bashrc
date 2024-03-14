@@ -53,10 +53,6 @@ PROMPT_COMMAND='__git_ps1 "\[\e[33m\]\[\e[0m\]\[\e[34m\]\[\e[0m\]\[\e[35m\]\W\[\
 
 # The __git_ps1 function prompt is provided by the bash completion installed by brew. See https://github.com/mischavandenburg/dotfiles/issues/5
 
-
-
-
-
 # keybinds
 bind -x '"\C-l":clear'
 # ~~~~~~~~~~~~~~~ Environment Variables ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,6 +67,7 @@ export GHREPOS="$REPOS/github.com/$GITUSER"
 export DOTFILES="$REPOS/dotfiles"
 export LAB="$REPOS/lab"
 export SCRIPTS="$DOTFILES/scripts"
+export SECOND_BRAIN="$HOME/second-brain"
 
 # ~~~~~~~~~~~~~~~ History ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -116,7 +113,6 @@ alias v=nvim
 
 # cd
 alias ..="cd .."
-alias cdp='cd ~/Projects'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias scripts='cd $SCRIPTS'
@@ -129,7 +125,7 @@ alias hl='cd $REPOS/homelab'
 alias hlp='cd $REPOS/github.com/na/homelab-private/'
 alias hlps='cd $REPOS/github.com/na/homelab-private-staging/'
 alias hlpp='cd $REPOS/github.com/na/homelab-private-production/'
-
+alias sb='cd -P $SECOND_BRAIN'
 # ls
 alias ls='ls --color=auto'
 alias l='ls -la'
@@ -140,13 +136,12 @@ alias la='ls -lathr'
 alias last='find . -type f -not -path "*/\.*" -exec ls -lrt {} +'
 
 alias sv='sudoedit'
-alias sk='killall ssh-agent && source ~/.zshrc'
 alias t='tmux'
 alias e='exit'
-alias syu='sudo pacman -Syu'
 
 # playwright
 alias pw='npx playwright'
+
 # git
 alias gp='git pull'
 alias gs='git status'
@@ -167,6 +162,7 @@ alias tp='terraform plan'
 
 # python
 alias python='python3'
+
 # kubectl
 alias k='kubectl'
 source <(kubectl completion bash)
@@ -224,4 +220,3 @@ export PATH="/Users/na/.rd/bin:$PATH"
 
 # CodeWhisperer post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash"
-

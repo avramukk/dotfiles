@@ -22,6 +22,10 @@ ln -sf "$PWD/.bashrc" "$HOME/.bashrc"
 ln -sf "$PWD/.tmux.conf" "$HOME/.tmux.conf"
 ln -sf "$PWD/nvim" "$XDG_CONFIG_HOME/nvim"
 
+# set second brain
+
+export SECOND_BRAIN=("/Users/na/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/Mykola/")
+
 # install theme if ubuntu
 
 # clone the repo into "$HOME/src/gogh"
@@ -44,3 +48,4 @@ cd installs
 
 # gruvbox dark
 ./gruvbox-dark.sh
+
