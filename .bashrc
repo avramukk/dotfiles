@@ -9,49 +9,14 @@
 [[ $- != *i* ]] && return
 
 # Prompt
-
-# install git-prompt
-# curl -o ~/.git-prompt.sh https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
-
-# for ubuntu only
-# if [ -f ~/.git-prompt.sh ]; then
-# . ~/.git-prompt.sh
-# fi
-
-# git prompt
-# export GIT_PS1_SHOWDIRTYSTATE=1
-# export GIT_PS1_SHOWSTASHSTATE=1
-# export GIT_PS1_SHOWUNTRACKEDFILES=1
-
-# # Explicitly unset color (default anyhow). Use 1 to set it.
-# export GIT_PS1_SHOWCOLORHINTS=1
-# export GIT_PS1_DESCRIBE_STYLE="branch"
-
-# #PS1='[\u@\h \W]\$ ' # default
-
-# PS1="\[\033[32m\]\w\[\033[33m\]\$(__git_ps1)\[\033[00m\] $ "
-
-# ~~~~~~~~~~~~~~~ Prompt ~~~~~~~~~~~~~~~~~~~~~~~~
-
-source ~/.git-prompt.sh
-
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWSTASHSTATE=1
 export GIT_PS1_SHOWUNTRACKEDFILES=1
-# Explicitly unset color (default anyhow). Use 1 to set it.
 export GIT_PS1_SHOWCOLORHINTS=1
 export GIT_PS1_DESCRIBE_STYLE="branch"
-# export GIT_PS1_SHOWUPSTREAM="auto git"
+export GIT_PS1_SHOWUPSTREAM="auto git"
 
-# if [[ -f "$XDG_CONFIG_HOME/bash/gitprompt.sh" ]]; then
-# 	source "$XDG_CONFIG_HOME/bash/gitprompt.sh"
-# fi
-
-# PROMPT_COMMAND='__git_ps1 "\u@\h:\W" " \n$ "'
-# colorized prompt
-PROMPT_COMMAND='__git_ps1 "\[\e[33m\]\[\e[0m\]\[\e[34m\]\[\e[0m\]\[\e[35m\]\W\[\e[0m\]" " $ "'
-
-# The __git_ps1 function prompt is provided by the bash completion installed by brew. See https://github.com/mischavandenburg/dotfiles/issues/5
+PROMPT_COMMAND='__git_ps1 "\W" " $ "'
 
 # keybinds
 bind -x '"\C-l":clear'
@@ -68,7 +33,7 @@ export DOTFILES="$REPOS/dotfiles"
 export LAB="$REPOS/lab"
 export SCRIPTS="$DOTFILES/scripts"
 export SECOND_BRAIN="$HOME/second-brain"
-
+export KUBE_EDITOR=nvim
 # ~~~~~~~~~~~~~~~ History ~~~~~~~~~~~~~~~~~~~~~~~~
 
 export HISTFILE=~/.histfile
@@ -126,9 +91,12 @@ alias hlp='cd $REPOS/github.com/na/homelab-private/'
 alias hlps='cd $REPOS/github.com/na/homelab-private-staging/'
 alias hlpp='cd $REPOS/github.com/na/homelab-private-production/'
 alias sb='cd -P $SECOND_BRAIN'
-# ls
+alias m='cd $REPOS/mischa'
+alias md='cd $REPOS/mischa/dotfiles'
+
+#ls
 alias ls='ls --color=auto'
-alias l='ls -la'
+alias l='ls -l'
 alias ll='ls -la'
 alias la='ls -lathr'
 
@@ -137,6 +105,7 @@ alias last='find . -type f -not -path "*/\.*" -exec ls -lrt {} +'
 
 alias sv='sudoedit'
 alias t='tmux'
+alias ta='tmux attach'
 alias e='exit'
 
 # playwright
@@ -148,11 +117,9 @@ alias gs='git status'
 alias lg='lazygit'
 
 # ricing
-# alias et='v ~/.config/awesome/themes/powerarrow/theme-personal.lua'
-# alias ett='v ~/.config/awesome/themes/powerarrow-dark/theme-personal.lua'
-# alias er='v ~/.config/awesome/rc.lua'
-# alias ez='v ~/.zshrc'
 alias eb='v ~/.bashrc'
+alias ea='v ~/.config/alacritty/alacritty.toml'
+alias et='v ~/.tmux.conf'
 alias ev='cd ~/.config/nvim/ && v init.lua'
 alias sbr='source ~/.bashrc'
 
