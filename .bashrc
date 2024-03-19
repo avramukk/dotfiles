@@ -1,6 +1,3 @@
-# CodeWhisperer pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.pre.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.pre.bash"
-
 #
 # ~/.bashrc
 #
@@ -8,15 +5,18 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-# Prompt
-export GIT_PS1_SHOWDIRTYSTATE=1
-export GIT_PS1_SHOWSTASHSTATE=1
-export GIT_PS1_SHOWUNTRACKEDFILES=1
-export GIT_PS1_SHOWCOLORHINTS=1
-export GIT_PS1_DESCRIBE_STYLE="branch"
-export GIT_PS1_SHOWUPSTREAM="auto git"
+# starship
+eval "$(starship init bash)"
 
-PROMPT_COMMAND='__git_ps1 "\W" " $ "'
+# Prompt
+#export GIT_PS1_SHOWDIRTYSTATE=1
+#export GIT_PS1_SHOWSTASHSTATE=1
+#export GIT_PS1_SHOWUNTRACKEDFILES=1
+#export GIT_PS1_SHOWCOLORHINTS=1
+#export GIT_PS1_DESCRIBE_STYLE="branch"
+#export GIT_PS1_SHOWUPSTREAM="auto git"
+
+# PROMPT_COMMAND='__git_ps1 "\[\e[35m\]\W\[\e[0m\]" " $ "'
 
 # keybinds
 bind -x '"\C-l":clear'
@@ -40,31 +40,6 @@ export HISTFILE=~/.histfile
 export HISTSIZE=25000
 export SAVEHIST=25000
 export HISTCONTROL=ignorespace
-
-# ~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~
-
-# This function is stolen from rwxrob
-
-clone() {
-	local repo="$1" user
-	local repo="${repo#https://github.com/}"
-	local repo="${repo#git@github.com:}"
-	if [[ $repo =~ / ]]; then
-		user="${repo%%/*}"
-	else
-		user="$GITUSER"
-		[[ -z "$user" ]] && user="$USER"
-	fi
-	local name="${repo##*/}"
-	local userd="$REPOS/github.com/$user"
-	local path="$userd/$name"
-	[[ -d "$path" ]] && cd "$path" && return
-	mkdir -p "$userd"
-	cd "$userd"
-	echo gh repo clone "$user/$name" -- --recurse-submodule
-	gh repo clone "$user/$name" -- --recurse-submodule
-	cd "$name"
-} && export -f clone
 
 # Only run on Ubuntu
 
@@ -122,6 +97,7 @@ alias ea='v ~/.config/alacritty/alacritty.toml'
 alias et='v ~/.tmux.conf'
 alias ev='cd ~/.config/nvim/ && v init.lua'
 alias sbr='source ~/.bashrc'
+alias es='v ~/.config/starship.toml'
 
 # terraform
 alias tf='terraform'
@@ -169,7 +145,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 	source "$HOME/.fzf.bash"
 	# echo "I'm on Mac!"
 
-	# brew bash completion
 	[[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
 else
 	#	source /usr/share/fzf/key-bindings.bash
@@ -184,6 +159,3 @@ export PATH="/Users/na/.rd/bin:$PATH"
 # export NVM_DIR="$HOME/.config/nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
 # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-
-# CodeWhisperer post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash"
