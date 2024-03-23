@@ -5,7 +5,7 @@ import = ["/Users/na/.config/alacritty/themes/themes/gruvbox_dark.toml"]
 live_config_reload = true
 
 [font]
-size = 18
+size = 20
 
 [font.normal]
 family = "UbuntuMono Nerd Font"
@@ -24,7 +24,7 @@ style = "Italic"
 [window]
 decorations = "None"
 opacity = 0.97
-startup_mode = "Fullscreen"
+# startup_mode = "Fullscreen"
 
 
 [window.padding]
