@@ -1,3 +1,5 @@
+# CodeWhisperer pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.pre.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.pre.bash"
 #
 # ~/.bashrc
 #
@@ -7,16 +9,6 @@
 
 # starship
 eval "$(starship init bash)"
-
-# Prompt
-#export GIT_PS1_SHOWDIRTYSTATE=1
-#export GIT_PS1_SHOWSTASHSTATE=1
-#export GIT_PS1_SHOWUNTRACKEDFILES=1
-#export GIT_PS1_SHOWCOLORHINTS=1
-#export GIT_PS1_DESCRIBE_STYLE="branch"
-#export GIT_PS1_SHOWUPSTREAM="auto git"
-
-# PROMPT_COMMAND='__git_ps1 "\[\e[35m\]\W\[\e[0m\]" " $ "'
 
 # keybinds
 bind -x '"\C-l":clear'
@@ -111,8 +103,14 @@ alias k='kubectl'
 source <(kubectl completion bash)
 complete -o default -F __start_kubectl k
 alias kgp='kubectl get pods'
+alias kgpo='kubectl get pods -o wide'
 alias kc='kubectx'
 alias kn='kubens'
+
+# copilot
+
+alias ?='gh copilot explain'
+alias ??='gh copilot suggest'
 
 # eks
 # . <(eksctl completion bash)
@@ -138,9 +136,6 @@ alias fp="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}
 # search for a file with fzf and open it in vim
 alias vf='v $(fp)'
 
-# sourcing
-# source "$HOME/.privaterc"
-
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	source "$HOME/.fzf.bash"
 	# echo "I'm on Mac!"
@@ -156,6 +151,5 @@ fi
 export PATH="/Users/na/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
-# export NVM_DIR="$HOME/.config/nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+# CodeWhisperer post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash"
