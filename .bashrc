@@ -15,7 +15,10 @@ bind -x '"\C-l":clear'
 # ~~~~~~~~~~~~~~~ Environment Variables ~~~~~~~~~~~~~~~~~~~~~~~~
 
 # config
-export BROWSER="Arc"
+export BROWSER=""
+
+# editor
+export EDITOR="nvim"
 
 # directories
 export REPOS="$HOME/Projects"
@@ -29,11 +32,18 @@ export KUBE_EDITOR=nvim
 # ~~~~~~~~~~~~~~~ History ~~~~~~~~~~~~~~~~~~~~~~~~
 
 export HISTFILE=~/.histfile
-export HISTSIZE=25000
-export SAVEHIST=25000
+export HISTSIZE=100000
+export SAVEHIST=100000
 export HISTCONTROL=ignorespace
+shopt -s histappend
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+
+# tmuxifier
+export PATH="$HOME/.tmuxifier/bin:$PATH"
+eval "$(tmuxifier init -)"
 
 # Only run on Ubuntu
+#
 
 # if [[ -f /etc/os-release && $(grep -E "^(ID|NAME)=" /etc/os-release | grep -q "ubuntu")$? == 0 ]]; then
 # 	eval "$(ssh-agent -s)" >/dev/null
@@ -90,6 +100,8 @@ alias et='v ~/.tmux.conf'
 alias ev='cd ~/.config/nvim/ && v init.lua'
 alias sbr='source ~/.bashrc'
 alias es='v ~/.config/starship.toml'
+alias esh='v ~/.config/skhd/skhdrc'
+alias ey='v ~/.config/yabairc'
 
 # terraform
 alias tf='terraform'
@@ -107,10 +119,12 @@ alias kgpo='kubectl get pods -o wide'
 alias kc='kubectx'
 alias kn='kubens'
 
-# copilot
+# cw ai
+alias ?='cw ai'
 
-alias ?='gh copilot explain'
-alias ??='gh copilot suggest'
+# new tmux window mixa
+
+alias mixa='tmuxifier load-window mixa'
 
 # eks
 # . <(eksctl completion bash)
@@ -132,7 +146,7 @@ alias ??='gh copilot suggest'
 
 # fzf aliases
 # use fp to do an fzf search and preview the files
-alias fp="fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'"
+alias ff="fzf --preview 'bat --style=numbers --color=always --line-range :501 {}'"
 # search for a file with fzf and open it in vim
 alias vf='v $(fp)'
 
@@ -150,6 +164,10 @@ fi
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/na/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"
+[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && \. "/usr/local/opt/nvm/etc/bash_completion"
 
 # CodeWhisperer post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash"
