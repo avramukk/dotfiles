@@ -100,7 +100,7 @@ alias et='v ~/.tmux.conf'
 alias ev='cd ~/.config/nvim/ && v init.lua'
 alias sbr='source ~/.bashrc'
 alias es='v ~/.config/starship.toml'
-alias esh='v ~/.config/skhd/skhdrc'
+alias esk='v ~/.config/skhd/skhdrc'
 alias ey='v ~/.config/yabairc'
 
 # terraform
