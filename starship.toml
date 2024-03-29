@@ -2,11 +2,26 @@ add_newline = false
 
 format = """\
 $directory\
-$character\
 $git_branch\
 $git_status\
+$character\
 """
 
 [character]
 success_symbol = '[﹩](green)'
 error_symbol = '[﹩](red)'
+
+[git_branch]
+format = "[$branch]($style)"
+style = "bold red"
+
+[git_status]
+format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)"
+style = "red bold"
+conflicted = "​"
+untracked = "​"
+modified = "​"
+staged = "​"
+renamed = "​"
+deleted = "​"
+stashed = "≡"
