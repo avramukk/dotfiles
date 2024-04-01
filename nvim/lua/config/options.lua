@@ -23,7 +23,7 @@ opt.foldenable = false
 -- vim.opt.undodir = vim.fn.expand('~/.nvim/undodir')
 
 -- scrolling
-opt.number = false
+opt.number = true
 opt.relativenumber = false
 opt.scrolloff = 8
 opt.linebreak = true
@@ -47,4 +47,4 @@ opt.linebreak = true
 --
 -- opt.vim_markdown_conceal = 0
 --
-vim.g.mkdp_browser = "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
+vim.g.mkdp_browser = "/Applications/Arc.app/Contents/MacOS/Arc"
