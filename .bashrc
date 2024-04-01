@@ -14,9 +14,6 @@ eval "$(starship init bash)"
 bind -x '"\C-l":clear'
 # ~~~~~~~~~~~~~~~ Environment Variables ~~~~~~~~~~~~~~~~~~~~~~~~
 
-# config
-export BROWSER=""
-
 # editor
 export EDITOR="nvim"
 
@@ -29,6 +26,7 @@ export LAB="$REPOS/lab"
 export SCRIPTS="$DOTFILES/scripts"
 export SECOND_BRAIN="$HOME/second-brain"
 export KUBE_EDITOR=nvim
+
 # ~~~~~~~~~~~~~~~ History ~~~~~~~~~~~~~~~~~~~~~~~~
 
 export HISTFILE=~/.histfile
@@ -39,8 +37,8 @@ shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
 # tmuxifier
-export PATH="$HOME/.tmuxifier/bin:$PATH"
-eval "$(tmuxifier init -)"
+#export PATH="$HOME/.tmuxifier/bin:$PATH"
+#eval "$(tmuxifier init -)"
 
 # Only run on Ubuntu
 #
@@ -63,6 +61,7 @@ alias dot='cd $REPOS/dotfiles'
 alias repos='cd $REPOS'
 alias c="clear"
 alias homelab='cd $REPOS/homelab/'
+alias cv='cd $REPOS/avramukk.github.io/'
 alias hl='cd $REPOS/homelab'
 alias hlp='cd $REPOS/github.com/na/homelab-private/'
 alias hlps='cd $REPOS/github.com/na/homelab-private-staging/'
@@ -92,7 +91,7 @@ alias pw='npx playwright'
 alias gp='git pull'
 alias gs='git status'
 alias lg='lazygit'
-
+alias ld='lazydocker'
 # ricing
 alias eb='v ~/.bashrc'
 alias ea='v ~/.config/alacritty/alacritty.toml'
@@ -122,9 +121,10 @@ alias kn='kubens'
 # cw ai
 alias ?='cw ai'
 
-# new tmux window mixa
-
-alias mixa='tmuxifier load-window mixa'
+# alias for enabling aws prompt toggle ONLY when used export AWS_PROFILE
+alias mixa='export AWS_PROFILE=mixa && starship toggle aws'
+alias slgfx='export AWS_PROFILE=slgfx && starship toggle aws'
+alias mixa-e='export AWS_PROFILE=mixa-e && starship toggle aws'
 
 # eks
 # . <(eksctl completion bash)
@@ -148,7 +148,7 @@ alias mixa='tmuxifier load-window mixa'
 # use fp to do an fzf search and preview the files
 alias ff="fzf --preview 'bat --style=numbers --color=always --line-range :501 {}'"
 # search for a file with fzf and open it in vim
-alias vf='v $(fp)'
+alias vf='v $(ff)'
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	source "$HOME/.fzf.bash"

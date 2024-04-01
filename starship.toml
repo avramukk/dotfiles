@@ -4,6 +4,7 @@ format = """\
 $directory\
 $git_branch\
 $git_status\
+$aws\
 $character\
 """
 
@@ -22,6 +23,9 @@ conflicted = "​"
 untracked = "​"
 modified = "​"
 staged = "​"
-renamed = "​"
-deleted = "​"
 stashed = "≡"
+
+[aws]
+format = "[$profile]($style)-([$region](bold blue))"
+style = 'bold yellow'
+disabled = true
