@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Define the folder where notes will be stored
+
+# Prompt the user to enter the note text
+echo "Add note text:"
+read note_text
+
+# Get the current date and time
+date_time=$(date +"%Y-%m-%d_%H-%M-%S")
+
+# Extract the first few words of the note for the file name
+file_name=$(echo "$note_text" | awk '{print $1}')
+
+# Create the file with the note text and date in the specified folder
+echo "$note_text" >"$SECOND_BRAIN/0 inbox/$date_time_$file_name.md"

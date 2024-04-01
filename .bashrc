@@ -36,7 +36,7 @@ export HISTCONTROL=ignorespace
 shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
-# tmuxifier
+# tmuxifierV
 #export PATH="$HOME/.tmuxifier/bin:$PATH"
 #eval "$(tmuxifier init -)"
 
@@ -120,6 +120,9 @@ alias kn='kubens'
 
 # cw ai
 alias ?='cw ai'
+
+# second-brain
+alias n='$DOTFILES/scripts/note'
 
 # alias for enabling aws prompt toggle ONLY when used export AWS_PROFILE
 alias mixa='export AWS_PROFILE=mixa && starship toggle aws'
