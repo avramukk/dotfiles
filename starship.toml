@@ -8,6 +8,9 @@ $aws\
 $character\
 """
 
+[directory]
+truncation_length = 1
+
 [character]
 success_symbol = '[﹩](green)'
 error_symbol = '[﹩](red)'
