@@ -1,0 +1,3 @@
+#!/bin/bash
+
+brew list >~/Projects/dotfiles/brewlist.txt
