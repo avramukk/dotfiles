@@ -87,6 +87,7 @@ alias sv='sudoedit'
 alias t='tmux'
 alias ta='tmux attach'
 alias e='exit'
+alias yt='yt-dlp'
 
 # playwright
 alias pw='npx playwright'
