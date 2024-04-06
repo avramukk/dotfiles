@@ -27,6 +27,10 @@ export SCRIPTS="$DOTFILES/scripts"
 export SECOND_BRAIN="$HOME/second-brain"
 export KUBE_EDITOR=nvim
 
+declare OPENAI_API_KEY
+OPENAI_API_KEY="$(head -1 "$HOME/.config/gpt/token")"
+export OPENAI_API_KEY
+
 # ~~~~~~~~~~~~~~~ History ~~~~~~~~~~~~~~~~~~~~~~~~
 
 export HISTFILE=~/.histfile
@@ -100,7 +104,7 @@ alias ev='cd ~/.config/nvim/ && v init.lua'
 alias sbr='source ~/.bashrc'
 alias es='v ~/.config/starship.toml'
 alias esk='v ~/.config/skhd/skhdrc'
-alias ey='v ~/.config/yabairc'
+alias ey='v ~/.config/yabai/yabairc'
 
 # terraform
 alias tf='terraform'
@@ -120,6 +124,7 @@ alias kn='kubens'
 
 # cw ai
 alias ?='cw ai'
+alias ??='/Users/na/Projects/dotfiles/scripts/gpt'
 
 # second-brain
 alias n='$DOTFILES/scripts/note'
