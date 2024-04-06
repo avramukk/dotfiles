@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Get the current date and time
-date_time=$(date +"%Y-%m-%d_%H-%M-%S")
-
+# date format: 04-06-2021-Fri-14:30
+date=$(date "+%d-%m-%Y-%a-%H:%M")
+# create new file from template in inbox folder
+cp "$HOME/second-brain/resources/templates/template.md" "$HOME/second-brain/inbox/$date.md"
 #create new file in inbox folder and open it vith nvim for editing
-nvim "$SECOND_BRAIN/0 inbox/$date_time.md"
+nvim "$HOME/second-brain/inbox/$date.md"

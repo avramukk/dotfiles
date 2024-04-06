@@ -24,7 +24,7 @@ export GHREPOS="$REPOS/github.com/$GITUSER"
 export DOTFILES="$REPOS/dotfiles"
 export LAB="$REPOS/lab"
 export SCRIPTS="$DOTFILES/scripts"
-export SECOND_BRAIN="$HOME/second-brain"
+export SECOND_BRAIN="/Users/na/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/second-brain/"
 export KUBE_EDITOR=nvim
 
 # cargo
@@ -131,7 +131,7 @@ alias ?='cw ai'
 alias ??='/Users/na/Projects/dotfiles/scripts/gpt'
 
 # second-brain
-alias n='$DOTFILES/scripts/note'
+alias nn='$DOTFILES/scripts/note'
 
 # alias for enabling aws prompt toggle ONLY when used export AWS_PROFILE
 alias mixa='export AWS_PROFILE=mixa && starship toggle aws'

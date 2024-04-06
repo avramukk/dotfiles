@@ -6,7 +6,6 @@ alt - k : yabai -m window --focus north
 alt - h : yabai -m window --focus west
 alt - l : yabai -m window --focus east
 shift + alt - n : open -na Alacritty.app --args -e /Users/na/Projects/dotfiles/scripts/note
-#alacritty -e /Users/na/Projects/dotfiles/scripts/note
 
 # -- Modifying the Layout --
 
