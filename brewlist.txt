@@ -285,6 +285,7 @@ spotify-tui
 sqlite
 srt
 srtp
+sshs
 starship
 stree
 svt-av1
