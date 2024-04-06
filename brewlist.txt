@@ -290,7 +290,6 @@ starship
 stree
 svt-av1
 taglib
-tailspin
 tbb
 tdlib
 telnet
