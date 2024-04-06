@@ -27,6 +27,9 @@ export SCRIPTS="$DOTFILES/scripts"
 export SECOND_BRAIN="$HOME/second-brain"
 export KUBE_EDITOR=nvim
 
+# cargo
+export PATH="/Users/na/.cargo/bin:$PATH"
+
 declare OPENAI_API_KEY
 OPENAI_API_KEY="$(head -1 "$HOME/.config/gpt/token")"
 export OPENAI_API_KEY
