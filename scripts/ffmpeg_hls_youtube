@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Script for sending any input video file or stream to YouTube via HLS
+
+INPUT="$1"
+STREAM_KEY="$2"
+
+ffmpeg -i "$INPUT" -hls_time 6.000 -strftime 1 -master_pl_name master.m3u8 -http_persistent 1 -f hls -segment_wrap 1 -method POST "https://a.upload.youtube.com/http_upload_hls?cid=${STREAM_KEY}&copy=0&file=master.m3u8"
