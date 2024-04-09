@@ -33,3 +33,6 @@ y = 5
 
 [cursor.style]
 blinking = "Always"
+
+[env]
+term = "xterm-256color"
