@@ -276,6 +276,7 @@ rust
 screenresolution
 sdl2
 serve
+shellcheck
 six
 skhd
 snappy
