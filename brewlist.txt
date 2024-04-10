@@ -70,6 +70,7 @@ gnuplot
 gnutls
 go
 gobject-introspection
+gpg-tui
 gpgme
 graphene
 graphite2
@@ -291,6 +292,7 @@ starship
 stree
 svt-av1
 taglib
+tailspin
 tbb
 tdlib
 telnet
