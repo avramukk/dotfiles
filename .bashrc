@@ -22,13 +22,14 @@ export REPOS="$HOME/Projects"
 export GITUSER="avramukk"
 export GHREPOS="$REPOS/github.com/$GITUSER"
 export DOTFILES="$REPOS/dotfiles"
-export LAB="$REPOS/lab"
 export SCRIPTS="$DOTFILES/scripts"
-export SECOND_BRAIN="/Users/na/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/second-brain/"
-export KUBE_EDITOR=nvim
+export LAB="$REPOS/lab"
+export SECOND_BRAIN="$HOME/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/second-brain/"
+export KUBE_EDITOR="nvim"
 
-# cargo
-export PATH="/Users/na/.cargo/bin:$PATH"
+# PATH
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$DOTFILES/scripts/:$PATH"
 
 declare OPENAI_API_KEY
 OPENAI_API_KEY="$(head -1 "$HOME/.config/gpt/token")"
@@ -42,10 +43,6 @@ export SAVEHIST=100000
 export HISTCONTROL=ignorespace
 shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
-
-# tmuxifierV
-#export PATH="$HOME/.tmuxifier/bin:$PATH"
-#eval "$(tmuxifier init -)"
 
 # Only run on Ubuntu
 #
@@ -101,7 +98,7 @@ alias gs='git status'
 alias lg='lazygit'
 alias ld='lazydocker'
 # ricing
-alias eb='v ~/.bashrc'
+alias ebr='v ~/.bashrc'
 alias ea='v ~/.config/alacritty/alacritty.toml'
 alias et='v ~/.tmux.conf'
 alias ev='cd ~/.config/nvim/ && v init.lua'
