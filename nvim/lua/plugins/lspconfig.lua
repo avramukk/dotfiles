@@ -18,6 +18,11 @@ return {
         html = {},
         cssls = {},
       },
+      -- disable diagnostic by default
+      on_attach = function(client, bufnr)
+        require("lua-dev").on_attach(client, bufnr)
+        require("lsp").on_attach(client, bufnr)
+      end,   
     },
   },
 }
