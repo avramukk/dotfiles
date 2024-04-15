@@ -34,6 +34,7 @@ curl
 dav1d
 dbus
 ddosify
+delve
 dive
 docker
 docker-completion
