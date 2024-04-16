@@ -1,5 +1,5 @@
 # dotfiles
-![macOS](<CleanShot-2024-04-15-2 -56-00.png>)
+![macOS](screenshot.png)
 
 
 ## setup
