@@ -313,6 +313,7 @@ unar
 unbound
 unibilium
 utf8proc
+w3m
 watch
 webp
 wget
