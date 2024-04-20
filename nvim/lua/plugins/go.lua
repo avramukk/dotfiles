@@ -1,13 +1,4 @@
 return {
-  --   {
-  --      "mfussenegger/nvim-dap",
-  --   },
-  --   {
-  --     "theHamsta/nvim-dap-virtual-text",
-  --   },
-  --   {
-  --     "rcarriga/nvim-dap-ui",
-  --   },
   {
     "ray-x/go.nvim",
     dependencies = { -- optional packages

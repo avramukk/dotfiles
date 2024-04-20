@@ -6,7 +6,7 @@ return {
       ---@type lspconfig.options
       servers = {
         -- pyright will be automatically installed with mason and loaded with lspconfig
-        pyright = {},
+        -- pyright = {},
         bashls = {},
         bicep = {},
         yamlls = {},
@@ -22,7 +22,7 @@ return {
       on_attach = function(client, bufnr)
         require("lua-dev").on_attach(client, bufnr)
         require("lsp").on_attach(client, bufnr)
-      end,   
+      end,
     },
   },
 }
