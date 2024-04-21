@@ -211,6 +211,7 @@ netpbm
 nettle
 nginx-full
 nmap
+node
 node@16
 node@18
 npth
