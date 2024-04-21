@@ -32,3 +32,6 @@ vim.keymap.set(
 -- from https://github.com/ThePrimeagen/init.lua
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
+
+-- run ChatGPT
+vim.keymap.set("n", "<leader>ai", "<cmd>ChatGPT<CR>")
