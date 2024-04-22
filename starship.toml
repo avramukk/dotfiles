@@ -11,6 +11,9 @@ $character\
 
 [directory]
 truncation_length = 1
+read_only = "🔒"
+home_symbol = "~"
+
 
 [character]
 success_symbol = '[﹩](green)'
@@ -21,15 +24,11 @@ format = "[$branch]($style)"
 style = "bold red"
 
 [git_status]
-format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)"
+format = "[($modified)]($style)"
 style = "red bold"
-conflicted = "​"
-untracked = "​"
-modified = "​"
-staged = "​"
-stashed = "≡"
+modified = "*"
 
 [aws]
 format = "[$profile]($style)-([$region](bold blue))"
 style = 'bold yellow'
-disabled = true
+disabled = false
