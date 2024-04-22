@@ -1,6 +1,8 @@
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
+-- Add any additional keymaps herea
+local keymap = vim.keymap -- for conciseness
+
 vim.keymap.set("n", "<leader>p", '<cmd>lua require("cmp").setup { enabled = true }<cr>', { desc = "Enable completion" })
 vim.keymap.set(
   "n",
@@ -35,3 +37,7 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
 -- run ChatGPT
 vim.keymap.set("n", "<leader>ai", "<cmd>ChatGPT<CR>")
+
+-- window management
+keymap.set("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" }) -- split window vertically
+keymap.set("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" }) -- split window horizontally
