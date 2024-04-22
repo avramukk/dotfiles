@@ -18,7 +18,7 @@ bind -x '"\C-l":clear'
 export EDITOR="nvim"
 
 # directories
-export REPOS="$HOME/Projects"
+export REPOS="$HOME/Repos"
 export GITUSER="avramukk"
 export GHREPOS="$REPOS/github.com/$GITUSER"
 export DOTFILES="$REPOS/dotfiles"
@@ -31,6 +31,11 @@ export KUBE_EDITOR="nvim"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$DOTFILES/scripts/:$PATH"
 
+# PAT
+export GOBIN="$HOME/go/bin"
+export GOPATH="$HOME/go"
+export PATH="$PATH:$GOPATH/bin"
+# OPENAI_API_KEY
 declare OPENAI_API_KEY
 OPENAI_API_KEY="$(head -1 "$HOME/.config/gpt/token")"
 export OPENAI_API_KEY
@@ -130,6 +135,7 @@ alias nn='$DOTFILES/scripts/note'
 alias mixa='export AWS_PROFILE=mixa && starship toggle aws'
 alias slgfx='export AWS_PROFILE=slgfx && starship toggle aws'
 alias mixa-e='export AWS_PROFILE=mixa-e && starship toggle aws'
+alias globex='export AWS_PROFILE=globex && starship toggle aws'
 
 # eks
 # . <(eksctl completion bash)
