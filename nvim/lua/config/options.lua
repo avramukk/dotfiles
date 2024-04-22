@@ -15,12 +15,8 @@ opt.spell = false
 opt.foldmethod = "manual"
 opt.foldenable = false
 
--- colorschemes
--- require('gruvbox-material').setup()
--- o.termguicolors = true
--- opt.gruvbox_material_enable_italic_comment = 1
--- undo
--- vim.opt.undodir = vim.fn.expand('~/.nvim/undodir')
+-- clipboard
+opt.clipboard:append("unnamedplus") -- use system clipboard as default register
 
 -- scrolling
 opt.number = true
@@ -28,23 +24,14 @@ opt.relativenumber = false
 opt.scrolloff = 8
 opt.linebreak = true
 
--- indentation
+-- split windows
+opt.splitright = true -- split vertical window to the right
+opt.splitbelow = true -- split horizontal window to the bottom
 
--- o.expandtab = true              -- convert tabs to spaces
--- o.tabstop = 4                   -- insert 4 spaces for a tab
--- o.shiftwidth = 4                -- the number of spaces inserted for each indentation
--- o.smartindent = true
-
--- windows
--- vim.o.splitbelow = true
--- vim.o.splitright = true
-
--- completion
--- vim.o.timeoutlen = 300 -- time to wait for a mapped sequence to complete
---
--- g.vim_markdown_conceal = 0
---
---
--- opt.vim_markdown_conceal = 0
+-- search settings
+opt.ignorecase = true -- ignore case when searching
+opt.smartcase = true -- if you include mixed case in your search, assumes you want case-sensitive
+opt.wrap = false -- don't wrap search
+opt.cursorline = true
 --
 vim.g.mkdp_browser = "/Applications/Arc.app/Contents/MacOS/Arc"
