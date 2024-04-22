@@ -34,3 +34,4 @@ yabai -m rule --add app="^Karabiner-Elements$" manage=off
 yabai -m rule --add app="^QuickTime Player$" manage=off
 yabai -m rule --add app="^Step Two$" manage=off
 yabai -m rule --add app="^CodeWhisperer$" manage=off
+yabai -m rule --add app="^CleanShot X$" manage=off
