@@ -68,6 +68,7 @@ alias cv='cd $REPOS/avramukk.github.io/'
 alias sb='cd -P $SECOND_BRAIN'
 alias m='cd $REPOS/mischa'
 alias md='cd $REPOS/mischa/dotfiles'
+alias rd='cd $REPOS/rwxrob/dot/'
 
 #ls
 alias ls='ls --color=auto'
