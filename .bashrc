@@ -29,7 +29,7 @@ export KUBE_EDITOR="nvim"
 
 # PATH
 export PATH="$HOME/.cargo/bin:$PATH"
-export PATH="$DOTFILES/scripts/:$PATH"
+export PATH="$DOTFILES/scripts:$PATH"
 
 # PAT
 export GOBIN="$HOME/go/bin"
