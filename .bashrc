@@ -49,12 +49,6 @@ export HISTCONTROL=ignorespace
 shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
-# Only run on Ubuntu
-#
-
-# if [[ -f /etc/os-release && $(grep -E "^(ID|NAME)=" /etc/os-release | grep -q "ubuntu")$? == 0 ]]; then
-# 	eval "$(ssh-agent -s)" >/dev/null
-# fi
 
 # ~~~~~~~~~~~~~~~ Aliases ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -126,7 +120,7 @@ alias kn='kubens'
 
 # cw ai
 alias ?='cw ai'
-alias ??='/Users/na/Projects/dotfiles/scripts/gpt'
+alias ??='$DOTFILES/scripts/gpt'
 
 # second-brain
 alias nn='$DOTFILES/scripts/note'
