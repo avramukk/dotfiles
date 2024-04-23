@@ -1,12 +1,10 @@
 #!/bin/bash
-
-# This is the setup script for my config. The idea is to be able to run
-# this after cloning the repo on a Mac or Ubuntu (WSL) system and be up
-# and running very quickly.
+set -e
 
 # Set up directories
 export XDG_CONFIG_HOME="$HOME/.config"
-mkdir -p "$XDG_CONFIG_HOME/bash"
+
+# create dirs for configs
 mkdir -p "$XDG_CONFIG_HOME/alacritty/themes"
 mkdir -p "$XDG_CONFIG_HOME/k9s"
 
@@ -24,29 +22,4 @@ ln -sf "$PWD/starship.toml" "$XDG_CONFIG_HOME/starship.toml"
 ln -sf "$PWD/yabai" "$XDG_CONFIG_HOME/yabai"
 ln -sf "$PWD/skhd" "$XDG_CONFIG_HOME/skhd"
 
-# set second brain
 
-export SECOND_BRAIN=("/Users/na/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/Mykola/")
-
-# install theme if ubuntu
-
-# clone the repo into "$HOME/src/gogh"
-mkdir -p "$HOME/src"
-cd "$HOME/src"
-git clone https://github.com/Gogh-Co/Gogh.git gogh
-cd gogh
-
-# necessary in the Gnome terminal on ubuntu
-export TERMINAL=gnome-terminal
-
-# necessary in the Alacritty terminal
-pip install -r requirements.txt
-export TERMINAL=alacritty
-
-# Enter theme installs dir
-cd installs
-
-# Install the themes
-
-# gruvbox dark
-./gruvbox-dark.sh
