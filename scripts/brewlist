@@ -1,8 +1,8 @@
 #!/bin/bash
 export PATH="/opt/homebrew/bin:$PATH"
-brew list >/Users/na/Projects/dotfiles/brewlist.txt
+brew list > $DOTFILES/brewlist.txt
 
-cd /Users/na/Projects/dotfiles || exit
+cd $DOTFILES || exit
 git add brewlist.txt
 git commit -m "Automated commit at $(date)"
 git push
