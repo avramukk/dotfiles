@@ -1,8 +1,8 @@
 #!/bin/bash
-
+SECOND_BRAIN='/Users/na/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain'
 # date format: 04-06-2021-Fri-14:30
-date=$(date "+%d-%m-%Y-%a-%H:%M")
+date=$(date "+%d-%m-%Y-%a-%H:%M:%S")
 # create new file from template in inbox folder
-cp "$HOME/second-brain/resources/templates/template.md" "$HOME/second-brain/inbox/$date.md"
+cp "$SECOND_BRAIN/resources/templates/template.md" "$SECOND_BRAIN/inbox/$date.md"
 #create new file in inbox folder and open it vith nvim for editing
-nvim "$HOME/second-brain/inbox/$date.md"
+nvim "$SECOND_BRAIN/inbox/$date.md"
