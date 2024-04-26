@@ -1,0 +1,40 @@
+#!/bin/bash
+# this is the script for testing streaming bitrate
+
+bitrate=$1 
+url=$2
+
+# Задайте бажані значення параметрів
+resolution="1280x720"
+fps="30"
+
+# verify if bitrate parameter is passed
+
+if [ -z "$bitrate" ]; then
+    echo "Please provide the bitrate as parameter"
+    exit 1
+fi
+  echo "Bitrate is $bitrate"
+
+
+# Extract protocol from the provided address
+protocol=$(echo "$2" | cut -d ':' -f 1)
+
+if [ "$protocol" == "srt" ]; then
+  output_format="mpegts"
+  echo "SRT protocol detected"
+elif [ "$protocol" == "rtmp" ]; then
+  output_format="flv"
+  echo "RTMP protocol detected"
+else
+  echo "Unsupported protocol. Please provide either srt:// or rtmp:// address."
+  exit 1
+fi
+
+
+# Generate the ffmpeg command
+ffmpeg -re -f lavfi -i "testsrc2=s=${resolution}:r=${fps}" \
+  	-b:v "$bitrate" -profile:v baseline -pix_fmt yuv420p \
+	-vf "drawtext=text='$resolution,$fps,$bitrate':fontsize=70:box=1:boxcolor=black@0.5:boxborderw=5:x=(w-text_w)/2:y=(h-text_h)/2,drawtext=text=fontsize=70:box=1:boxcolor=black@0.5:boxborderw=5:x=(w-text_w)/2:y=(h+text_h)/2:text='%{pts\:hms} %{n}':timecode_rate=${fps}" \
+	-c:v libx264 -c:a aac \
+	-f "$output_format" "$url" \
