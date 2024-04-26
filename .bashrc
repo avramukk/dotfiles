@@ -21,11 +21,13 @@ export EDITOR="nvim"
 export REPOS="$HOME/Repos"
 export GITUSER="avramukk"
 export GHREPOS="$REPOS/github.com/$GITUSER"
+export XDG_CONFIG_HOME="$HOME/.config"
 export DOTFILES="$REPOS/dotfiles"
 export SCRIPTS="$DOTFILES/scripts"
 export LAB="$REPOS/lab"
-export SECOND_BRAIN="$HOME/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/second-brain/"
 export KUBE_EDITOR="nvim"
+# export SECOND_BRAIN="$HOME/second-brain"
+export SECOND_BRAIN="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain"
 
 # PATH
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -37,7 +39,7 @@ export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 # OPENAI_API_KEY
 declare OPENAI_API_KEY
-OPENAI_API_KEY="$(head -1 "$HOME/.config/gpt/token")"
+OPENAI_API_KEY="$(head -1 "$XDG_CONFIG_HOME/gpt/token")"
 export OPENAI_API_KEY
 
 # ~~~~~~~~~~~~~~~ History ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +67,8 @@ alias repos='cd $REPOS'
 alias c="clear"
 alias homelab='cd $REPOS/homelab/'
 alias cv='cd $REPOS/avramukk.github.io/'
-alias sb='cd -P $SECOND_BRAIN'
+alias sb='cd -P "$SECOND_BRAIN"'
+alias fn='sb && nvim'
 alias m='cd $REPOS/mischa'
 alias md='cd $REPOS/mischa/dotfiles'
 alias rd='cd $REPOS/rwxrob/dot/'
@@ -133,9 +136,7 @@ alias mixa-e='export AWS_PROFILE=mixa-e && starship toggle aws'
 alias globex='export AWS_PROFILE=globex && starship toggle aws'
 
 # eks
-# . <(eksctl completion bash)
-# alias kcs='kubectl config use-context admin@homelab-staging'
-# alias kcp='kubectl config use-context admin@homelab-production'
+. <(eksctl completion bash)
 
 # # flux
 # source <(flux completion bash)
