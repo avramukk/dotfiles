@@ -312,6 +312,7 @@ srtp
 sshs
 starship
 stree
+stu
 svt-av1
 taglib
 tailspin
