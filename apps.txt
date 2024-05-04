@@ -7,12 +7,12 @@ Adobe Illustrator 2023
 Adobe Premiere Pro 2022
 Alacritty.app
 Amazon Kindle.app
+Amazon Q.app
 Amethyst.app
 Anytype.app
 Arc.app
 Capacities.app
 Clockify Desktop.app
-CodeWhisperer.app
 Crate.app
 DBeaver.app
 DataGrip.app
@@ -37,6 +37,7 @@ MediaInfo.app
 Microsoft Remote Desktop.app
 Microsoft Word.app
 MindNode.app
+MinimaList.app
 Mixa Encoder.app
 MongoDB Compass.app
 Mos.app
