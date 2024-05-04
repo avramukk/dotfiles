@@ -7,9 +7,12 @@ return {
       servers = {
         -- pyright will be automatically installed with mason and loaded with lspconfig
         -- pyright = {},
-        bashls = {},
+        bashls = {
+          autostart = false},
         bicep = {},
-        yamlls = {},
+        yamlls = {
+        autostart = false},
+        dockerls = {},
         marksman = {},
         powershell_es = {},
         terraformls = {},

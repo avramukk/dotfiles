@@ -15,3 +15,6 @@ export XDG_CONFIG_HOME="$HOME"/.config
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/na/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+# Added by OrbStack: command-line tools and integration
+source ~/.orbstack/shell/init.bash 2>/dev/null || :

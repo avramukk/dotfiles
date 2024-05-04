@@ -42,7 +42,7 @@ require("lazy").setup({
         "tohtml",
         "tutor",
         "zipPlugin",
-        "copilot",
+        -- "copilot",
       },
     },
   },

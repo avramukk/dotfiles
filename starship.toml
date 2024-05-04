@@ -29,6 +29,6 @@ style = "red bold"
 modified = "*"
 
 [aws]
-format = "[$profile]($style)-([$region](bold blue))"
+format = "[ $profile]($style)-([$region](bold blue))"
 style = 'bold yellow'
-disabled = false
+disabled = true

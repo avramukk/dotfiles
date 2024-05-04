@@ -21,7 +21,7 @@ style = "Italic"
 
 [window]
 decorations = "None"
-opacity = 0.98
+opacity = 0.95
 # startup_mode = "Fullscreen"
 
 
