@@ -1,0 +1,100 @@
+1Password.app
+AWS VPN Client
+Ableton Live 12 Suite.app
+Adobe Acrobat DC
+Adobe Creative Cloud
+Adobe Illustrator 2023
+Adobe Premiere Pro 2022
+Alacritty.app
+Amazon Kindle.app
+Amethyst.app
+Anytype.app
+Arc.app
+Capacities.app
+Clockify Desktop.app
+CodeWhisperer.app
+Crate.app
+DBeaver.app
+DataGrip.app
+DeepL.app
+DevToys.app
+Developer.app
+Discord.app
+Docker.app
+Elecard StreamEye Studio 2023
+FFMPEG UI.app
+Figma.app
+GitHub Desktop.app
+Google Chrome.app
+Google Docs.app
+Google Sheets.app
+Grammarly Editor.app
+KairosCreator.app
+LangSwitch.app
+Lens.app
+Livestream Studio.app
+MediaInfo.app
+Microsoft Remote Desktop.app
+Microsoft Word.app
+MindNode.app
+Mixa Encoder.app
+MongoDB Compass.app
+Mos.app
+NDI Access Manager.app
+NDI Launcher.app
+NDI Scan Converter.app
+NDI Test Patterns.app
+NDI Video Monitor.app
+NDI Virtual Input.app
+Native Instruments
+Notion.app
+OBS.app
+Obsidian.app
+OrbStack.app
+Pages.app
+Parsec.app
+Pile.app
+Playgrounds.app
+Podman Desktop.app
+PostgreSQL 15
+Postman 2.app
+Proxyman.app
+PyCharm.app
+Python 3.10
+Python 3.11
+Q.app
+QCTools.app
+Rancher Desktop.app
+Rivet Remote.app
+Rivet.app
+SAVEE.app
+SRTViewer.app
+Safari.app
+Screen Studio Beta.app
+Screen Studio.app
+Send to Kindle
+Setapp
+Setapp.app
+Slack.app
+Speedtest.app
+Spotify.app
+Steam.app
+StreamAnalyzer.app
+Studio 3T.app
+Sublime Text.app
+Switch.app
+Switcher.ai Encoder.app
+TeamViewer.app
+Telegram.app
+TestFlight.app
+TinkerTool.app
+Transmission.app
+Unzip - RAR ZIP 7Z Unarchiver.app
+Utilities
+VLC.app
+Visual Studio Code.app
+Warp.app
+WhatsApp.app
+Wireshark.app
+kitty.app
+zoom.us.app
