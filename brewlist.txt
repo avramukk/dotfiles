@@ -195,6 +195,7 @@ libzen
 little-cms2
 llvm
 llvm@15
+llvm@17
 lua
 lua@5.3
 luajit
@@ -208,6 +209,7 @@ mbedtls
 md4c
 media-info
 mesa
+metadata
 minikube
 mods
 mongodb-database-tools
@@ -324,6 +326,7 @@ terragrunt
 tesseract
 tftui
 tg
+thefuck
 theora
 tmux
 tmuxinator
