@@ -1,5 +1,5 @@
-# CodeWhisperer pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.pre.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.pre.bash"
+# Amazon Q pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.pre.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.pre.bash"
 #
 # ~/.bashrc
 #
@@ -29,14 +29,13 @@ export KUBE_EDITOR="nvim"
 # export SECOND_BRAIN="$HOME/second-brain"
 export SECOND_BRAIN="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain"
 
-# PATH
-export PATH="$HOME/.cargo/bin:$PATH"
-export PATH="$DOTFILES/scripts:$PATH"
 
-# PAT
+# PATH
 export GOBIN="$HOME/go/bin"
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$DOTFILES/scripts:$PATH"
 # OPENAI_API_KEY
 declare OPENAI_API_KEY
 OPENAI_API_KEY="$(head -1 "$XDG_CONFIG_HOME/gpt/token")"
@@ -135,6 +134,13 @@ alias slgfx='export AWS_PROFILE=slgfx && starship toggle aws'
 alias mixa-e='export AWS_PROFILE=mixa-e && starship toggle aws'
 alias globex='export AWS_PROFILE=globex && starship toggle aws'
 
+
+# streaming
+alias twitch='ffmpeg_loop ~/Movies/twitch.mp4'
+alias timecode='ffmpeg_testsrc_live'
+alias twitch60='ffmpeg_loop ~/Movies/twitch60.mp4'
+
+
 # eks
 . <(eksctl completion bash)
 
@@ -176,8 +182,8 @@ export PATH="/Users/na/.rd/bin:$PATH"
 # (keep as is or nvm idiotic installer will re-add to bashrc next time)
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completioneval "$(thefuck --alias)"
 
-
-# CodeWhisperer post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/bashrc.post.bash"
+# Amazon Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash"
+. "$HOME/.cargo/env"
