@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+while IFS= read -r package; do
+  brew install "$package"
+done < brewlist.txt
+
 # Set up directories
 export XDG_CONFIG_HOME="$HOME/.config"
 
@@ -8,8 +12,9 @@ export XDG_CONFIG_HOME="$HOME/.config"
 mkdir -p "$XDG_CONFIG_HOME/alacritty/themes"
 mkdir -p "$XDG_CONFIG_HOME/k9s"
 
-# Clone alacritty themes
-# git clone https://github.com/alacritty/alacritty-theme "$XDG_CONFIG_HOME/alacritty/themes"
+# check if alacritty themes are already cloned
+if [ ! -d "$XDG_CONFIG_HOME/alacritty/themes" ]; then
+git clone https://github.com/alacritty/alacritty-theme "$XDG_CONFIG_HOME/alacritty/themes"
 
 # Create symbolic links
 ln -sf "$PWD/alacritty.toml" "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
