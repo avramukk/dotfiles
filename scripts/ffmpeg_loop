@@ -9,9 +9,32 @@ retry=0
 # Awaiter timeout in seconds
 timeout=0
 
+
+# Extract protocol from the provided address
+protocol=$(echo "$2" | cut -d ':' -f 1)
+# cut - tool for cutting parts of strings
+# -d - doing the split by the specified character
+# ':' - the character by which we split the strings
+# -f - the number of the field we want to get
+
+echo "Protocol: $protocol"
+echo "Input: $1"
+echo "Output: $2"
+
+if [ "$protocol" == "srt" ]; then
+  output_format="mpegts"
+elif [ "$protocol" == "rtmp" ]; then
+  output_format="flv"
+else
+  echo "Unsupported protocol. Please provide either srt:// or rtmp:// address."
+  exit 1
+fi
+
+
 until [ $retry -gt $retries ]
 do
-   ffmpeg -stream_loop -1 -re -i twitch.mp4 -acodec copy -vcodec libx264 -framerate 25 -s 1920x1080 -b:v 700k -g 25 -preset ultrafast -f mpegts $1 && break
+   ffmpeg -hide_banner -loglevel verbose -stream_loop -1 -re -i "$1" -vcodec copy -acodec copy -f "$output_format" "$2" && break
    ((retry++))
    sleep $timeout
 done
+

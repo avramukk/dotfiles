@@ -1,4 +1,6 @@
-!#bin/bash/
+#!/bin/bash
 
-ffplay -loglevel repeat+level+verbose -i 'srt://192.168.0.172:5000?mode=listener' -fflags nobuffer 
+ffplay -loglevel repeat+level+verbose -i 'srt://localhost:3000?mode=listener' -fflags nobuffer 
+
+echo "Waiting for SRT stream on localhost:3000..."
 

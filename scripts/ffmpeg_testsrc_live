@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Визначте шлях до вихідного файлу
+url="$1"
+# Визначте роздільну здатність
+resolution="1920x1080"
+# Визначте частоту кадрів
+fps_value="30"
+# Визначте бітрейт
+bitrate="1000k"
+# Визначте профіль
+profile="main"
+# Визначте формат пікселів
+pix_fmt="yuv420p"
+
+# Генеруємо команду ffmpeg для заданої комбінації параметрів
+ffmpeg -re -stream_loop -1 -f lavfi -i "testsrc=size=${resolution}:rate=${fps_value}" \
+	-f lavfi -i "sine=frequency=220:beep_factor=4" \
+	-b:v "$bitrate" -profile:v "$profile" -pix_fmt "$pix_fmt" \
+	-vf "drawtext=fontsize=110:fontcolor=red:x=(w-tw)/4:y=(h-th)/2:text='%{pts\:hms} %{n}':timecode_rate=${fps_value}"\
+	-c:v libx264 -c:a aac \
+	-f mpegts "$url"
