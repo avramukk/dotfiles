@@ -8,10 +8,10 @@ return {
         -- pyright will be automatically installed with mason and loaded with lspconfig
         -- pyright = {},
         bashls = {
-          autostart = false},
+          autostart = true},
         bicep = {},
         yamlls = {
-        autostart = false},
+        autostart = true},
         dockerls = {},
         marksman = {},
         powershell_es = {},
