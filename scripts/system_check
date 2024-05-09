@@ -1,0 +1,209 @@
+#!/bin/bash
+# Author: Yevgeniy Goncharov aka xck, http://sys-adm.in
+# Collect & Check Linux server status
+
+# Sys env / paths / etc
+# -------------------------------------------------------------------------------------------\
+PATH=$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+SCRIPT_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)
+
+# Initial variables
+# ---------------------------------------------------\
+HOSTNAME=`hostname`  # Get the hostname of the server
+SERVER_IP=`hostname -I`  # Get the IP address of the server
+MOUNT=$(mount|egrep -iw "ext4|ext3|xfs|gfs|gfs2|btrfs"|grep -v "loop"|sort -u -t' ' -k1,2)  # Get mounted file systems
+FS_USAGE=$(df -PTh|egrep -iw "ext4|ext3|xfs|gfs|gfs2|btrfs"|grep -v "loop"|sort -k6n|awk '!seen[$1]++')  # Get file system usage
+SERVICES="$SCRIPT_PATH/services-list.txt"  # Path to the services list file
+TESTFILE="$SCRIPT_PATH/tempfile"  # Temporary file for disk test
+TOTALMEM=$(free -m | awk '$1=="Mem:" {print $2}')  # Get total memory in MB
+EBPF_STATUS=$(sysctl kernel.unprivileged_bpf_disabled | awk '{ print $3}')  # Get eBPF status
+DEBUG=false  # Debug mode flag
+
+# Colored styles
+on_success="DONE"  # Success message
+on_fail="FAIL"  # Failure message
+white="\e[1;37m"  # White color
+green="\e[1;32m"  # Green color
+red="\e[1;31m"  # Red color
+purple="\033[1;35m"  # Purple color
+nc="\e[0m"  # No color
+
+SuccessMark="\e[47;32m ------ OK \e[0m"  # Success mark
+WarningMark="\e[43;31m ------ WARNING \e[0m"  # Warning mark
+CriticalMark="\e[47;31m ------ CRITICAL \e[0m"  # Critical mark
+d="-------------------------------------"  # Separator
+
+# Functions for different types of messages
+Info() {  # Information message
+Warn() {  # Warning message
+Success() {  # Success message
+Error () {  # Error message
+Splash() {  # Display a splash message
+space() {  # Add a blank line
+
+# Help information
+usage() {  # Display script usage information
+
+# Checks arguments
+while [[ "$#" -gt 0 ]]; do  # Loop through script arguments
+
+# Functions
+## Service functions
+
+# Yes / No confirmation
+confirm() {  # Ask for user confirmation
+
+# Check if the current user is root
+isRoot() {  # Check if the script is running as root
+
+# Checks supporting distros
+checkDistro() {  # Check the distribution of the system
+
+# Get actual date
+getDate() {  # Get the current date
+
+# Check SELinux status
+isSELinux() {  # Check SELinux status
+
+isEBPF() {  # Check eBPF status
+
+# Check if a file exists
+chk_fileExist() {  # Check if a file exists
+
+# Check service status
+chk_SvsStatus() {  # Check the status of a service
+
+chk_SvcExist() {  # Check if a service exists
+
+## Functional / Test functions
+
+# Collect CPU information
+cpu_info() {  # Get CPU information
+
+# Test HDD
+test_disk() {  # Perform disk read/write tests
+
+# HDD usage
+disk_usage() {  # Display disk usage information
+
+# IPv4 speed tests
+speedtest_v4() {  # Perform speed test for IPv4
+
+test_v4() {  # Perform network speed tests
+
+# General system information
+system_info() {  # Display general system information
+
+# Memory info
+mem_info() {  # Display memory information
+
+# Boot info
+boot_info() {  # Display boot information
+
+# Actions
+
+space  # Add a blank line
+Splash  # Display a splash message
+
+system_info  # Display system information
+cpu_info  # Display CPU information
+mem_info  # Display memory information
+boot_info  # Display boot information
+
+# Disk related actions
+disk_usage  # Display disk usage information
+test_disk  # Perform disk read/write tests
+
+# Display read-only mounted file systems
+echo "$MOUNT"|grep -w \(ro\) && Info "\n.....Read Only file system[s] found"|| Info "No read-only file system[s] found. "
+
+# Display top memory and CPU usage processes
+ps -eo pmem,pcpu,pid,ppid,user,stat,args | sort -k 1 -r | head -6
+
+# Speedtest
+if ( ! $DEBUG ); then  # Check if debug mode is disabled
+    test_v4  # Perform speed tests
+else
+    echo "Debug is enabled!"  # Display debug message
+fi
+
+# Check if the services list file exists
+if [[ -f $SERVICES ]]; then
+
+    # Display services state
+    while read -r service; do  # Loop through services list file
+
+        # Check if the service is installed
+        if chk_SvcExist $service; then
+            chk_SvsStatus $service  # Check service status
+        else
+            Warn "$service " "Not installed"  # Display warning message
+        fi
+
+    done < $SERVICES  # Read services list file
+    
+fi
+
+# Check if the user chose to skip displaying all running services
+if [[ "$SKIPSERVICES" -eq "1" ]]; then
+    if confirm "List all running services? (y/n or enter)"; then  # Ask for user confirmation
+        Splash "\n\n-------------------------------Running services------------------------------"  # Display splash message
+        space  # Add a blank line
+        systemctl list-units | grep running  # List all running services
+    fi
+fi
+
+# Check if the user chose to display extra information
+if [[ "$EXTRA" -eq "1" ]]; then
+
+    # Display Bash users
+    Splash "\n\n-------------------------------\t\tBash users\t------------------------------"  # Display splash message
+    space  # Add a blank line
+    cat /etc/passwd | grep bash | awk -F: '{ print $1}'  # List Bash users
+
+    # Display users from processes
+    Splash "\n\n-------------------------------\t\tUsers from processes\t------------------------------"  # Display splash message
+    space  # Add a blank line
+    ps -ef | awk '{print $1}' | sort | uniq | grep -v 'UID'  # List users from processes
+
+    # Display logged users
+    Splash "\n\n-------------------------------\t\tLogged users\t------------------------------"  # Display splash message
+    space  # Add a blank line
+    w -h  # List logged users
+
+    # Display listening ports
+    Splash "\n\n-------------------------------\t\tListen ports\t------------------------------"  # Display splash message
+    space  # Add a blank line
+    if ! command -v netstat &> /dev/null  # Check if netstat command is available
+    then
+        Warn "" "NETSTAT could not be found"  # Display warning message
+    else
+        netstat -tulpn | grep 'LISTEN'  # List listening ports
+    fi
+
+    # Display all running services
+    Splash "\n\n-------------------------------\t\tAll running services\t----------------------"  # Display splash message
+    space  # Add a blank line
+    systemctl list-units | grep running  # List all running services
+
+    # Display all running processes
+    Splash "\n\n-------------------------------\t\tAll running processes\t----------------------"  # Display splash message
+    space  # Add a blank line
+    ps axjf  # List all running processes
+
+    # Display unowned files
+    Splash "\n\n-------------------------------\t\tUnowned files\t----------------------"  # Display splash message
+    space  # Add a blank line
+    Info "Status\t\t\t" "Find..."  # Display status message
+    find / -xdev -nouser -o -nogroup -exec ls {} \; > /tmp/find_res.log  # Find unowned files
+
+    if [ -s /tmp/find_res.log ]  # Check if unowned files were found
+    then
+         cat /tmp/find_res.log | grep -v '/' -A 1  # Display unowned files
+    else
+         Info "Status:\t\t\t" "OK. Not found."  # Display status message
+    fi
+
+fi
+
+
