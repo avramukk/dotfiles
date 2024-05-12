@@ -196,6 +196,7 @@ little-cms2
 llvm
 llvm@15
 llvm@17
+lnav
 lua
 lua@5.3
 luajit
@@ -237,6 +238,7 @@ nss
 numpy
 nvm
 oha
+ollama
 oniguruma
 openblas
 opencore-amr
