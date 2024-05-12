@@ -11,6 +11,7 @@ Amazon Q.app
 Amethyst.app
 Anytype.app
 Arc.app
+Business Match.app
 Capacities.app
 Clockify Desktop.app
 Crate.app
