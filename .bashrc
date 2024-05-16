@@ -133,6 +133,15 @@ alias mixa='export AWS_PROFILE=mixa && starship toggle aws'
 alias slgfx='export AWS_PROFILE=slgfx && starship toggle aws'
 alias mixa-e='export AWS_PROFILE=mixa-e && starship toggle aws'
 alias globex='export AWS_PROFILE=globex && starship toggle aws'
+alias vvcr-dev='export AWS_PROFILE=vvcr-dev-apps && starship toggle aws'
+alias vvcr-stage='export AWS_PROFILE=vvcr-stage-apps && starship toggle aws'
+alias vvcr-prod='export AWS_PROFILE=vvcr-prod-apps && starship toggle aws'
+
+
+# vvcr logs backend
+alias logs-stage='aws logs tail /aws/elasticbeanstalk/vvcr-front-api-staging/var/log/web.stdout.log --follow --profile vvcr-stage-apps'
+alias logs-dev='aws logs tail /aws/elasticbeanstalk/vvcr-front-api-dev/var/log/web.stdout.log --follow --profile vvcr-dev-apps'
+alias logs-prod='aws logs tail /aws/elasticbeanstalk/vvcr-front-api-production/var/log/web.stdout.log --follow --profile vvcr-prod-apps'
 
 
 # streaming
@@ -184,6 +193,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completioneval "$(thefuck --alias)"
 
+. "$HOME/.cargo/env"
+
 # Amazon Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash"
-. "$HOME/.cargo/env"
