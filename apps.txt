@@ -11,6 +11,7 @@ Amazon Q.app
 Amethyst.app
 Anytype.app
 Arc.app
+Bruno.app
 Business Match.app
 Capacities.app
 Clockify Desktop.app
@@ -86,6 +87,7 @@ Studio 3T.app
 Sublime Text.app
 Switch.app
 Switcher.ai Encoder.app
+Taskade.app
 TeamViewer.app
 Telegram.app
 TestFlight.app
