@@ -1,5 +1,5 @@
 # dotfiles
-![macOS](screenshot.png)
+![macOS](screen.png)
 
 
 ## setup
