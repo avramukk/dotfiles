@@ -7,7 +7,7 @@ alt - h : yabai -m window --focus west
 alt - l : yabai -m window --focus east
 
 # run as a shell command for quick note creating script
-shift + alt - n : open -na Alacritty.app --args -e /Users/na/Repos/dotfiles/scripts/note
+shift + alt - n : open -na Alacritty.app --args -e /Users/kolia/Repos/dotfiles/scripts/note
 
 # -- Modifying the Layout --
 
@@ -21,8 +21,7 @@ shift + alt - y : yabai -m space --mirror y-axis
 shift + alt - x : yabai -m space --mirror x-axis
 
 # toggle window float
-shift + alt - t : yabai -m window --toggle float --grid 4:4:1:1:2:2
-
+shift + alt - t : yabai -m window --toggle float --grid 3:3:1:1:3:3
 
 # -- Modifying Window Size --
 
