@@ -10,21 +10,19 @@ $character\
 """
 
 [directory]
-truncation_length = 1
 read_only = "🔒"
 home_symbol = "~"
-
 
 [character]
 success_symbol = '[﹩](green)'
 error_symbol = '[﹩](red)'
 
 [git_branch]
-format = "[$branch]($style)"
+format = '[$branch]($style)'
 style = "bold red"
 
 [git_status]
-format = "[($modified)]($style)"
+format = '[($modified)]($style)'
 style = "red bold"
 modified = "*"
 
