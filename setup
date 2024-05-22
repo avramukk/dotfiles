@@ -26,5 +26,6 @@ ln -sf "$PWD/nvim" "$XDG_CONFIG_HOME/nvim"
 ln -sf "$PWD/starship.toml" "$XDG_CONFIG_HOME/starship.toml"
 ln -sf "$PWD/yabai" "$XDG_CONFIG_HOME/yabai"
 ln -sf "$PWD/skhd" "$XDG_CONFIG_HOME/skhd"
+ln -sf "$PWD/sketchybar" "$XDG_CONFIG_HOME/sketchybar"
 
 
