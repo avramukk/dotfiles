@@ -64,7 +64,6 @@ alias lab='cd $LAB'
 alias dot='cd $REPOS/dotfiles'
 alias repos='cd $REPOS'
 alias c="clear"
-alias homelab='cd $REPOS/homelab/'
 alias cv='cd $REPOS/avramukk.github.io/'
 alias sb='cd -P "$SECOND_BRAIN"'
 alias fn='sb && nvim'
@@ -151,7 +150,7 @@ alias twitch60='ffmpeg_loop ~/Movies/twitch60.mp4'
 
 
 # eks
-. <(eksctl completion bash)
+# . <(eksctl completion bash)
 
 # # flux
 # source <(flux completion bash)
@@ -184,7 +183,7 @@ else
 fi
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/na/.rd/bin:$PATH"
+export PATH="/Users/kolia/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
 # ------------------------- NVM bullshit ahead ------------------------

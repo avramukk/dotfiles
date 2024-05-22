@@ -1,11 +1,11 @@
 # themes from https://github.com/alacritty/alacritty-theme
 
-import = ["/Users/na/.config/alacritty/themes/themes/gruvbox_dark.toml"]
+import = ["/Users/kolia/.config/alacritty/themes/themes/gruvbox_dark.toml"]
 
 live_config_reload = true
 
 [font]
-size = 16
+size = 17
 
 [font.normal]
 family = "UbuntuMono Nerd Font"
@@ -21,13 +21,13 @@ style = "Italic"
 
 [window]
 decorations = "None"
-opacity = 0.95
+opacity = 0.97
 # startup_mode = "Fullscreen"
 
 
 [window.padding]
 x = 10
-y = 5
+y = 3
 
 [cursor.style]
 blinking = "Always"
