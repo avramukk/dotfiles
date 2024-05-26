@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+mkdir -p ${HOME}/.config/zed/
+ln -sf "${DOTFILES}/zed/settings.json" "${HOME}/.config/zed/settings.json"
+# ln -sf "${DOTFILES}/zed/keybindings.json" "${HOME}/.config/zed/keymap.json"

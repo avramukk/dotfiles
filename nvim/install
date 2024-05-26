@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e # exit on error
+
+ln -sf "$DOTFILES/nvim" "$XDG_CONFIG_HOME/nvim"

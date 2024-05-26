@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+ln -sf "${DOTFILES_LOCATION}/k9s/skin.yml" "$XDG_CONFIG_HOME/k9s/skins/skin.yml"

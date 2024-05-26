@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+# check if alacritty themes are already cloned
+if [ ! -d "$XDG_CONFIG_HOME/alacritty/themes" ]; then
+git clone https://github.com/alacritty/alacritty-theme "$XDG_CONFIG_HOME/alacritty/themes"
+
+ln -sf "$DOTFILES/alacritty/alacritty.toml" "$XDG_CONFIG_HOME/alacritty/alacritty.toml"

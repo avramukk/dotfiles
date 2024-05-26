@@ -24,7 +24,6 @@ decorations = "None"
 opacity = 0.97
 # startup_mode = "Fullscreen"
 
-
 [window.padding]
 x = 10
 y = 3

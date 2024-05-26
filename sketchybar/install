@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+ln -sf "$DOTFILES/sketchybar" "$XDG_CONFIG_HOME/sketchybar"

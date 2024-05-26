@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+ln -sf "$DOTFILES/skhd" "$XDG_CONFIG_HOME/skhd"

@@ -1,0 +1,95 @@
+#!/bin/bash
+
+set -e
+
+# Check if brew is installed
+if test ! $(which brew); then
+  printf "\n🚀 Installing the brew package manager\n"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+###
+# Install brew packages
+###
+printf "\n🚀 Installing brew packages\n"
+
+# Taps
+brew tap hashicorp/tap
+
+BASE_PACKAGES=(
+  alacritty
+  ag
+  awscli
+  ansible
+  aws-elasticbeanstalk
+  aws-iam-authenticator
+  bash
+  btop
+  composer
+  cowsay
+  cmatrix
+  curl
+  eksctl
+  ffmpeg
+  fzf
+  gh
+  git
+  glow
+  gnupg
+  go
+  golangci-lint
+  htop
+  hugo
+  jq
+  k6
+  k9s
+  kubectl
+  kubectx
+  kube-ps1
+  kubernetes-cli
+  lazydocker
+  lazygit
+  mongodb-database-tools
+  mongosh
+  mysql-client
+  neovim
+  neofetch
+  openssl@3
+  opus
+  pipx
+  python3
+  ripgrep
+  sketchybar
+  skhd
+  srt
+  nvm
+  shellcheck
+  starship
+  tftui
+  tree-sitter
+  x264
+  x265
+  tldr
+  tmux
+  yabai
+  yt-dlp
+
+)
+
+# Add packages for arm64 only
+if [ $(arch) = "arm64" ]; then
+  BASE_PACKAGES+=(
+    pyenv
+    reattach-to-user-namespace
+    hashicorp/tap/terraform
+    terragrunt
+    tflint
+  )
+fi
+
+# Install packages
+for pkg in "${BASE_PACKAGES[@]}"; do printf "installing %s\n" "${pkg}" && brew install "${pkg}"; done
+
+# Some tidying up
+brew autoremove -v # Remove packages that are no longer needed
+brew cleanup --prune=all  # Remove all cache files

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+ln -sf "${DOTFILES}/starship/starship.toml" "${HOME}/.config/starship.toml"
