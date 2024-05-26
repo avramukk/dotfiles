@@ -1,12 +1,13 @@
 #!/bin/bash
 
-Applications=$(ls /Applications/)
+# Define the directory where the applications list will be saved
+output_file="$DOTFILES/apps.txt"
 
-# Save the list of applications to a file
-#
-echo "$Applications" > "$DOTFILES/apps.txt"
+# List applications and save to a file
+ls /Applications/ > "$output_file"
 
+# Navigate to the dotfiles directory and commit the changes
 cd "$DOTFILES" || exit
-git add apps.txt 
+git add "$output_file"
 git commit -m "Automated commit at $(date)"
 git push
