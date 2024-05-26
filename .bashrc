@@ -171,6 +171,32 @@ alias ff="fzf --preview 'bat --style=numbers --color=always --line-range :501 {}
 # search for a file with fzf and open it in vim
 alias vf='v $(ff)'
 
+
+# ~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~
+clone() {
+    local repo="$1"
+    local name="${repo##*/}"
+    name="${name%.git}"
+    local path="$HOME/Repos/$name"
+
+    if [[ -d "$path" ]]; then
+        cd "$path"
+        echo "Already cloned $name"
+        return
+    fi
+
+    mkdir -p "$HOME/Repos"
+    cd "$HOME/Repos"
+    echo gh repo clone "$repo" -- --recurse-submodule
+    gh repo clone "$repo" -- --recurse-submodule
+    cd "$name"
+}
+
+export -f clone
+
+
+
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	source "$HOME/.fzf.bash"
 	# echo "I'm on Mac!"
