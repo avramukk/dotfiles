@@ -1,8 +1,27 @@
 #!/bin/bash
-SECOND_BRAIN='/Users/na/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain'
-# date format: 04-06-2021-Fri-14:30
-date=$(date "+%d-%m-%Y-%a-%H:%M:%S")
-# create new file from template in inbox folder
+SECOND_BRAIN="/Users/kolia/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain"
+
+# Check if the directory exists
+if [ ! -d "$SECOND_BRAIN" ]; then
+  echo "Directory $SECOND_BRAIN does not exist"
+  exit 1
+fi
+
+# Check if the template file exists
+if [ ! -f "$SECOND_BRAIN/resources/templates/template.md" ]; then
+  echo "Template file does not exist at $SECOND_BRAIN/resources/templates/template.md"
+  exit 1
+fi
+
+date=$(date "+%Y-%m-%d-%H-%M-%S")
+
+# Create new file from template in inbox folder
 cp "$SECOND_BRAIN/resources/templates/template.md" "$SECOND_BRAIN/inbox/$date.md"
-#create new file in inbox folder and open it vith nvim for editing
+
+# Check if the file was created successfully
+if [ ! -f "$SECOND_BRAIN/inbox/$date.md" ]; then
+  echo "Failed to create the file $SECOND_BRAIN/inbox/$date.md"
+  exit 1
+fi
+
 nvim "$SECOND_BRAIN/inbox/$date.md"
