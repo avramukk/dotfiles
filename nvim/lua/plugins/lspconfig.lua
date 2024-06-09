@@ -5,13 +5,9 @@ return {
     opts = {
       ---@type lspconfig.options
       servers = {
-        -- pyright will be automatically installed with mason and loaded with lspconfig
-        -- pyright = {},
-        bashls = {
-          autostart = true},
+        bashls = {},
         bicep = {},
-        yamlls = {
-        autostart = true},
+        yamlls = {},
         dockerls = {},
         marksman = {},
         powershell_es = {},
@@ -22,10 +18,10 @@ return {
         cssls = {},
       },
       -- disable diagnostic by default
-      on_attach = function(client, bufnr)
-        require("lua-dev").on_attach(client, bufnr)
-        require("lsp").on_attach(client, bufnr)
-      end,
+      -- on_attach = function(client, bufnr)
+      --   require("lua-dev").on_attach(client, bufnr)
+      --   require("lsp").on_attach(client, bufnr)
+      -- end,
     },
   },
 }

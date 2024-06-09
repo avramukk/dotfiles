@@ -21,4 +21,6 @@ for region in "${TARGET_REGIONS[@]}"; do
 	copy_ami "$region"
 done
 
+this is an error
+
 echo "AMI copy operations initiated."

@@ -11,6 +11,7 @@ return {
 
     require("dap-go").setup()
     require("dapui").setup()
+    
 
     dap.listeners.before.attach.dapui_config = function()
       dapui.open()

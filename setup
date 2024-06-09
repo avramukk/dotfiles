@@ -15,6 +15,7 @@ mkdir -p "$XDG_CONFIG_HOME/k9s"
 # check if alacritty themes are already cloned
 if [ ! -d "$XDG_CONFIG_HOME/alacritty/themes" ]; then
 git clone https://github.com/alacritty/alacritty-theme "$XDG_CONFIG_HOME/alacritty/themes"
+fi
 
 # Create symbolic links
 ln -sf "$PWD/alacritty.toml" "$XDG_CONFIG_HOME/alacritty/alacritty.toml" # migrated

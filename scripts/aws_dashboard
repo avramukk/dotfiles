@@ -1,4 +1,4 @@
-k#!/bin/bash
+#!/bin/bash
 
 # Function to fetch and display EC2 instance details
 fetch_instances() {
