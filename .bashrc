@@ -6,7 +6,6 @@
 # Inspired by Mischa van den Burg, rwxrob, bahamas, and others.
 # Thanks everyone and keep sharing your knowlege end best practices.
 #
-
 # 
 # set -o vi
 
@@ -52,7 +51,7 @@ export OPENAI_API_KEY
 export HISTFILE=~/.histfile
 export HISTSIZE=100000
 export SAVEHIST=100000
-export HISTCONTROL=ignorespace
+export HISTCONTROL=ignorespace:ignoredups
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
 
@@ -77,7 +76,7 @@ alias sb='cd -P "$SECOND_BRAIN"'
 alias fn='sb && nvim'
 alias m='cd $REPOS/mischa'
 alias md='cd $REPOS/mischa/dotfiles'
-alias rd='cd $REPOS/rwxrob/dot/'
+alias rd='cd $REPOS/rwxrob/dot'
 
 # ls with color and formatting
 alias ls='ls --color=auto'
