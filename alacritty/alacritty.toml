@@ -30,6 +30,8 @@ y = 3
 
 [cursor.style]
 blinking = "Always"
+shape = "Block"
 
 [env]
 term = "xterm-256color"
+
