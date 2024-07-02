@@ -1,5 +1,5 @@
 #!/bin/bash
-SECOND_BRAIN="/Users/kolia/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain"
+SECOND_BRAIN="/Users/kolia/Documents/second-brain"
 
 # Check if the directory exists
 if [ ! -d "$SECOND_BRAIN" ]; then
