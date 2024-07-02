@@ -1,8 +1,3 @@
--- TODO
-
--- references:
--- https://github.com/nvim-neo-tree/neo-tree.nvim
--- https://github.com/nvim-neo-tree/neo-tree.nvim/wiki/Recipes
 return {
   "nvim-neo-tree/neo-tree.nvim",
   dependencies = {

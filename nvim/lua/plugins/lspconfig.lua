@@ -9,14 +9,11 @@ return {
         bicep = {},
         yamlls = {},
         dockerls = {},
-        marksman = {},
+        -- marksman = {},
         powershell_es = {},
         terraformls = {},
         helm_ls = {},
         jsonls = {},
-        html = {},
-        cssls = {},
-      },
       -- disable diagnostic by default
       -- on_attach = function(client, bufnr)
       --   require("lua-dev").on_attach(client, bufnr)
@@ -24,4 +21,5 @@ return {
       -- end,
     },
   },
+},
 }
