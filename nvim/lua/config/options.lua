@@ -22,6 +22,7 @@ opt.clipboard:append("unnamedplus") -- use system clipboard as default register
 opt.number = true
 opt.relativenumber = false
 opt.scrolloff = 8
+opt.textwidth = 80
 opt.linebreak = true
 
 -- split windows
