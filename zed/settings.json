@@ -1,5 +1,10 @@
-
 {
+  "assistant": {
+    "provider": {
+      "name": "openai",
+      "default_model": "gpt-4o"
+    }
+  },
   "theme": "Gruvbox Dark Hard",
   "base_keymap": "VSCode",
   "buffer_font_family": "UbuntuMono Nerd Font Mono",
@@ -71,9 +76,25 @@
     "helm_ls": {},
     "jsonls": {},
     "html": {},
-    "cssls": {}
+    "cssls": {},
+    "eslint": {}
   },
   "copilot": {
     "enabled": true
-  }
+  },
+  "show_inline_completions": true,
+  "bindings": {
+    "ctrl-h": ["workspace:ActivatePanelInDirection", "Left"],
+    "ctrl-l": ["workspace:ActivatePanelInDirection", "Right"],
+    "ctrl-k": ["workspace:ActivatePanelInDirection", "Up"],
+    "ctrl-j": ["workspace:ActivatePanelInDirection", "Down"],
+
+    "s": "outline:Toggle",
+    "space x x": "diagnostics:Deploy",
+    "space space": "file_finder:Toggle"
+  },
+  "inline_completions": {
+    "enabled": true
+  },
+  "autosave": "on_focus_change"
 }
