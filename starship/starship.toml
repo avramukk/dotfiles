@@ -1,5 +1,4 @@
 add_newline = false
-# command_timeout = 3000
 
 format = """\
 $directory\
@@ -10,8 +9,16 @@ $character\
 """
 
 [character]
-success_symbol = '[﹩](green)'
-error_symbol = '[﹩](red)'
+success_symbol = '[﹩](bold green)'
+error_symbol = '[﹩](bold red)'
+vimcmd_symbol = '[i](green)'
+vimcmd_replace_one_symbol = '[r](bold green)'
+
+[directory]
+home_symbol = ''
+truncation_length = 1
+truncation_symbol = ''
+
 
 [git_branch]
 format = '[$branch]($style)'
@@ -26,3 +33,5 @@ modified = "*"
 # format = "[ $profile]($style)-([$region](bold blue))"
 # style = 'bold yellow'
 # disabled = true
+#
+
