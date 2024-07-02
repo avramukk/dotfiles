@@ -422,4 +422,4 @@ noremap <C-p> <C-b>
 set rtp^=~/.vimpersonal
 set rtp^=~/.vimprivate
 set rtp^=~/.vimwork
-
+Plug 'mtdl9/vim-log-highlighting'
