@@ -4,19 +4,20 @@
 # ~/.bashrc
 # Made by Mykola Avramuk.
 # Inspired by Mischa van den Burg, rwxrob, bahamas, and others.
-# Thanks everyone and keep sharing your knowlege end best practices.
+# Thanks everyone and keep sharing your knowlege and best practices.
 #
-# 
-# set -o vi
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+set -o vi 
+
 # Initialize Starship prompt
 eval "$(starship init bash)"
 
-# Keybinds
+# clear screen with Ctrl-l
 bind -x '"\C-l":clear'
+
 
 # ~~~~~~~~~~~~~~~ Environment Variables ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -32,7 +33,7 @@ export DOTFILES="$REPOS/dotfiles"
 export SCRIPTS="$DOTFILES/scripts"
 export LAB="$REPOS/lab"
 export KUBE_EDITOR="nvim"
-export SECOND_BRAIN="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain"
+export SECOND_BRAIN="$HOME/Documents/second-brain"
 
 # PATH
 export GOBIN="$HOME/go/bin"
@@ -40,6 +41,10 @@ export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$DOTFILES/scripts:$PATH"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH=$BUN_INSTALL/bin:$PATH
 
 # OpenAI API Key
 declare OPENAI_API_KEY
@@ -54,12 +59,14 @@ export SAVEHIST=100000
 export HISTCONTROL=ignorespace:ignoredups
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
-
 # ~~~~~~~~~~~~~~~~Shell Options ~~~~~~~~~~~~~~~~~~
-shopt -s cdspell
-shopt -s checkwinsize
-shopt -s extglob
-shopt -s histappend
+
+shopt -s cdspell # Correct minor spelling errors in cd
+shopt -s checkwinsize # Check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
+shopt -s extglob # Extended globbing
+shopt -s histappend # Append to the history file, don't overwrite it
+# shopt -s cmdhist # Save multi-line commands as one command
+
 # ~~~~~~~~~~~~~~~ Aliases ~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Quick navigation aliases
@@ -83,13 +90,6 @@ alias ls='ls --color=auto'
 alias l='ls -l'
 alias ll='ls -la'
 alias la='ls -lathr'
-
-# # Enable color support of ls
-# if ls --color=auto &>/dev/null; then
-# 	alias ls='ls -p --color=auto'
-# else
-# 	alias ls='ls -p -G'
-# fi
 
 # Find recent files
 alias last='find . -type f -not -path "*/\.*" -exec ls -lrt {} +'
@@ -131,7 +131,6 @@ alias nn='$DOTFILES/scripts/note'
 alias mixa='export AWS_PROFILE=mixa && starship toggle aws'
 alias slgfx='export AWS_PROFILE=slgfx && starship toggle aws'
 alias mixa-e='export AWS_PROFILE=mixa-e && starship toggle aws'
-alias globex='export AWS_PROFILE=globex && starship toggle aws'
 alias vvcr-dev='export AWS_PROFILE=vvcr-dev-apps && starship toggle aws'
 alias vvcr-stage='export AWS_PROFILE=vvcr-stage-apps && starship toggle aws'
 alias vvcr-prod='export AWS_PROFILE=vvcr-prod-apps && starship toggle aws'
@@ -195,7 +194,7 @@ else
     [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 fi
 
-# ------------------------- NVM ------------------------
+# ------------------------- NVM bulshit------------------------
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
@@ -206,3 +205,4 @@ export PATH="/Users/kolia/.rd/bin:$PATH"
 
 # Amazon Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash"
+
