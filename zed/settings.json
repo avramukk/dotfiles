@@ -10,26 +10,60 @@
   "buffer_font_family": "UbuntuMono Nerd Font Mono",
   "buffer_font_size": 15,
   "vim_mode": true,
+  "confirm_quit": true,
   "relative_line_numbers": false,
-  "cursor_blink": false,
+  "cursor_blink": true,
   "scrollbar": {
-    "show": "never"
+    "git_diff": true
   },
-  "tab_bar": {
-    "show": true
+  "gutter": {
+    "visible": true,
+    "code_actions": false,
+    "folds": true
+  },
+  "toolbar": {
+    "selections_menu": false,
+    "quick_actions": false
+  },
+  "multi_cursor_modifier": "alt",
+  "scroll_sensitivity": 1.1,
+  "outline_panel": {
+    "button": false
+  },
+  "git": {
+    "inline_blame": {
+      "enabled": false
+    }
   },
   "buffer_line_height": {
     "custom": 1.7
+  },
+  "collaboration_panel": {
+    "button": false
+  },
+  "tab_bar": {
+    "show_nav_history_buttons": false,
+    "show": false
+  },
+  "tabs": {
+    "git_status": true
   },
   "terminal": {
     "font_family": "UbuntuMono Nerd Font Mono",
     "font_size": 15,
     "line_height": {
-      "custom": 1.7
-    }
+      "custom": 1
+    },
+    "button": false,
+    "copy_on_select": true
   },
   "inlay_hints": {
     "enabled": false
+  },
+  "project_panel": {
+    "default_width": 200,
+    "indent_size": 15,
+    "button": false
   },
   "lsp": {
     "gopls": {
@@ -84,11 +118,22 @@
   },
   "show_inline_completions": true,
   "bindings": {
-    "ctrl-h": ["workspace:ActivatePanelInDirection", "Left"],
-    "ctrl-l": ["workspace:ActivatePanelInDirection", "Right"],
-    "ctrl-k": ["workspace:ActivatePanelInDirection", "Up"],
-    "ctrl-j": ["workspace:ActivatePanelInDirection", "Down"],
-
+    "ctrl-h": [
+      "workspace:ActivatePanelInDirection",
+      "Left"
+    ],
+    "ctrl-l": [
+      "workspace:ActivatePanelInDirection",
+      "Right"
+    ],
+    "ctrl-k": [
+      "workspace:ActivatePanelInDirection",
+      "Up"
+    ],
+    "ctrl-j": [
+      "workspace:ActivatePanelInDirection",
+      "Down"
+    ],
     "s": "outline:Toggle",
     "space x x": "diagnostics:Deploy",
     "space space": "file_finder:Toggle"
@@ -96,5 +141,11 @@
   "inline_completions": {
     "enabled": true
   },
-  "autosave": "on_focus_change"
+  "autosave": "on_focus_change",
+  "formatter": "language_server",
+  "hard_tabs": true,
+  "telemetry": {
+    "enabled": false,
+    "metrics": false
+  }
 }
