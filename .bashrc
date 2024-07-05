@@ -96,8 +96,12 @@ alias last='find . -type f -not -path "*/\.*" -exec ls -lrt {} +'
 
 # Miscellaneous
 alias sv='sudoedit'
+alias ts='todo -ls'
+alias ta='todo -add'
+alias tc='todo -complete'
+alias td='todo -delete'
 alias t='tmux'
-alias ta='tmux attach'
+alias tat='tmux attach'
 alias e='exit'
 alias yt='yt-dlp'
 alias pw='npx playwright'
