@@ -1,18 +1,19 @@
 #!/bin/bash
 
-# Set the AWS profile name
-profile="mixa"
+profile=mixa
+region=us-east-1
 
-# Get all AWS regions
-regions=$(aws ec2 describe-regions --profile $profile --query 'Regions[].RegionName' --output text)
+    # get list of regions
+    regions=$(aws ec2 describe-regions --query "Regions[*].{Name:RegionName}" --
+  output json)
 
-# Iterate over each region
-for region in $regions; do
-    echo "Instances in region: $region"
+    # iterate over each region
+    for region in $regions; do
+      echo "Listing instances in region '$region'..."
 
-    # Get running instance details for the region
-    instances=$(aws ec2 describe-instances --profile $profile --region $region --filters Name=instance-state-name,Values=running --query 'Reservations[].Instances[].[InstanceId, Tags[?Key==`Name`].Value | [0], PublicIpAddress]' --output text)
-
-    # Print instance details
-    echo "$instances"
-done
+      # get table of instances
+      aws ec2 describe-instances --region $region --profile $profile \
+      --query 'Reservations[].Instances[].[InstanceId, InstanceType, LaunchTime,
+  PublicIpAddress, Tags[?Key==`Name`] | [0].Value]' \
+      --output table
+    done
