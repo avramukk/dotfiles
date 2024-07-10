@@ -139,6 +139,9 @@ alias vvcr-dev='export AWS_PROFILE=vvcr-dev-apps && starship toggle aws'
 alias vvcr-stage='export AWS_PROFILE=vvcr-stage-apps && starship toggle aws'
 alias vvcr-prod='export AWS_PROFILE=vvcr-prod-apps && starship toggle aws'
 
+# gcloud alias
+alias g='gcloud'
+
 # Log aliases
 alias logs-stage='aws logs tail /aws/elasticbeanstalk/vvcr-front-api-staging/var/log/web.stdout.log --follow --profile vvcr-stage-apps'
 alias logs-dev='aws logs tail /aws/elasticbeanstalk/vvcr-front-api-dev/var/log/web.stdout.log --follow --profile vvcr-dev-apps'
@@ -190,6 +193,7 @@ clone() {
 }
 export -f clone
 
+
 # OS specific settings
 if [[ "$OSTYPE" == "darwin"* ]]; then
     source "$HOME/.fzf.bash"
@@ -210,3 +214,9 @@ export PATH="/Users/kolia/.rd/bin:$PATH"
 # Amazon Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash"
 
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/kolia/Downloads/google-cloud-sdk/path.bash.inc' ]; then . '/Users/kolia/Downloads/google-cloud-sdk/path.bash.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc'; fi
