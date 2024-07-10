@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Встановлюємо змінну для директорії, куди будуть збережені фрейми
+output_dir="output"
+
+# Створюємо директорію, якщо вона ще не існує
+mkdir -p "$output_dir"
+
+# Проходимо по всіх файлах у поточній директорії з розширенням .mp4 та .mov
+for video_file in *.webm *.mp4 *.mov *.MOV; do
+    # Перевіряємо, чи є файл і є він реальний файл
+    if [[ -f "$video_file" ]]; then
+        # Встановлюємо змінну для шаблону вихідних файлів з випадковим іменем
+        output_pattern="$output_dir/frame_$(date +%s%N)_%03d.png"
+        
+        # Виконуємо команду FFmpeg для нарізки кожного 5-го фрейму з відео
+        ffmpeg -i "$video_file" -vf "fps=0.5" -vsync vfr "$output_pattern"
+    fi
+done
