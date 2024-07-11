@@ -3,16 +3,16 @@
     "context": "Workspace",
     "bindings": {
       "ctrl-`": "workspace::ToggleBottomDock",
-      "shift-z": "workspace::ToggleZoom"
     }
   },
   {
     "context": "Editor",
     "bindings": {
       "alt-escape": "editor::ShowCompletions",
-      "alt-enter": "editor::ToggleCodeActions",
-      "cmd-b": "editor::GoToDefinition",
-      "cmd-shift-b": "editor::GoToTypeDefinition"
+      "alt-up": "editor::SelectLargerSyntaxNode",
+      "alt-down": "editor::SelectSmallerSyntaxNode",
+      "ctrl-cmd-up": "editor::moveLineUp",
+      "ctrl-cmd-down": "editor::moveLineDown",
     }
   }
 ]
