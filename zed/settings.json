@@ -21,7 +21,8 @@
   "gutter": {
     "visible": true,
     "code_actions": false,
-    "folds": true
+    "folds": true,
+    "runnables": false,
   },
   "toolbar": {
     "selections_menu": false,

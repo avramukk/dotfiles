@@ -5,7 +5,7 @@ return {
       local cmp = require'cmp'
       cmp.setup({
         completion = {
-          autocomplete = false,  -- Вимикає автоматичне автозавершення
+          autocomplete = true,  -- Вимикає автоматичне автозавершення
         },
         -- Інші налаштування...
       })
