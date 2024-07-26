@@ -16,7 +16,7 @@ opt.foldmethod = "manual"
 opt.foldenable = false
 
 -- clipboard
-opt.clipboard:append("unnamedplus") -- use system clipboard as default register
+vim.opt.clipboard = "unnamedplus" -- allows neovim to access the system clipboard
 
 -- scrolling
 opt.number = true
