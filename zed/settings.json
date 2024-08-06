@@ -1,6 +1,11 @@
 {
   "restore_on_startup": "none",
   "assistant": {
+    "default_model": {
+      "provider": "openai",
+      "model": "gpt-4o"
+    },
+    "version": "2",
     "provider": {
       "name": "openai",
       "default_model": "gpt-4o"

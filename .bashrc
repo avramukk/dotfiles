@@ -125,6 +125,7 @@ alias kc='kubectx'
 alias kn='kubens'
 alias ??='$DOTFILES/scripts/gpt'
 alias nn='$DOTFILES/scripts/note'
+alias icat="kitten icat"
 
 # AWS profile aliases
 alias mixa='export AWS_PROFILE=mixa && starship toggle aws'
@@ -133,6 +134,7 @@ alias mixa-e='export AWS_PROFILE=mixa-e && starship toggle aws'
 alias vvcr-dev='export AWS_PROFILE=vvcr-dev-apps && starship toggle aws'
 alias vvcr-stage='export AWS_PROFILE=vvcr-stage-apps && starship toggle aws'
 alias vvcr-prod='export AWS_PROFILE=vvcr-prod-apps && starship toggle aws'
+alias kolia='export AWS_PROFILE=kolia && starship toggle aws'
 
 # gcloud alias
 alias g='gcloud'
@@ -206,12 +208,12 @@ export NVM_DIR="$HOME/.nvm"
 export PATH="/Users/kolia/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
-# Amazon Q post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash"
-
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/kolia/Downloads/google-cloud-sdk/path.bash.inc' ]; then . '/Users/kolia/Downloads/google-cloud-sdk/path.bash.inc'; fi
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc'; fi
+
+# Amazon Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash"

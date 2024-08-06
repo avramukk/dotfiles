@@ -44,4 +44,5 @@ yabai -m rule --add app="^Playwright Inspector$" manage=off
 yabai -m rule --add app="^Eter Radio$" manage=off
 yabai -m rule --add app="^DeepL$" manage=off
 yabai -m rule --add app="^ClearVPN$" manage=off
+yabai -m rule --add app="^KeyCastr$" manage=off
 

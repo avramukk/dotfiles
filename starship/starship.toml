@@ -28,10 +28,10 @@ style = "bold red"
 format = '[($modified)]($style)'
 style = "red bold"
 modified = "*"
-#
-# [aws]
-# format = "[ $profile]($style)-([$region](bold blue))"
-# style = 'bold yellow'
-# disabled = true
-#
+
+[aws]
+format = "[ $profile]($style)-([$region](bold blue))"
+style = 'bold yellow'
+disabled = true
+
 
