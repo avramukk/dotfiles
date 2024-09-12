@@ -1,6 +1,3 @@
-# Amazon Q pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.pre.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.pre.bash"
-#
 # ~/.bashrc
 # Made by Mykola Avramuk.
 # Inspired by Mischa van den Burg, rwxrob, bahamas, and others.
@@ -39,17 +36,16 @@ export SECOND_BRAIN="$HOME/Documents/second-brain"
 export GOBIN="$HOME/go/bin"
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
-export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$DOTFILES/scripts:$PATH"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
 
-# OpenAI API Key
-declare OPENAI_API_KEY
-OPENAI_API_KEY="$(head -1 "$XDG_CONFIG_HOME/gpt/token")"
-export OPENAI_API_KEY
+# # OpenAI API Key
+# declare OPENAI_API_KEY
+# OPENAI_API_KEY="$(head -1 "$XDG_CONFIG_HOME/gpt/token")"
+# export OPENAI_API_KEY
 
 # ~~~~~~~~~~~~~~~ History ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -116,9 +112,13 @@ alias ey='v ~/.config/yabai/yabairc'
 alias tf='terraform'
 alias tp='terraform plan'
 alias python='python3'
-alias k='kubectl'
+alias k=kubectl
+alias kubectl=kubecolor
 source <(kubectl completion bash)
-complete -o default -F __start_kubectl k
+complete -o default -F __start_kubectl kubecolor
+# alias k='kubectl'
+# source <(kubectl completion bash)
+# complete -o default -F __start_kubectl k
 alias kgp='kubectl get pods'
 alias kgpo='kubectl get pods -o wide'
 alias kc='kubectx'
@@ -217,3 +217,6 @@ if [ -f '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc' ]; then . 
 
 # Amazon Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash"
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
