@@ -15,7 +15,23 @@ select opt in "${options[@]}"; do
 	"Ubuntu")
 		echo "Installing packages for Ubuntu..."
 		sudo apt update
-		sudo apt install -y git nodejs npm python3 python3-pip pipenv postgresql redis mongodb docker docker-compose kubectl helm awscli terraform packer ansible vault consul nomad vagrant alacritty tmux ripgrep gh gcc g++ unzip fd fzf kubectx k9s lazygit neovim go
+		sudo apt install -y git nodejs npm python3 python3-pip pipenv postgresql redis docker.io docker-compose ansible alacritty tmux ripgrep gh gcc g++ unzip fd-find fzf neovim
+
+		# Install snap packages
+		sudo snap install go --classic
+		sudo snap install helm --classic
+		sudo snap install kubectl --classic
+		sudo snap install terraform --classic
+		sudo snap install vault --classic
+		sudo snap install nomad --classic
+		sudo snap install packer --classic
+		sudo snap install aws-cli --classic
+		sudo snap install consul --classic
+		sudo snap install lazygit --classic
+		sudo snap install k9s
+		
+		# Symlink fd for compatibility with fd-find
+		sudo ln -s $(which fdfind) /usr/local/bin/fd
 		break
 		;;
 	*) echo "Invalid option. Please try again." ;;
