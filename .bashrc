@@ -41,6 +41,7 @@ export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$DOTFILES/scripts:$PATH"
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
@@ -112,13 +113,15 @@ alias ev='cd ~/.config/nvim/ && v init.lua'
 alias sbr='source ~/.bashrc'
 alias es='v ~/.config/starship.toml'
 alias esk='v ~/.config/skhd/skhdrc'
-alias ey='v ~/.config/yabai/yabairc'
+alias eae='v ~/.config/aerospace/aerospace.toml'
 alias tf='terraform'
 alias tp='terraform plan'
 alias python='python3'
-alias k='kubectl'
+alias k=kubectl
+alias kubectl=kubecolor
 source <(kubectl completion bash)
-complete -o default -F __start_kubectl k
+complete -o default -F __start_kubectl kubecolor
+# complete -o default -F __start_kubectl k
 alias kgp='kubectl get pods'
 alias kgpo='kubectl get pods -o wide'
 alias kc='kubectx'

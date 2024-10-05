@@ -1,165 +1,166 @@
 {
-  "restore_on_startup": "none",
-  "assistant": {
-    "default_model": {
-      "provider": "openai",
-      "model": "gpt-4o"
-    },
-    "version": "2",
-    "provider": {
-      "name": "openai",
-      "default_model": "gpt-4o"
-    }
-  },
-  "theme": "Gruvbox Dark Hard",
-  "base_keymap": "VSCode",
-  "buffer_font_family": "UbuntuMono Nerd Font Mono",
-  "buffer_font_size": 13,
-  "vim_mode": true,
-  "confirm_quit": true,
-  "relative_line_numbers": false,
-  "cursor_blink": true,
-  "hover_popover_enabled": true,
-  "scrollbar": {
-    "git_diff": true
-  },
-  "gutter": {
-    "visible": true,
-    "code_actions": false,
-    "folds": true,
-    "runnables": false,
-  },
-  "toolbar": {
-    "selections_menu": false,
-    "quick_actions": false,
-    "breadcrumbs": false,
-  },
-  "multi_cursor_modifier": "alt",
-  "scroll_sensitivity": 1,
-  "outline_panel": {
-    "button": false
-  },
-  "git": {
-    "inline_blame": {
-      "enabled": false
-    }
-  },
-  "buffer_line_height": {
-    "custom": 1.7
-  },
-  "collaboration_panel": {
-    "button": false
-  },
-  "tab_bar": {
-    "show_nav_history_buttons": false,
-    "show": true
-  },
-  "tabs": {
-    "git_status": true
-  },
-  "terminal": {
-    "font_family": "UbuntuMono Nerd Font Mono",
-    "font_size": 12,
-    "line_height": {
-      "custom": 1
-    },
-    "toolbar": {
-      "title": false,
-    },
-    "button": false,
-    "copy_on_select": true
-  },
-  "inlay_hints": {
-    "enabled": false
-  },
-  "project_panel": {
-    "default_width": 200,
-    "indent_size": 10,
-    "button": false,
-    "file_icons": true,
-  },
-  "lsp": {
-    "gopls": {
-      "initialization_options": {
-        "gofumpt": true,
-        "usePlaceholders": true,
-        "staticcheck": true,
-        "codelenses": {
-          "gc_details": true,
-          "generate": true,
-          "regenerate_cgo": true,
-          "tidy": true,
-          "upgrade_dependency": true,
-          "vendor": true
-        },
-        "analysis": {
-          "completeUnimported": true,
-          "staticcheck": true,
-          "unusedParams": true,
-          "unusedWrite": true
-        },
-        "hints": {
-          "assignVariableTypes": true,
-          "compositeLiteralFields": true,
-          "compositeLiteralTypes": true,
-          "constantValues": true,
-          "functionTypeParameters": true,
-          "parameterNames": true,
-          "rangeVariableTypes": true
-        }
-      }
-    },
-    "bashls": {
-      "autostart": true
-    },
-    "bicep": {},
-    "yamlls": {
-      "autostart": true
-    },
-    "dockerls": {},
-    "marksman": {},
-    "powershell_es": {},
-    "terraformls": {},
-    "helm_ls": {},
-    "jsonls": {},
-    "html": {},
-    "cssls": {},
-    "eslint": {},
-    "tsserver": {}
-  },
-  "copilot": {
-    "enabled": true
-  },
-  "show_inline_completions": true,
-  "bindings": {
-    "ctrl-h": [
-      "workspace:ActivatePanelInDirection",
-      "Left"
-    ],
-    "ctrl-l": [
-      "workspace:ActivatePanelInDirection",
-      "Right"
-    ],
-    "ctrl-k": [
-      "workspace:ActivatePanelInDirection",
-      "Up"
-    ],
-    "ctrl-j": [
-      "workspace:ActivatePanelInDirection",
-      "Down"
-    ],
-    "s": "outline:Toggle",
-    "space x x": "diagnostics:Deploy",
-    "space space": "file_finder:Toggle"
-  },
-  "inline_completions": {
-    "enabled": true
-  },
-  "autosave": "on_focus_change",
-  "formatter": "language_server",
-  "hard_tabs": true,
-  "telemetry": {
-    "enabled": false,
-    "metrics": false
-  }
+	"restore_on_startup": "none",
+	"assistant": {
+		"default_model": {
+			"provider": "zed.dev",
+			"model": "claude-3-5-sonnet-20240620"
+		},
+		"version": "2",
+		"provider": {
+			"name": "openai",
+			"default_model": "gpt-4o"
+		}
+	},
+	"theme": "Gruvbox Dark Hard",
+	"base_keymap": "VSCode",
+	"buffer_font_family": "UbuntuMono Nerd Font Mono",
+	"buffer_font_size": 13,
+	"vim_mode": true,
+	"confirm_quit": true,
+	"relative_line_numbers": true,
+	"cursor_blink": true,
+	"hover_popover_enabled": true,
+	"soft_wrap": "editor_width",
+	"scrollbar": {
+		"git_diff": true
+	},
+	"gutter": {
+		"visible": true,
+		"code_actions": false,
+		"folds": true,
+		"runnables": false,
+	},
+	"toolbar": {
+		"selections_menu": false,
+		"quick_actions": false,
+		"breadcrumbs": false,
+	},
+	"multi_cursor_modifier": "alt",
+	"scroll_sensitivity": 1,
+	"outline_panel": {
+		"button": false
+	},
+	"git": {
+		"inline_blame": {
+			"enabled": false
+		}
+	},
+	"buffer_line_height": {
+		"custom": 1.7
+	},
+	"collaboration_panel": {
+		"button": false
+	},
+	"tab_bar": {
+		"show_nav_history_buttons": false,
+		"show": true
+	},
+	"tabs": {
+		"git_status": true
+	},
+	"terminal": {
+		"font_family": "UbuntuMono Nerd Font Mono",
+		"font_size": 15,
+		"line_height": {
+			"custom": 1
+		},
+		"toolbar": {
+			"title": false,
+		},
+		"button": false,
+		"copy_on_select": true
+	},
+	"inlay_hints": {
+		"enabled": false
+	},
+	"project_panel": {
+		"default_width": 200,
+		"indent_size": 10,
+		"button": false,
+		"file_icons": true,
+	},
+	"lsp": {
+		"gopls": {
+			"initialization_options": {
+				"gofumpt": true,
+				"usePlaceholders": true,
+				"staticcheck": true,
+				"codelenses": {
+					"gc_details": true,
+					"generate": true,
+					"regenerate_cgo": true,
+					"tidy": true,
+					"upgrade_dependency": true,
+					"vendor": true
+				},
+				"analysis": {
+					"completeUnimported": true,
+					"staticcheck": true,
+					"unusedParams": true,
+					"unusedWrite": true
+				},
+				"hints": {
+					"assignVariableTypes": true,
+					"compositeLiteralFields": true,
+					"compositeLiteralTypes": true,
+					"constantValues": true,
+					"functionTypeParameters": true,
+					"parameterNames": true,
+					"rangeVariableTypes": true
+				}
+			}
+		},
+		"bashls": {
+			"autostart": true
+		},
+		"bicep": {},
+		"yamlls": {
+			"autostart": true
+		},
+		"dockerls": {},
+		"marksman": {},
+		"powershell_es": {},
+		"terraformls": {},
+		"helm_ls": {},
+		"jsonls": {},
+		"html": {},
+		"cssls": {},
+		"eslint": {},
+		"tsserver": {}
+	},
+	"copilot": {
+		"enabled": true
+	},
+	"show_inline_completions": true,
+	"bindings": {
+		"ctrl-h": [
+			"workspace:ActivatePanelInDirection",
+			"Left"
+		],
+		"ctrl-l": [
+			"workspace:ActivatePanelInDirection",
+			"Right"
+		],
+		"ctrl-k": [
+			"workspace:ActivatePanelInDirection",
+			"Up"
+		],
+		"ctrl-j": [
+			"workspace:ActivatePanelInDirection",
+			"Down"
+		],
+		"s": "outline:Toggle",
+		"space x x": "diagnostics:Deploy",
+		"space space": "file_finder:Toggle"
+	},
+	"inline_completions": {
+		"enabled": true
+	},
+	"autosave": "on_focus_change",
+	"formatter": "language_server",
+	"hard_tabs": true,
+	"telemetry": {
+		"enabled": false,
+		"metrics": false
+	}
 }
