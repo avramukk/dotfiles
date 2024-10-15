@@ -193,6 +193,10 @@ clone() {
 }
 export -f clone
 
+sshf() {
+    ssh $(grep "^Host " ~/.ssh/config | awk '{print $2}' | fzf)
+}
+export -f sshf
 
 # OS specific settings
 if [[ "$OSTYPE" == "darwin"* ]]; then
