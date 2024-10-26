@@ -68,6 +68,14 @@ outer.bottom = 1
 outer.top = 1
 outer.right = 1
 
+# [gaps]
+# inner.horizontal = 2
+# inner.vertical = 2
+# outer.left = 10
+# outer.bottom = 10
+# outer.top = 10
+# outer.right = 10
+
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 # 'main' binding mode must be always presented
@@ -121,6 +129,7 @@ cmd-8 = 'workspace 8'
 cmd-9 = 'workspace 9'
 alt-a = 'workspace a'
 alt-s = 'workspace s'
+alt-g = 'workspace g'
 alt-o = 'workspace o'
 alt-z = 'workspace z'
 
@@ -135,6 +144,7 @@ alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
 alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
 alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
 alt-shift-a = ['move-node-to-workspace a', 'workspace a']
+alt-shift-g = ['move-node-to-workspace g', 'workspace g']
 alt-shift-s = ['move-node-to-workspace s', 'workspace s']
 alt-shift-o = ['move-node-to-workspace o', 'workspace o']
 alt-shift-z = ['move-node-to-workspace z', 'workspace z']
@@ -247,9 +257,12 @@ if.app-id = 'com.apple.FaceTime'
 run = ['layout floating']
 
 [[on-window-detected]]
+if.app-id = 'com.apple.Notes'
+run = ['layout floating']
+
+[[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
 run = ['move-node-to-workspace 2']
-
 
 [[on-window-detected]]
 if.app-id = 'org.alacritty'
@@ -257,4 +270,21 @@ run = ['move-node-to-workspace 3']
 
 [[on-window-detected]]
 if.app-id = 'dev.zed.Zed'
-run = ['move-node-to-workspace z']
+run = ['move-node-to-workspace z']  
+
+[[on-window-detected]]
+if.app-id = 'com.openai.chat'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.install4j.0526-4458-1435-8154.837'
+run = 'layout floating'
+
+
+[[on-window-detected]]
+if.app-id = 'ffplay'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.openai.chat'
+run = ['move-node-to-workspace g']
