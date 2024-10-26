@@ -10,7 +10,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-set -o vi 
+set -o vi
 
 # Initialize Starship prompt
 eval "$(starship init bash)"
@@ -85,6 +85,7 @@ alias fn='sb && nvim'
 alias m='cd $REPOS/mischa'
 alias md='cd $REPOS/mischa/dotfiles'
 alias rd='cd $REPOS/rwxrob/dot'
+alias chmox='chmod +x'
 
 # ls with color and formatting
 alias ls='ls --color=auto'
@@ -137,6 +138,9 @@ alias mixa-e='export AWS_PROFILE=mixa-e && starship toggle aws'
 alias vvcr-dev='export AWS_PROFILE=vvcr-dev-apps && starship toggle aws'
 alias vvcr-stage='export AWS_PROFILE=vvcr-stage-apps && starship toggle aws'
 alias vvcr-prod='export AWS_PROFILE=vvcr-prod-apps && starship toggle aws'
+alias vvcr-dev-streamers='export AWS_PROFILE=vvcr-dev-streamers && starship toggle aws'
+alias vvcr-stage-streamers='export AWS_PROFILE=vvcr-stage-streamers && starship toggle aws'
+alias vvcr-prod-streamers='export AWS_PROFILE=vvcr-prod-streamers && starship toggle aws'
 alias kolia='export AWS_PROFILE=kolia && starship toggle aws'
 
 # gcloud alias
@@ -194,16 +198,24 @@ clone() {
 export -f clone
 
 sshf() {
-    ssh $(grep "^Host " ~/.ssh/config | awk '{print $2}' | fzf)
+local host="$(grep "^Host " ~/.ssh/config | awk '{print $2}' | fzf)"
+ssh "$host"
 }
 export -f sshf
 
-# OS specific settings
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    source "$HOME/.fzf.bash"
-    [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
+  source "$HOME/.fzf.bash"
+  # echo "I'm on Mac!"
+
+  # brew bash completion
+  [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
 else
-    [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+  #	source /usr/share/fzf/key-bindings.bash
+  #	source /usr/share/fzf/completion.bash
+
+  # The first one worked on Ubuntu, the eval one on Fedora. Keeping for reference.
+  # [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+  eval "$(fzf --bash)"
 fi
 
 # ------------------------- NVM bulshit------------------------
@@ -216,11 +228,11 @@ export PATH="/Users/kolia/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
 
+# Amazon Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash"
+
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/kolia/Downloads/google-cloud-sdk/path.bash.inc' ]; then . '/Users/kolia/Downloads/google-cloud-sdk/path.bash.inc'; fi
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc'; fi
-
-# Amazon Q post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash"
