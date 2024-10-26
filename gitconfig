@@ -4,7 +4,8 @@
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 [user]
-	name = avramukk
+	name = Mykola Avramuk
 	email = avramuk89@gmail.com
 [core]
 	editor = nvim
+	ui = true
