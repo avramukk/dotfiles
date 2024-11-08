@@ -1,0 +1,93 @@
+#!/bin/bash
+
+# Check if the script is run as root, since systemd service requires root privileges
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root."
+  exit
+fi
+
+# Variables
+PYTHON_SCRIPT_PATH="/home/avramukk/Repos/dotfiles/scripts/pyserver/my_server.py"
+SERVICE_FILE_PATH="/etc/systemd/system/my-server.service"
+USER="avramukk"
+PORT=8080
+HOST="localhost"
+
+# Ensure the directory for the Python script exists
+if [ ! -d "/home/avramukk/Repos/dotfiles/scripts/pyserver" ]; then
+  echo "Directory does not exist, creating it..."
+  mkdir -p /home/avramukk/Repos/dotfiles/scripts/pyserver
+fi
+
+# Step 1: Create Python HTTP Server script
+echo "Creating Python HTTP Server script at $PYTHON_SCRIPT_PATH..."
+
+cat <<EOF > $PYTHON_SCRIPT_PATH
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+hostName = "$HOST"
+serverPort = $PORT
+
+class MyServer(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(bytes("Hello\n", "utf-8"))
+
+if __name__ == "__main__":
+    webServer = HTTPServer((hostName, serverPort), MyServer)
+    print("Server started http://%s:%s" % (hostName, serverPort))
+
+    try:
+        webServer.serve_forever()
+    except KeyboardInterrupt:
+        pass
+
+    webServer.server_close()
+EOF
+
+# Ensure the script has execute permissions
+chmod +x $PYTHON_SCRIPT_PATH
+
+# Step 2: Create systemd service file
+echo "Creating systemd service file at $SERVICE_FILE_PATH..."
+
+cat <<EOF > $SERVICE_FILE_PATH
+[Unit]
+Description=My Python HTTP Server
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 $PYTHON_SCRIPT_PATH
+User=$USER
+Environment=ENV=production
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Step 3: Reload systemd daemon to apply the new service
+echo "Reloading systemd daemon..."
+systemctl daemon-reload
+
+# Step 4: Start the service
+echo "Starting the my-server service..."
+systemctl start my-server
+
+# Step 5: Enable the service to start on boot
+echo "Enabling my-server service to start on boot..."
+systemctl enable my-server
+
+# Step 6: Check service status (optional)
+echo "Checking service status..."
+systemctl status my-server
+
+# Step 7: Print instructions for checking logs and testing with curl
+echo -e "\nYour Python server is set up and running in the background!"
+echo -e "To follow the logs, use: journalctl -u my-server -f --no-pager"
+echo -e "To test the server, use: curl $HOST:$PORT/hello"
