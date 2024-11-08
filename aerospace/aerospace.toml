@@ -274,17 +274,22 @@ run = ['move-node-to-workspace z']
 
 [[on-window-detected]]
 if.app-id = 'com.openai.chat'
-run = 'layout floating'
+run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'com.install4j.0526-4458-1435-8154.837'
-run = 'layout floating'
+run = ['layout floating']
 
 
 [[on-window-detected]]
 if.app-id = 'ffplay'
-run = 'layout floating'
+run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'com.openai.chat'
 run = ['move-node-to-workspace g']
+
+[[on-window-detected]]
+if.app-id = 'com.chekazuja.keykey-setapp'
+run = ['layout floating']
+
