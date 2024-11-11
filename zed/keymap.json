@@ -3,7 +3,7 @@
 		"context": "Workspace",
 		"bindings": {
 			"ctrl-`": "workspace::ToggleBottomDock",
-			"ctrl-cmd-t": "workspace::NewCenterTerminal"
+			"ctrl-cmd-t": "workspace::NewCenterTerminal",
 		}
 	},
 	{
@@ -30,5 +30,30 @@
 				}
 			]
 		}
-	}
+	},
+	{
+		"context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+		"bindings": {
+			// put key-bindings here if you want them to work in normal & visual mode
+			// Git
+			"space g h d": "editor::ToggleHunkDiff",
+			"space g h r": "editor::RevertSelectedHunks",
+			// Toggle inlay hints
+			"space t i": "editor::ToggleInlayHints",
+			// Toggle soft wrap
+			"space u w": "editor::ToggleSoftWrap",
+			// NOTE: Toggle Zen mode, not fully working yet
+			"space c z": "workspace::ToggleCenteredLayout",
+			// Open markdown preview
+			"space m p": "markdown::OpenPreview",
+			"space m P": "markdown::OpenPreviewToTheSide",
+			// Search word under cursor
+			"space s w": "pane::DeploySearch",
+			// Chat with AI
+			"space a c": "assistant::ToggleFocus",
+			// File finder
+			"space space": "file_finder::Toggle",
+			// Toggle left dock
+		}
+	},
 ]
