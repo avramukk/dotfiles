@@ -112,6 +112,7 @@ alias ek='v ~/.config/kitty/kitty.conf'
 alias et='v ~/.tmux.conf'
 alias ev='cd ~/.config/nvim/ && v init.lua'
 alias sbr='source ~/.bashrc'
+alias rob='v $REPOS/rwxrob/dot'
 alias es='v ~/.config/starship.toml'
 alias esk='v ~/.config/skhd/skhdrc'
 alias eae='v ~/.config/aerospace/aerospace.toml'
@@ -121,7 +122,7 @@ alias python='python3'
 alias k=kubectl
 alias kubectl=kubecolor
 source <(kubectl completion bash)
-complete -o default -F __start_kubectl kubecolor
+complete -o default -F __start_kubectl k
 # complete -o default -F __start_kubectl k
 alias kgp='kubectl get pods'
 alias kgpo='kubectl get pods -o wide'
@@ -160,8 +161,8 @@ alias twitch60='ffmpeg_loop ~/Movies/twitch60.mp4'
 # . <(eksctl completion bash)
 
 # flux
-# source <(flux completion bash)
-# alias fgk='flux get kustomizations'
+source <(flux completion bash)
+alias fgk='flux get kustomizations'
 
 # talos
 # source <(talosctl completion bash)
