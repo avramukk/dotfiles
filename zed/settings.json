@@ -1,15 +1,17 @@
 {
+	"window_decorations": "RESIZE",
 	"restore_on_startup": "none",
 	"assistant": {
 		"default_model": {
-			"provider": "zed.dev",
-			"model": "claude-3-5-sonnet-latest"
+			"provider": "openai",
+			"model": "gpt-4o"
 		},
 		"version": "2",
 		"provider": {
 			"name": "openai",
 			"default_model": "gpt-4o-mini"
-		}
+		},
+		"enable_experimental_live_diffs": true
 	},
 	"theme": "Gruvbox Dark Hard",
 	"base_keymap": "VSCode",
@@ -22,9 +24,6 @@
 	"cursor_blink": true,
 	"hover_popover_enabled": true,
 	"soft_wrap": "editor_width",
-	"scrollbar": {
-		"git_diff": true
-	},
 	"gutter": {
 		"visible": true,
 		"code_actions": false,
@@ -34,7 +33,7 @@
 	"toolbar": {
 		"selections_menu": false,
 		"quick_actions": false,
-		"breadcrumbs": false,
+		"breadcrumbs": false
 	},
 	"multi_cursor_modifier": "alt",
 	"scroll_sensitivity": 1,
@@ -67,7 +66,7 @@
 			"custom": 1
 		},
 		"toolbar": {
-			"title": false,
+			"title": false
 		},
 		"button": false,
 		"copy_on_select": true
@@ -131,6 +130,24 @@
 		"eslint": {},
 		"tsserver": {}
 	},
+	"languages": {
+		"Python": {
+			"format_on_save": {
+				"language_server": {
+					"name": "ruff"
+				}
+			},
+			"formatter": {
+				"language_server": {
+					"name": "ruff"
+				}
+			},
+			"language_servers": [
+				"pyright",
+				"ruff"
+			],
+		},
+	},
 	"copilot": {
 		"enabled": true
 	},
@@ -160,7 +177,11 @@
 		"enabled": true
 	},
 	"autosave": "on_focus_change",
-	"formatter": "language_server",
+	"formatter": {
+		"language_server": {
+			"name": "biome"
+		}
+	},
 	"hard_tabs": true,
 	"telemetry": {
 		"enabled": false,
