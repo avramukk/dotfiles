@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# Scan a repository using TruffleHog
+scan_repository() {
+	local repo=$1
+	echo "Scanning https://github.com/$repo"
+	trufflehog git --concurrency=4 "https://github.com/$repo"
+}
+
+# Fetch all repositories for a given GitHub user/organization
+fetch_repositories() {
+	local user_or_org=$1
+	gh repo list "$user_or_org" --json nameWithOwner --limit 1000 | jq -r '.[].nameWithOwner'
+}
+
+# Check if gh and jq are installed
+if ! command -v gh &> /dev/null; then
+	echo "GitHub CLI (gh) is not installed. Please install it to continue."
+	exit 1
+fi
+
+if ! command -v jq &> /dev/null; then
+	echo "jq is not installed. Please install it to continue."
+	exit 1
+fi
+
+# Ensure the user is authenticated with GitHub
+gh auth status &> /dev/null
+if [[ $? -ne 0 ]]; then
+	echo "You are not authenticated. Please login using 'gh auth login'."
+	exit 1
+fi
+
+# Check for a valid argument
+if [[ $# -ne 1 ]]; then
+	echo "Usage: $0 <github-user-or-org> or <github-user/repo>"
+	exit 1
+fi
+
+input=$1
+
+# Determine if the input is a repository or a user/org
+if [[ $input =~ .+/.+ ]]; then
+	# Argument is in the form of user/repository
+	scan_repository "$input"
+else
+	# Argument is a user or organization, fetch and scan all their repositories
+	repositories=$(fetch_repositories "$input")
+	for repository in $repositories; do
+		scan_repository "$repository"
+	done
+fi
