@@ -129,7 +129,6 @@ cmd-8 = 'workspace 8'
 cmd-9 = 'workspace 9'
 alt-a = 'workspace a'
 alt-s = 'workspace s'
-alt-g = 'workspace g'
 alt-o = 'workspace o'
 alt-z = 'workspace z'
 
@@ -144,7 +143,6 @@ alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
 alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
 alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
 alt-shift-a = ['move-node-to-workspace a', 'workspace a']
-alt-shift-g = ['move-node-to-workspace g', 'workspace g']
 alt-shift-s = ['move-node-to-workspace s', 'workspace s']
 alt-shift-o = ['move-node-to-workspace o', 'workspace o']
 alt-shift-z = ['move-node-to-workspace z', 'workspace z']
