@@ -1,9 +1,10 @@
 [
 	{
-		"context": "Workspace",
+		"context": "Workspace ",
 		"bindings": {
 			"ctrl-`": "workspace::ToggleBottomDock",
 			"ctrl-cmd-t": "workspace::NewCenterTerminal",
+			"cmd-?": "workspace::ToggleRightDock"
 		}
 	},
 	{
@@ -21,8 +22,6 @@
 	{
 		"context": "Editor && vim_mode == normal && vim_operator == none && !VimWaiting",
 		"bindings": {
-			"space e": "workspace::ToggleLeftDock",
-			"space t": "workspace::ToggleBottomDock",
 			"space /": [
 				"editor::ToggleComments",
 				{
@@ -32,28 +31,29 @@
 		}
 	},
 	{
-		"context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+		"context": "Editor && VimControl && !VimWaiting && !menu",
 		"bindings": {
-			// put key-bindings here if you want them to work in normal & visual mode
-			// Git
-			"space g h d": "editor::ToggleHunkDiff",
-			"space g h r": "editor::RevertSelectedHunks",
-			// Toggle inlay hints
-			"space t i": "editor::ToggleInlayHints",
-			// Toggle soft wrap
-			"space u w": "editor::ToggleSoftWrap",
-			// NOTE: Toggle Zen mode, not fully working yet
-			"space c z": "workspace::ToggleCenteredLayout",
-			// Open markdown preview
-			"space m p": "markdown::OpenPreview",
-			"space m P": "markdown::OpenPreviewToTheSide",
-			// Search word under cursor
-			"space s w": "pane::DeploySearch",
-			// Chat with AI
-			"space a c": "assistant::ToggleFocus",
-			// File finder
-			"space space": "file_finder::Toggle",
-			// Toggle left dock
+			"ctrl-w z": "workspace::ToggleZoom",
+			"ctrl-w t": "terminal_panel::ToggleFocus",
+			"ctrl-h": ["workspace::ActivatePaneInDirection", "Left"],
+			"ctrl-l": ["workspace::ActivatePaneInDirection", "Right"],
+			"ctrl-k": ["workspace::ActivatePaneInDirection", "Up"],
+			"ctrl-j": ["workspace::ActivatePaneInDirection", "Down"]
 		}
 	},
+	{
+		"context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+		"bindings": {
+			"space g h d": "editor::ToggleHunkDiff",
+			"space g h r": "editor::RevertSelectedHunks",
+			"space t i": "editor::ToggleInlayHints",
+			"space u w": "editor::ToggleSoftWrap",
+			"space c z": "workspace::ToggleCenteredLayout",
+			"space m p": "markdown::OpenPreview",
+			"space m P": "markdown::OpenPreviewToTheSide",
+			"space s w": "pane::DeploySearch",
+			"space a c": "assistant::ToggleFocus",
+			"space space": "file_finder::Toggle"
+		}
+	}
 ]

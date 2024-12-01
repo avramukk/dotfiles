@@ -1,11 +1,7 @@
-# Amazon Q pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.pre.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.pre.bash"
-#
 # ~/.bashrc
 # Made by Mykola Avramuk.
 # Inspired by Mischa van den Burg, rwxrob, bahamas, and others.
 # Thanks everyone and keep sharing your knowlege and best practices.
-#
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
@@ -86,15 +82,13 @@ alias m='cd $REPOS/mischa'
 alias md='cd $REPOS/mischa/dotfiles'
 alias rd='cd $REPOS/rwxrob/dot'
 alias chmox='chmod +x'
+alias pip=pipx
 
 # ls with color and formatting
 alias ls='ls --color=auto'
 alias l='ls -l'
 alias ll='ls -la'
 alias la='ls -lathr'
-
-# Find recent files
-alias last='find . -type f -not -path "*/\.*" -exec ls -lrt {} +'
 
 # Miscellaneous
 alias t='tmux'
@@ -227,13 +221,3 @@ export NVM_DIR="$HOME/.nvm"
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/kolia/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
-
-
-# Amazon Q post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash"
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/kolia/Downloads/google-cloud-sdk/path.bash.inc' ]; then . '/Users/kolia/Downloads/google-cloud-sdk/path.bash.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc'; fi
