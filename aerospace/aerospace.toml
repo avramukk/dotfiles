@@ -227,6 +227,10 @@ if.app-id = 'ffplay'
 run = ['layout floating']
 
 [[on-window-detected]]
+if.app-id = 'NULL-APP-BUNDLE-ID'
+run = ['layout floating']
+
+[[on-window-detected]]
 if.app-id = 'com.google.Chrome'
 run = ['layout floating']
 
@@ -281,6 +285,10 @@ run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'ffplay'
+run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'mpv'
 run = ['layout floating']
 
 [[on-window-detected]]
