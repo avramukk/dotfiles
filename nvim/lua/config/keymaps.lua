@@ -22,6 +22,7 @@ vim.keymap.set("n", "<leader>rbs", "<cmd>%s/\\//g<CR>", { desc = "Replace Backwa
 
 -- telescope symbols
 vim.keymap.set("n", "<leader>fs", "<cmd>Telescope symbols<cr>", { desc = "Find Symbols" })
+vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Find Grep" })
 
 -- convert Current line to title cases
 vim.keymap.set(
@@ -73,3 +74,6 @@ vim.keymap.set('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
   replace_keycodes = false
   })
   vim.g.copilot_no_tab_map = true
+
+vim.keymap.set('n', '<leader><u>', vim.cmd.UndotreeToggle)
+

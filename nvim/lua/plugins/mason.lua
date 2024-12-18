@@ -21,10 +21,9 @@ return {
         'bash-language-server',
         'lua-language-server',
         'stylua',
-        'eslint_d',
-        'prettierd',
-        'rust-analyzer',
-        'graphql-language-service-cli',
+        'biome',
+        -- 'eslint_d',
+        -- 'prettierd',
         'prisma-language-server',
       },
     }

@@ -1,6 +1,7 @@
 return {
   -- add gruvbox
   { "ellisonleao/gruvbox.nvim", priority = 1000 },
+  enabled = false,
   -- Configure LazyVim to load gruvbox
   {
     "LazyVim/LazyVim",
@@ -31,7 +32,7 @@ return {
   -- palette_overrides = {},
   -- overrides = {},
   -- dim_inactive = false,
-  transparent_mode = false,
+  transparent_mode = true,
 })
 vim.cmd("colorscheme gruvbox")
     end,

@@ -92,3 +92,13 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt.conceallevel = 0
 	end,
 })
+
+
+
+-- disable dashboard lazyvim
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "dashboard" },
+  callback = function()
+    vim.cmd("set showtabline=0")
+  end,
+})
