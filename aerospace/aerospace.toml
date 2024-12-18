@@ -117,6 +117,10 @@ alt-shift-j = 'move down'
 alt-shift-k = 'move up'
 alt-shift-l = 'move right'
 
+# run commnd open -na Alacritty.app --args -e
+# /Users/kolia/Repos/dotfiles/scripts/note alt shifn n
+alt-shift-n = 'exec-and-forget open -na kitty.app --args -e /Users/kolia/Repos/dotfiles/scripts/note'
+
 
 cmd-1 = 'workspace 1'
 cmd-2 = 'workspace 2'
@@ -274,6 +278,15 @@ run = ['move-node-to-workspace 3']
 if.app-id = 'dev.zed.Zed'
 run = ['move-node-to-workspace z']  
 
+
+[[on-window-detected]]
+if.app-id = 'dev.zed.Zed'
+run = ['layout floating']  
+
+[[on-window-detected]]
+if.app-id = 'md.obsidian'
+run = ['move-node-to-workspace o']  
+
 [[on-window-detected]]
 if.app-id = 'com.openai.chat'
 run = ['layout floating']
@@ -299,3 +312,6 @@ run = ['move-node-to-workspace g']
 if.app-id = 'com.chekazuja.keykey-setapp'
 run = ['layout floating']
 
+[[on-window-detected]]
+if.app-id = 'com.chekazuja.keykey-setapp'
+run = ['layout floating']
