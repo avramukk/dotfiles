@@ -73,6 +73,7 @@ map('n', '<leader><u>', vim.cmd.UndotreeToggle)
 
 map("n", "<C-J>", ":bprevious<CR>", { desc = "Previous buffer" })
 map("n", "<C-K>", ":bnext<CR>", { desc = "Next buffer" })
+map("n", "<leader>bd", ":bd<CR>", { desc = "Delete buffer" })
 
 -- map esc to jk for laptop use
 map("i", "jk", "<Esc>", { desc = "Escape jk" })
