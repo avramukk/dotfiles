@@ -23,6 +23,7 @@ opt.relativenumber = false
 opt.scrolloff = 8
 opt.textwidth = 80
 opt.linebreak = true
+vim.g.snacks_animate = false
 
 -- split windows
 opt.splitright = true -- split vertical window to the right

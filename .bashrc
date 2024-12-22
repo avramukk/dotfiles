@@ -53,7 +53,7 @@ export OPENAI_API_KEY
 export HISTFILE=~/.histfile
 export HISTSIZE=1000000
 export SAVEHIST=1000000
-export HISTCONTROL=ignorespace:ignoredups:erasedups
+export HISTCONTROL=ignorespace:ignoredups
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
 # ~~~~~~~~~~~~~~~~Shell Options ~~~~~~~~~~~~~~~~~~

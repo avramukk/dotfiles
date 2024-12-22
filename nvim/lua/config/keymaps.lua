@@ -34,8 +34,8 @@ map(
 
 -- these keep the cursor in the middle when scrolling with ctrl d and u
 -- from https://github.com/ThePrimeagen/init.lua
-map("n", "<C-d>", "<C-d>zz")
-map("n", "<C-u>", "<C-u>zz")
+-- map("n", "<C-d>", "<C-d>zz")
+-- map("n", "<C-u>", "<C-u>zz")
 
 -- window management
 map("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" })   -- split window vertically
