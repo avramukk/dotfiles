@@ -6,3 +6,4 @@ scripts/aws_instances
 scripts/mixa-ec2
 scripts/vvcr-ec2
 scripts/certdelete
+nvim/lazyvim.json
