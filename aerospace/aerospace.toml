@@ -313,5 +313,5 @@ if.app-id = 'com.chekazuja.keykey-setapp'
 run = ['layout floating']
 
 [[on-window-detected]]
-if.app-id = 'com.chekazuja.keykey-setapp'
+if.app-id = 'org.webkit.Playwright'
 run = ['layout floating']

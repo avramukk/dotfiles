@@ -2,7 +2,7 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps herea
 local map = vim.keymap.set
--- local opts = { noremap = true, silent = true }
+local opts = { noremap = true, silent = true }
 
 map("n", "<leader>p", '<cmd>lua require("cmp").setup { enabled = true }<cr>', { desc = "Enable completion" })
 map(
@@ -16,6 +16,10 @@ map("n", "<leader>S", "<cmd>LspStop<CR>", { desc = "LspStop" })
 
 -- surrounding words
 map("n", "<leader>wsq", 'ciw""<Esc>P', { desc = "Word Surround Quotes" })
+
+-- Move selected line / block of text in visual mode
+map("v", "J", ":m '>+1<CR>gv=gv", opts)
+map("v", "K", ":m '<-2<CR>gv=gv", opts)
 
 -- replaces
 map("n", "<leader>rbs", "<cmd>%s/\\//g<CR>", { desc = "Replace Backward Slash" })
@@ -34,8 +38,8 @@ map(
 
 -- these keep the cursor in the middle when scrolling with ctrl d and u
 -- from https://github.com/ThePrimeagen/init.lua
--- map("n", "<C-d>", "<C-d>zz")
--- map("n", "<C-u>", "<C-u>zz")
+map("n", "<C-d>", "<C-d>zz")
+map("n", "<C-u>", "<C-u>zz")
 
 -- window management
 map("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" })   -- split window vertically
@@ -44,10 +48,6 @@ map("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" }) -- spli
 -- Increment/decrement
 map("n", "+", "<C-a>")
 map("n", "-", "<C-x>")
-
--- Delete a word backwards
-map("n", "dw", 'vb"_d')
-
 
 -- New tab
 map("n", "te", ":tabedit")
@@ -69,7 +69,7 @@ map('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
 })
 -- vim.g.copilot_no_tab_map = true
 
-map('n', '<leader><u>', vim.cmd.UndotreeToggle)
+-- map('n', '<leader><u>', vim.cmd.UndotreeToggle)
 
 map("n", "<C-J>", ":bprevious<CR>", { desc = "Previous buffer" })
 map("n", "<C-K>", ":bnext<CR>", { desc = "Next buffer" })
