@@ -1,7 +1,5 @@
 # dotfiles
 ![macOS](screen.png)
-
-
 ## setup
 
 * window manager: aerospace+sketchybar
