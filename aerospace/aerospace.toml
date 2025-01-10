@@ -275,6 +275,10 @@ if.app-id = 'org.alacritty'
 run = ['move-node-to-workspace 3']
 
 [[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = ['move-node-to-workspace 3']
+
+[[on-window-detected]]
 if.app-id = 'dev.zed.Zed'
 run = ['move-node-to-workspace z']  
 
@@ -312,6 +316,3 @@ run = ['move-node-to-workspace g']
 if.app-id = 'com.chekazuja.keykey-setapp'
 run = ['layout floating']
 
-[[on-window-detected]]
-if.app-id = 'org.webkit.Playwright'
-run = ['layout floating']

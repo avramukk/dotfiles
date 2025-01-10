@@ -5,7 +5,7 @@
 ## setup
 
 * window manager: aerospace+sketchybar
-* terminal: alacritty
+* terminal: ghostty
 * editor: neovim + lazy
 * shell: bash
 * prompt: starship
