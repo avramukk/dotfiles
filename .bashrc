@@ -53,7 +53,6 @@ export HISTFILE=~/.histfile
 export HISTSIZE=100000
 export SAVEHIST=100000
 export HISTCONTROL=ignorespace:ignoredups
-PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
 # ~~~~~~~~~~~~~~~~Shell Options ~~~~~~~~~~~~~~~~~~
 
@@ -113,10 +112,7 @@ alias tf='terraform'
 alias tp='terraform plan'
 alias python='python3'
 alias k=kubectl
-alias kubectl=kubecolor
-source <(kubectl completion bash)
-complete -o default -F __start_kubectl kubecolor
-# alias k='kubectl'
+# alias kubectl=kubecolor
 # source <(kubectl completion bash)
 # complete -o default -F __start_kubectl k
 alias kgp='kubectl get pods'
@@ -191,6 +187,10 @@ clone() {
 export -f clone
 
 
+# Use bash-completion, if available
+[[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
+    . /usr/share/bash-completion/bash_completion
+
 # OS specific settings
 if [[ "$OSTYPE" == "darwin"* ]]; then
     source "$HOME/.fzf.bash"
@@ -220,3 +220,5 @@ if [ -f '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc' ]; then . 
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
