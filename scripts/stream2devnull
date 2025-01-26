@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Базова URL-адреса SRT
+base_url="http://18.188.151.79:8081/live/e03e0a16-953d-4b72-9c11-bde839c8ff4a/playlist.m3u8"
+
+# Запускаємо 10 потоків ffmpeg
+for i in {1..30}; do
+    ffmpeg -i "$base_url" -f null - &> /dev/null &
+    echo "Stream $i started..."
+done
+
+echo "All streams started."
