@@ -2,12 +2,11 @@
 # Made by Mykola Avramuk.
 # Inspired by Mischa van den Burg, rwxrob, bahamas, and others.
 # Thanks everyone and keep sharing your knowlege and best practices.
-#
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-set -o vi 
+set -o vi
 
 # Initialize Starship prompt
 eval "$(starship init bash)"
@@ -37,6 +36,7 @@ export GOBIN="$HOME/go/bin"
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 export PATH="$DOTFILES/scripts:$PATH"
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
@@ -50,9 +50,10 @@ export PATH=$BUN_INSTALL/bin:$PATH
 # ~~~~~~~~~~~~~~~ History ~~~~~~~~~~~~~~~~~~~~~~~~
 
 export HISTFILE=~/.histfile
-export HISTSIZE=100000
-export SAVEHIST=100000
-export HISTCONTROL=ignorespace:ignoredups
+export HISTSIZE=1000000
+export SAVEHIST=1000000
+export HISTCONTROL=ignorespace:ignoredups:erasedups
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
 # ~~~~~~~~~~~~~~~~Shell Options ~~~~~~~~~~~~~~~~~~
 
@@ -79,15 +80,14 @@ alias fn='sb && nvim'
 alias m='cd $REPOS/mischa'
 alias md='cd $REPOS/mischa/dotfiles'
 alias rd='cd $REPOS/rwxrob/dot'
+alias chmox='chmod +x'
+alias pip=pipx
 
 # ls with color and formatting
 alias ls='ls --color=auto'
 alias l='ls -l'
 alias ll='ls -la'
 alias la='ls -lathr'
-
-# Find recent files
-alias last='find . -type f -not -path "*/\.*" -exec ls -lrt {} +'
 
 # Miscellaneous
 alias t='tmux'
@@ -101,19 +101,22 @@ alias lg='lazygit'
 alias ld='lazydocker'
 alias ebr='v ~/.bashrc'
 alias ea='v ~/.config/alacritty/alacritty.toml'
+alias eg="v $DOTFILES/ghostty/config"
 alias ek='v ~/.config/kitty/kitty.conf'
 alias et='v ~/.tmux.conf'
 alias ev='cd ~/.config/nvim/ && v init.lua'
 alias sbr='source ~/.bashrc'
+alias rob='v $REPOS/rwxrob/dot'
 alias es='v ~/.config/starship.toml'
 alias esk='v ~/.config/skhd/skhdrc'
-alias ey='v ~/.config/yabai/yabairc'
+alias eae='v ~/.config/aerospace/aerospace.toml'
 alias tf='terraform'
 alias tp='terraform plan'
 alias python='python3'
 alias k=kubectl
-# alias kubectl=kubecolor
-# source <(kubectl completion bash)
+alias kubectl=kubecolor
+source <(kubectl completion bash)
+complete -o default -F __start_kubectl k
 # complete -o default -F __start_kubectl k
 alias kgp='kubectl get pods'
 alias kgpo='kubectl get pods -o wide'
@@ -130,6 +133,9 @@ alias mixa-e='export AWS_PROFILE=mixa-e && starship toggle aws'
 alias vvcr-dev='export AWS_PROFILE=vvcr-dev-apps && starship toggle aws'
 alias vvcr-stage='export AWS_PROFILE=vvcr-stage-apps && starship toggle aws'
 alias vvcr-prod='export AWS_PROFILE=vvcr-prod-apps && starship toggle aws'
+alias vvcr-dev-streamers='export AWS_PROFILE=vvcr-dev-streamers && starship toggle aws'
+alias vvcr-stage-streamers='export AWS_PROFILE=vvcr-stage-streamers && starship toggle aws'
+alias vvcr-prod-streamers='export AWS_PROFILE=vvcr-prod-streamers && starship toggle aws'
 alias kolia='export AWS_PROFILE=kolia && starship toggle aws'
 
 # gcloud alias
@@ -149,8 +155,8 @@ alias twitch60='ffmpeg_loop ~/Movies/twitch60.mp4'
 # . <(eksctl completion bash)
 
 # flux
-# source <(flux completion bash)
-# alias fgk='flux get kustomizations'
+source <(flux completion bash)
+alias fgk='flux get kustomizations'
 
 # talos
 # source <(talosctl completion bash)
@@ -186,6 +192,11 @@ clone() {
 }
 export -f clone
 
+sshf() {
+local host="$(grep "^Host " ~/.ssh/config | awk '{print $2}' | fzf)"
+ssh "$host"
+}
+export -f sshf
 
 # Use bash-completion, if available
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
@@ -193,10 +204,18 @@ export -f clone
 
 # OS specific settings
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    source "$HOME/.fzf.bash"
-    [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
+  source "$HOME/.fzf.bash"
+  # echo "I'm on Mac!"
+
+  # brew bash completion
+  [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
 else
-    [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+  #	source /usr/share/fzf/key-bindings.bash
+  #	source /usr/share/fzf/completion.bash
+
+  # The first one worked on Ubuntu, the eval one on Fedora. Keeping for reference.
+  # [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+  eval "$(fzf --bash)"
 fi
 
 # ------------------------- NVM bulshit------------------------
@@ -207,18 +226,3 @@ export NVM_DIR="$HOME/.nvm"
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/kolia/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
-
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/kolia/Downloads/google-cloud-sdk/path.bash.inc' ]; then . '/Users/kolia/Downloads/google-cloud-sdk/path.bash.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/kolia/Downloads/google-cloud-sdk/completion.bash.inc'; fi
-
-# Amazon Q post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/bashrc.post.bash"
-
-# Generated for envman. Do not edit.
-[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"

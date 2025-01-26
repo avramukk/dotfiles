@@ -1,0 +1,74 @@
+#!/bin/bash
+
+# Default parameters
+RESOLUTION="1920x1080"
+BITRATE="1000k"
+FPS=30
+PROFILE="main"
+PIX_FMT="yuv420p"
+
+# Function to check if the input is a valid integer
+is_integer() {
+  [[ "$1" =~ ^[0-9]+$ ]]
+}
+
+# Prompt user for URL
+read -p "Enter the stream URL (rtmp/srt): " URL
+if [[ -z "$URL" ]]; then
+  echo "Error: URL is required."
+  exit 1
+fi
+
+# Prompt user for resolution (optional)
+read -p "Enter resolution (default: $RESOLUTION): " input_resolution
+if [[ -n "$input_resolution" ]]; then
+  RESOLUTION="$input_resolution"
+fi
+
+# Prompt user for bitrate (optional)
+read -p "Enter bitrate (default: $BITRATE): " input_bitrate
+if [[ -n "$input_bitrate" ]]; then
+  if [[ ! "$input_bitrate" =~ ^[0-9]+[kKmMgG]?$ ]]; then
+    echo "Error: Invalid bitrate format. Use something like 1000k or 2M."
+    exit 1
+  fi
+  BITRATE="$input_bitrate"
+fi
+
+# Prompt user for FPS (optional)
+read -p "Enter FPS (default: $FPS): " input_fps
+if [[ -n "$input_fps" ]]; then
+  if ! is_integer "$input_fps"; then
+    echo "Error: FPS must be a valid integer."
+    exit 1
+  fi
+  FPS="$input_fps"
+fi
+
+# Run ffmpeg in the background with testsrc and sine inputs
+ffmpeg \
+  -re -stream_loop -1 -f lavfi -i "testsrc2=size=${RESOLUTION}:rate=${FPS}" \
+  -f lavfi -i "sine=frequency=220:beep_factor=4" \
+  -b:v "$BITRATE" -profile:v "$PROFILE" -pix_fmt "$PIX_FMT" \
+  -vf "drawtext=fontsize=110:fontcolor=red:x=(w-text_w)/4:y=(h-text_h)/2:text='%{pts\\:hms} %{n}':timecode_rate=${FPS}, \
+        drawtext=fontsize=50:fontcolor=black:x=(w-text_w)/2:y=h-60:text='${RESOLUTION} | ${BITRATE} | ${FPS}'" \
+  -c:v libx264 -c:a aac \
+  -f mpegts "$URL" &
+
+# Store the PID of ffmpeg
+FFMPEG_PID=$!
+
+# Function to handle termination and cleanup
+cleanup() {
+  echo "Stopping ffmpeg stream..."
+  kill "$FFMPEG_PID"
+  wait "$FFMPEG_PID"
+  exit 0
+}
+
+# Trap SIGINT and SIGTERM to cleanup
+trap cleanup SIGINT SIGTERM
+
+# Keep script running
+wait "$FFMPEG_PID"
+

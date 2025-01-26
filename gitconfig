@@ -1,0 +1,14 @@
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+[user]
+	name = Mykola Avramuk
+	email = avramuk89@gmail.com
+[core]
+	editor = nvim
+	ui = true
+[http]
+	sslBackend = openssl
+	sslVerify = true

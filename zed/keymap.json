@@ -1,18 +1,59 @@
 [
-  {
-    "context": "Workspace",
-    "bindings": {
-      "ctrl-`": "workspace::ToggleBottomDock",
-    }
-  },
-  {
-    "context": "Editor",
-    "bindings": {
-      "alt-escape": "editor::ShowCompletions",
-      "alt-up": "editor::SelectLargerSyntaxNode",
-      "alt-down": "editor::SelectSmallerSyntaxNode",
-      "ctrl-cmd-up": "editor::moveLineUp",
-      "ctrl-cmd-down": "editor::moveLineDown",
-    }
-  }
+	{
+		"context": "Workspace ",
+		"bindings": {
+			"ctrl-`": "workspace::ToggleBottomDock",
+			"ctrl-cmd-t": "workspace::NewCenterTerminal",
+			"cmd-?": "workspace::ToggleRightDock"
+		}
+	},
+	{
+		"context": "BufferSearchBar",
+		"bindings": {
+			"escape": "buffer_search::Dismiss",
+			"tab": "buffer_search::FocusEditor",
+			"enter": "search::SelectNextMatch",
+			"alt-enter": "search::SelectAllMatches",
+			"cmd-f": "search::FocusSearch",
+			"cmd-alt-f": "search::ToggleReplace",
+			"cmd-alt-l": "search::ToggleSelection"
+		}
+	},
+	{
+		"context": "Editor && vim_mode == normal && vim_operator == none && !VimWaiting",
+		"bindings": {
+			"space /": [
+				"editor::ToggleComments",
+				{
+					"advance_downwards": false
+				}
+			]
+		}
+	},
+	{
+		"context": "Editor && VimControl && !VimWaiting && !menu",
+		"bindings": {
+			"ctrl-w z": "workspace::ToggleZoom",
+			"ctrl-w t": "terminal_panel::ToggleFocus",
+			"ctrl-h": ["workspace::ActivatePaneInDirection", "Left"],
+			"ctrl-l": ["workspace::ActivatePaneInDirection", "Right"],
+			"ctrl-k": ["workspace::ActivatePaneInDirection", "Up"],
+			"ctrl-j": ["workspace::ActivatePaneInDirection", "Down"]
+		}
+	},
+	{
+		"context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+		"bindings": {
+			"space g h d": "editor::ToggleHunkDiff",
+			"space g h r": "editor::RevertSelectedHunks",
+			"space t i": "editor::ToggleInlayHints",
+			"space u w": "editor::ToggleSoftWrap",
+			"space c z": "workspace::ToggleCenteredLayout",
+			"space m p": "markdown::OpenPreview",
+			"space m P": "markdown::OpenPreviewToTheSide",
+			"space s w": "pane::DeploySearch",
+			"space a c": "assistant::ToggleFocus",
+			"space space": "file_finder::Toggle"
+		}
+	}
 ]

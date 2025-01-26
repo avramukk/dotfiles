@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+ln -sf "$DOTFILES/aerospace" "$XDG_CONFIG_HOME/aerospace"
+
