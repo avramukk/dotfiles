@@ -8,11 +8,11 @@ $aws\
 $character\
 """
 
-[character]
-success_symbol = '[﹩](bold green)'
-error_symbol = '[﹩](bold red)'
-vimcmd_symbol = '[i](green)'
-vimcmd_replace_one_symbol = '[r](bold green)'
+# [character]
+# success_symbol = '[﹩](bold green)'
+# error_symbol = '[﹩](bold red)'
+# vimcmd_symbol = '[i](green)'
+# vimcmd_replace_one_symbol = '[r](bold green)'
 
 [directory]
 home_symbol = ''
