@@ -2,4 +2,4 @@
 
 set -e # exit on error
 
-ln -sf "$DOTFILES/ghostty" "$XDG_CONFIG_HOME"
+ln -sf "$DOTFILES/ghostty" "$XDG_CONFIG_HOME" # -sf means force and symbolic link

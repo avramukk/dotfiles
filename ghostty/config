@@ -4,15 +4,15 @@ font-style-italic = UbuntuMono Nerd Font Bold
 theme = GruvboxDark
 window-decoration = false
 font-size = 17
-background-opacity = 0.9
+background-opacity = 1
 term = xterm-256color
 confirm-close-surface = false
-font-thicken = true
+#font-thicken = true
 link-url = true
-initial-command = "/opt/homebrew/bin/tmux new-session -A -D -s main"
+initial-command = "tmux new-session -A -D -s main"
 
 # Go to the N window in tmux in tmux it is Ctrl+b+number
-keybind = alt+one=text:\x02\x31
+keybind = alt+1=text:\x02\x31
 keybind = alt+two=text:\x02\x32
 keybind = alt+three=text:\x02\x33
 keybind = alt+four=text:\x02\x34
