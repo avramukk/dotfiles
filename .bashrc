@@ -87,7 +87,7 @@ alias pip=pipx
 # ls with color and formatting
 alias ls='ls --color=auto'
 alias l='ls -l'
-alias ll='ls -la'
+alias ll='ls -lha'
 alias la='ls -lathr'
 
 # Miscellaneous
@@ -222,3 +222,6 @@ export NVM_DIR="$HOME/.nvm"
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/kolia/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
