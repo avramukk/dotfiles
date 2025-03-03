@@ -3,7 +3,6 @@
 -- Add any additional keymaps herea
 local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
-
 map("n", "<leader>p", '<cmd>lua require("cmp").setup { enabled = true }<cr>', { desc = "Enable completion" })
 map(
 	"n",

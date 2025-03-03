@@ -1,7 +1,7 @@
 #!/bin/bash
 # this is the script for testing streaming bitrate
 
-bitrate=$1 
+bitrate=$1
 url=$2
 
 # Задайте бажані значення параметрів
@@ -35,6 +35,22 @@ fi
 # Generate the ffmpeg command
 ffmpeg -re -f lavfi -i "testsrc2=s=${resolution}:r=${fps}" \
   	-b:v "$bitrate" -profile:v baseline -pix_fmt yuv420p \
-	-vf "drawtext=text='$resolution,$fps,$bitrate':fontsize=70:box=1:boxcolor=black@0.5:boxborderw=5:x=(w-text_w)/2:y=(h-text_h)/2,drawtext=text=fontsize=70:box=1:boxcolor=black@0.5:boxborderw=5:x=(w-text_w)/2:y=(h+text_h)/2:text='%{pts\:hms} %{n}':timecode_rate=${fps}" \
+   -vf "drawtext=\
+  text='$resolution,$fps,$bitrate':\
+  fontsize=70:\
+  box=1:\
+  boxcolor=black@0.5:\
+  boxborderw=5:\
+  x=(w-text_w)/2:\
+  y=(h-text_h)/2,\
+  drawtext=\
+  text='%{pts\:hms} %{n}':\
+  fontsize=70:\
+  box=1:\
+  boxcolor=black@0.5:\
+  boxborderw=5:\
+  x=(w-text_w)/2:\
+  y=(h+text_h)/2:\
+  timecode_rate=${fps}" \
 	-c:v libx264 -c:a aac \
 	-f "$output_format" "$url" \
