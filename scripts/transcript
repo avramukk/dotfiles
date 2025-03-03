@@ -1,0 +1,61 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 channel.txt"
+    exit 1
+fi
+
+input_file="$1"
+# Create output directory name from input file name without extension
+output_dir="${input_file%.*}"
+
+mkdir -p "$output_dir"
+
+echo "Creating transcripts in directory: $output_dir"
+
+while IFS='|' read -r title url; do
+    # Clean up title and url
+    title=$(echo "$title" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    url=$(echo "$url" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+
+    # Create safe filename
+    safe_title=$(echo "$title" | tr -cd '[:alnum:][:space:]-' | tr '[:space:]' '_')
+    temp_file="temp_${safe_title}.vtt"
+    output_file="$output_dir/${safe_title}.txt"
+
+    echo "Processing: $title"
+
+    # Download subtitles
+    yt-dlp --write-auto-subs --sub-langs en --sub-format vtt \
+           --skip-download \
+           --output "temp" \
+           "$url"
+
+    if [ -f "temp.en.vtt" ]; then
+        # First, clean up the subtitles and save to temporary file
+        cat "temp.en.vtt" | \
+            sed '1,/^$/d' | \
+            sed -E 's/^[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3} --> .*$//g' | \
+            sed -E 's/<[^>]*>//g' | \
+            sed -E 's/align:.*%//g' | \
+            sed -E '/^[[:space:]]*$/d' | \
+            sed -E 's/^[[:space:]]*//;s/[[:space:]]*$//' | \
+            awk '!seen[$0]++' > "${output_file}.tmp"
+
+        # Add the URL as the first line, then append the cleaned transcript
+        echo "Video URL: $url" > "$output_file"
+        echo "" >> "$output_file"  # Empty line after URL
+        cat "${output_file}.tmp" >> "$output_file"
+        rm "${output_file}.tmp"  # Remove temporary file
+
+        echo "Saved cleaned transcript to: $output_file"
+    else
+        echo "No transcript available for: $title"
+    fi
+
+    # Cleanup temporary files
+    rm -f temp*
+
+done < "$input_file"
+
+echo "All transcripts have been processed and saved to $output_dir"

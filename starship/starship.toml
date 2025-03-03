@@ -33,5 +33,3 @@ modified = "*"
 format = "[ $profile]($style)-([$region](bold blue))"
 style = 'bold yellow'
 disabled = true
-
-

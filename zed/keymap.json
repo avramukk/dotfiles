@@ -8,6 +8,13 @@
 		}
 	},
 	{
+		"context": "Editor && edit_prediction",
+		"bindings": {
+			// "alt-tab": "editor::AcceptEditPrediction",
+			"tab": "editor::AcceptEditPrediction"
+		}
+	},
+	{
 		"context": "BufferSearchBar",
 		"bindings": {
 			"escape": "buffer_search::Dismiss",
@@ -35,16 +42,15 @@
 		"bindings": {
 			"ctrl-w z": "workspace::ToggleZoom",
 			"ctrl-w t": "terminal_panel::ToggleFocus",
-			"ctrl-h": ["workspace::ActivatePaneInDirection", "Left"],
-			"ctrl-l": ["workspace::ActivatePaneInDirection", "Right"],
-			"ctrl-k": ["workspace::ActivatePaneInDirection", "Up"],
-			"ctrl-j": ["workspace::ActivatePaneInDirection", "Down"]
+			"ctrl-h": "workspace::ActivatePaneLeft",
+			"ctrl-l": "workspace::ActivatePaneRight",
+			"ctrl-k": "workspace::ActivatePaneUp",
+			"ctrl-j": "workspace::ActivatePaneDown"
 		}
 	},
 	{
 		"context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
 		"bindings": {
-			"space g h d": "editor::ToggleHunkDiff",
 			"space g h r": "editor::RevertSelectedHunks",
 			"space t i": "editor::ToggleInlayHints",
 			"space u w": "editor::ToggleSoftWrap",

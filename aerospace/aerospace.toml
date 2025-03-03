@@ -61,12 +61,12 @@ key-mapping.preset = 'qwerty'
 #                 Monitor pattern is the same as for 'workspace-to-monitor-force-assignment'.
 #                 See: https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
 [gaps]
-inner.horizontal = 3
-inner.vertical = 3
-outer.left = 1
-outer.bottom = 1
-outer.top = 3
-outer.right = 3
+inner.horizontal = 0
+inner.vertical = 0
+outer.left = 0
+outer.bottom = 0
+outer.top = 0
+outer.right = 0
 
 # [gaps]
 # inner.horizontal = 2
@@ -106,10 +106,10 @@ alt-comma = 'layout accordion horizontal vertical'
 alt-shift-t = 'layout floating tiling'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-alt-h = 'focus left'
-alt-j = 'focus down'
-alt-k = 'focus up'
-alt-l = 'focus right'
+# alt-h = 'focus left'
+# alt-j = 'focus down'
+# alt-k = 'focus up'
+# alt-l = 'focus right'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move
 alt-shift-h = 'move left'
@@ -135,6 +135,8 @@ alt-a = 'workspace a'
 alt-s = 'workspace s'
 alt-o = 'workspace o'
 alt-z = 'workspace z'
+alt-c = 'workspace c'
+alt-t = 'workspace t'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
@@ -150,6 +152,7 @@ alt-shift-a = ['move-node-to-workspace a', 'workspace a']
 alt-shift-s = ['move-node-to-workspace s', 'workspace s']
 alt-shift-o = ['move-node-to-workspace o', 'workspace o']
 alt-shift-z = ['move-node-to-workspace z', 'workspace z']
+alt-shift-c = ['move-node-to-workspace c', 'workspace c']
 
 alt-shift-f = 'fullscreen'
 
@@ -268,7 +271,11 @@ run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
-run = ['move-node-to-workspace 2']
+run = ['layout floating','move-node-to-workspace 2']
+
+[[on-window-detected]]
+if.app-id = ' app.zen-browser.zen'
+run = ['move-node-to-workspace 1']
 
 [[on-window-detected]]
 if.app-id = 'org.alacritty'
@@ -282,10 +289,21 @@ run = ['move-node-to-workspace 3']
 if.app-id = 'dev.zed.Zed'
 run = ['move-node-to-workspace z']  
 
-
 [[on-window-detected]]
 if.app-id = 'dev.zed.Zed'
 run = ['layout floating']  
+
+[[on-window-detected]]
+if.app-id = 'dev.zed.Zed-Preview'
+run = ['move-node-to-workspace z']  
+
+[[on-window-detected]]
+if.app-id = 'dev.zed.Zed-Preview'
+run = ['layout floating']  
+
+[[on-window-detected]]
+if.app-id = 'com.apple.mail'
+run = ['move-node-to-workspace 6']  
 
 [[on-window-detected]]
 if.app-id = 'md.obsidian'
@@ -298,7 +316,6 @@ run = ['layout floating']
 [[on-window-detected]]
 if.app-id = 'com.install4j.0526-4458-1435-8154.837'
 run = ['layout floating']
-
 
 [[on-window-detected]]
 if.app-id = 'ffplay'
@@ -315,4 +332,16 @@ run = ['move-node-to-workspace g']
 [[on-window-detected]]
 if.app-id = 'com.chekazuja.keykey-setapp'
 run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'com.microsoft.VSCode'
+run = ['move-node-to-workspace c']
+
+[[on-window-detected]]
+if.app-id = ' com.todesktop.230313mzl4w4u92 '
+run = ['move-node-to-workspace c']
+
+[[on-window-detected]]
+if.app-id = 'org.telegram.desktop'
+run = ['move-node-to-workspace t']
 

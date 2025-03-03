@@ -3,13 +3,12 @@ font-style-bold = UbuntuMono Nerd Font Bold
 font-style-italic = UbuntuMono Nerd Font Bold
 theme = GruvboxDark
 window-decoration = false
-font-size = 17
+font-size = 18
 background-opacity = 0.9
 term = xterm-256color
 confirm-close-surface = false
 font-thicken = true
 link-url = true
-initial-command = "/opt/homebrew/bin/tmux new-session -A -D -s main"
 
 # Go to the N window in tmux in tmux it is Ctrl+b+number
 keybind = alt+one=text:\x02\x31

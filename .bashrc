@@ -82,7 +82,7 @@ alias m='cd $REPOS/mischa'
 alias md='cd $REPOS/mischa/dotfiles'
 alias rd='cd $REPOS/rwxrob/dot'
 alias chmox='chmod +x'
-alias pip=pipx
+# alias pip=pipx
 
 # ls with color and formatting
 alias ls='ls --color=auto'
@@ -94,12 +94,14 @@ alias la='ls -lathr'
 alias t='tmux'
 alias ta='tmux attach'
 alias e='exit'
-alias yt='yt-dlp'
+alias yd='yt-dlp'
+alias yt='youtube-transcript'
 alias pw='npx playwright'
 alias gp='git pull'
 alias gs='git status'
 alias lg='lazygit'
 alias ld='lazydocker'
+alias hl='cd $REPOS/homelab'
 alias ebr='v ~/.bashrc'
 alias ea='v ~/.config/alacritty/alacritty.toml'
 alias eg="v $DOTFILES/ghostty/config"
@@ -151,6 +153,8 @@ alias logs-prod='aws logs tail /aws/elasticbeanstalk/vvcr-front-api-production/v
 alias twitch='ffmpeg_loop ~/Movies/twitch.mp4'
 alias timecode='ffmpeg_testsrc_live'
 alias twitch60='ffmpeg_loop ~/Movies/twitch60.mp4'
+
+eval "$(gh copilot alias -- bash)"
 
 # eks
 # . <(eksctl completion bash)
@@ -222,6 +226,3 @@ export NVM_DIR="$HOME/.nvm"
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/kolia/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
-
-# Generated for envman. Do not edit.
-[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"

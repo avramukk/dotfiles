@@ -2,7 +2,7 @@
 
 # Check for the correct number of arguments
 if [ "$#" -lt 2 ]; then
-    echo "Usage: $0 <aws_profile> <bucket_name1> [bucket_name2 ...]"
+    echo "Usage: $0 <aws_profile> <bucket_name1> [ bucket_name2 ...]"
     exit 1
 fi
 
@@ -22,4 +22,3 @@ for bucket_name in "$@"; do
 
     echo "Bucket '$bucket_name' and its objects have been deleted."
 done
-

@@ -7,3 +7,4 @@ scripts/mixa-ec2
 scripts/vvcr-ec2
 scripts/certdelete
 nvim/lazyvim.json
+scripts/amideletev2

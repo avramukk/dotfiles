@@ -1,5 +1,3 @@
 #!/bin/bash
-
 set -e
-
 ln -sf "$DOTFILES/k9s/skin.yml" "$XDG_CONFIG_HOME/k9s/skins/skin.yml"

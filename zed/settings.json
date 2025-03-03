@@ -1,36 +1,35 @@
 {
-	"restore_on_startup": "last_workspace",
-	"theme": "Gruvbox Dark Hard",
+	"icon_theme": "Zed (Default)",
+	"restore_on_startup": "last_session",
+	"theme": "Gruvbox Dark",
 	"base_keymap": "VSCode",
-	"buffer_font_family": "UbuntuMono Nerd Font Mono",
-	"buffer_font_size": 14,
-	"preferred_line_length": 80,
 	"vim_mode": true,
 	"confirm_quit": true,
-	"relative_line_numbers": false,
+	"use_autoclose": false,
 	"cursor_blink": true,
 	"hover_popover_enabled": true,
-	"soft_wrap": "editor_width",
+	"buffer_font_family": "JetBrainsMono Nerd Font Mono",
+	"buffer_font_size": 13,
+	"buffer_line_height": {
+		"custom": 1.7
+	},
+	"soft_wrap": "prefer_line",
 	"show_wrap_guides": false,
+	"preferred_line_length": 120,
+	"relative_line_numbers": false,
 	"multi_cursor_modifier": "alt",
 	"scroll_sensitivity": 1,
 	"autosave": "on_focus_change",
 	"hard_tabs": true,
-	"show_inline_completions": true,
+	"show_edit_predictions": true,
+	"edit_predictions": {
+		// A list of globs representing files that edit predictions should be disabled for.
+		// There's a sensible default list of globs already included.
+		// Any addition to this list will be merged with the default list.
+		"disabled_globs": ["**/.env*", "**/*.pem", "**/*.key", "**/*.cert", "**/*.crt", "**/secrets.yml"]
+	},
 	"scrollbar": {
 		"show": "never"
-	},
-	"assistant": {
-		"default_model": {
-			"provider": "copilot_chat",
-			"model": "claude-3-5-sonnet"
-		},
-		"version": "2",
-		"provider": {
-			"name": "openai",
-			"default_model": "gpt-4o-mini"
-		},
-		"enable_experimental_live_diffs": true
 	},
 	"file_finder": {
 		"modal_width": "small"
@@ -49,14 +48,6 @@
 	"outline_panel": {
 		"button": false
 	},
-	"git": {
-		"inline_blame": {
-			"enabled": false
-		}
-	},
-	"buffer_line_height": {
-		"custom": 1.7
-	},
 	"collaboration_panel": {
 		"button": false
 	},
@@ -66,6 +57,13 @@
 	},
 	"tabs": {
 		"git_status": true
+	},
+	"project_panel": {
+		"default_width": 150,
+		"indent_size": 8,
+		"button": false,
+		"auto_fold_dirs": false,
+		"file_icons": true
 	},
 	"terminal": {
 		"font_family": "UbuntuMono Nerd Font Mono",
@@ -79,18 +77,24 @@
 		"button": false,
 		"copy_on_select": true
 	},
+	"git": {
+		"inline_blame": {
+			"enabled": false
+		}
+	},
+	"assistant": {
+		"default_model": {
+			"provider": "copilot_chat",
+			"model": "claude-3-7-sonnet"
+		},
+		"version": "2",
+		"enable_experimental_live_diffs": true
+	},
+	"features": {
+		"edit_prediction_provider": "zed"
+	},
 	"inlay_hints": {
 		"enabled": false
-	},
-	"project_panel": {
-		"default_width": 200,
-		"indent_size": 10,
-		"button": false,
-		"auto_fold_dirs": false,
-		"file_icons": true
-	},
-	"copilot": {
-		"enabled": true
 	},
 	"bindings": {
 		"ctrl-h": ["workspace:ActivatePanelInDirection", "Left"],
@@ -101,73 +105,6 @@
 		"space x x": "diagnostics:Deploy",
 		"space space": "file_finder:Toggle"
 	},
-	"formatter": {
-		"language_server": {
-			"name": "biome"
-		}
-	},
-	"code_actions_on_format": {
-		"source.fixAll.biome": true,
-		"source.organizeImports.biome": true
-	},
-	"telemetry": {
-		"enabled": false,
-		"metrics": false
-	},
-	"prettier": {
-		"printWidth": 80,
-		"tabWidth": 2,
-		"useTabs": false,
-		"semi": true,
-		"singleQuote": true,
-		"trailingComma": "all",
-		"bracketSpacing": true,
-		"jsxBracketSameLine": false,
-		"arrowParens": "avoid",
-		"proseWrap": "preserve",
-		"endOfLine": "lf"
-	},
-	"linter": "eslint",
-	"bracket_pairing": "always",
-	"eslint": {
-		"enabled": true,
-		"autoFixOnSave": true,
-		"autoFixOnFormat": true,
-		"autoFixOnFormatDelay": 1500
-	},
-	"languages": {
-		"JavaScript": {
-			"code_actions_on_format": {
-				"source.fixAll.eslint": true
-			}
-		},
-		"TypeScript": {
-			"code_actions_on_format": {
-				"source.organizeImports": true,
-				"source.fixAll.eslint": true
-			}
-		},
-		"TSX": {
-			"code_actions_on_format": {
-				"source.organizeImports": true,
-				"source.fixAll.eslint": true
-			}
-		}
-	},
-	"lsp": {
-		"typescript-language-server": {
-			"initialization_options": {
-				"preferences": {
-					"includeInlayParameterNameHints": "all",
-					"includeInlayParameterNameHintsWhenArgumentMatchesName": true,
-					"includeInlayFunctionParameterTypeHints": true,
-					"includeInlayVariableTypeHints": true,
-					"includeInlayVariableTypeHintsWhenTypeMatchesName": false,
-					"includeInlayPropertyDeclarationTypeHints": true,
-					"includeInlayFunctionLikeReturnTypeHints": true,
-					"includeInlayEnumMemberValueHints": true
-				}
-			}
-		}
-	}
+	"format_on_save": "on",
+	"bracket_pairing": "never"
 }
