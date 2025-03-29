@@ -1,7 +1,7 @@
 {
 	"icon_theme": "Zed (Default)",
-	"restore_on_startup": "last_session",
-	"theme": "Gruvbox Dark",
+	"restore_on_startup": "last_workspace",
+	"theme": "Gruvbox Dark Hard",
 	"base_keymap": "VSCode",
 	"vim_mode": true,
 	"confirm_quit": true,
@@ -13,9 +13,9 @@
 	"buffer_line_height": {
 		"custom": 1.7
 	},
-	"soft_wrap": "prefer_line",
+	"soft_wrap": "preferred_line_length",
 	"show_wrap_guides": false,
-	"preferred_line_length": 120,
+	"preferred_line_length": 100,
 	"relative_line_numbers": false,
 	"multi_cursor_modifier": "alt",
 	"scroll_sensitivity": 1,
@@ -26,7 +26,14 @@
 		// A list of globs representing files that edit predictions should be disabled for.
 		// There's a sensible default list of globs already included.
 		// Any addition to this list will be merged with the default list.
-		"disabled_globs": ["**/.env*", "**/*.pem", "**/*.key", "**/*.cert", "**/*.crt", "**/secrets.yml"]
+		"disabled_globs": [
+			"**/.env*",
+			"**/*.pem",
+			"**/*.key",
+			"**/*.cert",
+			"**/*.crt",
+			"**/secrets.yml"
+		]
 	},
 	"scrollbar": {
 		"show": "never"
@@ -63,7 +70,8 @@
 		"indent_size": 8,
 		"button": false,
 		"auto_fold_dirs": false,
-		"file_icons": true
+		"file_icons": true,
+		"dock": "left"
 	},
 	"terminal": {
 		"font_family": "UbuntuMono Nerd Font Mono",

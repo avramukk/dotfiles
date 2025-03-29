@@ -8,6 +8,12 @@
 		}
 	},
 	{
+		"context": "Editor",
+		"bindings": {
+			"cmd-shift-a": "editor::ToggleCodeActions"
+		}
+	},
+	{
 		"context": "Editor && edit_prediction",
 		"bindings": {
 			// "alt-tab": "editor::AcceptEditPrediction",
@@ -51,7 +57,6 @@
 	{
 		"context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
 		"bindings": {
-			"space g h r": "editor::RevertSelectedHunks",
 			"space t i": "editor::ToggleInlayHints",
 			"space u w": "editor::ToggleSoftWrap",
 			"space c z": "workspace::ToggleCenteredLayout",
