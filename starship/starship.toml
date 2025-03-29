@@ -19,7 +19,6 @@ home_symbol = ''
 truncation_length = 1
 truncation_symbol = ''
 
-
 [git_branch]
 format = '[$branch]($style)'
 style = "bold red"

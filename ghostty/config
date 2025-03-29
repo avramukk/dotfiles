@@ -1,14 +1,17 @@
-font-family = UbuntuMono Nerd Font
-font-style-bold = UbuntuMono Nerd Font Bold
-font-style-italic = UbuntuMono Nerd Font Bold
+font-family = JedBrainsMono Nerd Font Mono
+font-style-bold = JedBrainsMono Nerd Font Mono Bold
+font-style-italic = JedBrainsMono Nerd Font Mono Bold
 theme = GruvboxDark
 window-decoration = false
-font-size = 18
-background-opacity = 0.9
+font-size = 15
+background-opacity = 1
 term = xterm-256color
+macos-auto-secure-input = true
+macos-secure-input-indication = false
 confirm-close-surface = false
 font-thicken = true
 link-url = true
+cursor-opacity = 0.9
 
 # Go to the N window in tmux in tmux it is Ctrl+b+number
 keybind = alt+one=text:\x02\x31

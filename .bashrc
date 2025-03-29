@@ -6,6 +6,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Use vi mode for command editing
 set -o vi
 
 # Initialize Starship prompt
@@ -54,7 +55,7 @@ export HISTFILE=~/.histfile
 export HISTSIZE=1000000
 export SAVEHIST=1000000
 export HISTCONTROL=ignorespace:ignoredups:erasedups
-PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+# PROMPT_COMMAND="history -a;$PROMPT_COMMAND" # append to history file after each command
 
 # ~~~~~~~~~~~~~~~~Shell Options ~~~~~~~~~~~~~~~~~~
 
@@ -226,3 +227,12 @@ export NVM_DIR="$HOME/.nvm"
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/kolia/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+# pnpm
+export PNPM_HOME="/Users/kolia/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+eval "$(/Users/kolia/.local/bin/mise activate bash)"
