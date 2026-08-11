@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# List of target regions
+regions=("us-east-2" "us-west-1" "us-west-2" "eu-central-1" "sa-east-1" "ca-central-1")
+
+# AWS key name
+aws_key_name="name"
+key_name="key.pub"
+
+# Source region
+source_region="us-east-1"
+profile="default"
+
+for region in "${regions[@]}"; do
+	if [ "$region" != "$source_region" ]; then
+		# Copy the key to the target region
+		aws ec2 --region "$region" import-key-pair --key-name "$aws_key_name" --public-key-material file://~/.ssh/"$key_name" --profile $profile
+		if [ $? -eq 0 ]; then
+			echo "Key copied to $region successfully"
+		else
+			echo "Failed to copy key to $region"
+		fi
+	fi
+done

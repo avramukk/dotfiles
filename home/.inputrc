@@ -1,0 +1,3 @@
+set show-mode-in-prompt on
+set vi-ins-mode-string ""   # Green and bold
+set vi-cmd-mode-string "\e[1;31m(n)\e[0m"   # Red and bold

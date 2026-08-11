@@ -1,0 +1,55 @@
+add_newline = false
+scan_timeout = 30
+
+format = """\
+$directory\
+$git_branch\
+$git_status\
+$aws\
+$character\
+"""
+
+[character]
+success_symbol = '[➜](bold green)'
+error_symbol = '[➜](bold red)'
+vimcmd_symbol = '[i](green)'
+vimcmd_replace_one_symbol = '[r](bold green)'
+
+[directory]
+home_symbol = ''
+truncation_length = 1
+truncation_symbol = ''
+
+[git_branch]
+format = '[$branch]($style)'
+style = "bold red"
+
+[git_status]
+format = '[($modified)]($style)'
+style = "red bold"
+modified = "*"
+
+[aws]
+format = ' [($profile )]($style)'
+style = 'bold yellow'
+symbol = '☁️ '
+disabled = true
+force_display = false
+
+[aws.region_aliases]
+eu-central-1 = 'eu-c1'
+
+[aws.profile_aliases]
+
+***REMOVED*** = '***REMOVED***'
+***REMOVED*** = '***REMOVED***'
+***REMOVED*** = '***REMOVED***'
+***REMOVED*** = '***REMOVED***'
+***REMOVED*** = '***REMOVED***'
+***REMOVED*** = '***REMOVED***'
+***REMOVED***-dev = '***REMOVED***-dev'
+***REMOVED***-test = '***REMOVED***-test'
+***REMOVED***-prod = '***REMOVED***-prod'
+sandbox = 'sandbox'
+***REMOVED*** = '***REMOVED***'
+***REMOVED*** = '***REMOVED***'

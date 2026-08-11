@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+
+# Exit immediately if any command fails
+set -e
+
+# Handle script interruption (Ctrl+C)
+trap "echo 'Script interrupted by user'; exit 1" SIGINT
+
+# Terminal color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+# Check if AMI name is provided
+if [[ $# -ne 1 ]]; then
+	echo "Usage: $0 <ami-name>"
+	echo "Example: $0 client"
+	exit 1
+fi
+
+AMI_NAME=$1
+
+# Declare global arrays for tracking deletions
+declare -a DELETE_AMI_IDS
+declare -a DELETE_AMI_NAMES
+declare -a DELETE_AMI_REGIONS
+declare -a DELETE_AMI_SNAPSHOTS
+
+# Check for required dependencies
+check_dependencies() {
+	if ! command -v aws &> /dev/null || ! command -v jq &> /dev/null; then
+		echo "AWS CLI and jq must be installed"
+		exit 1
+	fi
+}
+
+# Process AMIs in a specific region
+process_region() {
+	local region=$1
+	echo "Checking region: $region"
+
+	local amis
+	amis=$(aws ec2 describe-images \
+		--region "$region" \
+		--owners self \
+		--filters "Name=name,Values=$AMI_NAME" \
+		--query 'Images[*].[ImageId,Name,CreationDate,BlockDeviceMappings[*].Ebs.SnapshotId]' \
+		--output json)
+
+	if [[ -z $amis || $amis == "[]" ]]; then
+		return
+	fi
+
+	local ami_id ami_name snapshots
+	ami_id=$(echo "$amis" | jq -r '.[0][0]')
+	ami_name=$(echo "$amis" | jq -r '.[0][1]')
+	snapshots=$(echo "$amis" | jq -r '.[0][3][]')
+
+	if [[ -n $ami_id ]]; then
+		echo -e "${YELLOW}Found AMI in $region: $ami_id ($ami_name)${NC}"
+		DELETE_AMI_IDS+=("$ami_id")
+		DELETE_AMI_NAMES+=("$ami_name")
+		DELETE_AMI_REGIONS+=("$region")
+		DELETE_AMI_SNAPSHOTS+=("$snapshots")
+	fi
+}
+
+# Show commands that will be executed
+show_delete_commands() {
+	echo -e "\n${YELLOW}The following AWS CLI commands will be executed:${NC}"
+	echo "----------------------------------------"
+	
+	for i in "${!DELETE_AMI_IDS[@]}"; do
+		local region=${DELETE_AMI_REGIONS[i]}
+		local ami=${DELETE_AMI_IDS[i]}
+		local snapshots=${DELETE_AMI_SNAPSHOTS[i]}
+
+		echo -e "${GREEN}# Deregister AMI: ${DELETE_AMI_NAMES[i]}${NC}"
+		echo "aws ec2 deregister-image --region $region --image-id $ami"
+
+		echo -e "${GREEN}# Delete associated snapshots:${NC}"
+		for snap in $snapshots; do
+			echo "aws ec2 delete-snapshot --region $region --snapshot-id $snap"
+		done
+		echo "----------------------------------------"
+	done
+}
+
+# Perform actual deletion of AMIs and snapshots
+delete_resources() {
+	for i in "${!DELETE_AMI_IDS[@]}"; do
+		local region=${DELETE_AMI_REGIONS[i]}
+		local ami=${DELETE_AMI_IDS[i]}
+		local snapshots=${DELETE_AMI_SNAPSHOTS[i]}
+
+		echo -e "${YELLOW}Deregistering AMI: $ami in $region${NC}"
+		aws ec2 deregister-image --region "$region" --image-id "$ami"
+
+		for snap in $snapshots; do
+			echo -e "${YELLOW}Deleting snapshot: $snap${NC}"
+			aws ec2 delete-snapshot --region "$region" --snapshot-id "$snap"
+		done
+		echo "----------------------------------------"
+	done
+}
+
+main() {
+	check_dependencies
+
+	echo -e "Looking for AMI with name: ${GREEN}$AMI_NAME${NC}"
+	echo "----------------------------------------"
+
+	local regions
+	regions=$(aws ec2 describe-regions --query 'Regions[*].RegionName' --output text)
+
+	for region in $regions; do
+		process_region "$region"
+	done
+
+	if ((${#DELETE_AMI_IDS[@]} == 0)); then
+		echo -e "${RED}No AMIs found with name: $AMI_NAME${NC}"
+		exit 0
+	fi
+
+	echo -e "\nSUMMARY: The following AMIs will be deleted:"
+	for i in "${!DELETE_AMI_IDS[@]}"; do
+		echo -e "${RED}${DELETE_AMI_IDS[i]} | ${DELETE_AMI_NAMES[i]} | ${DELETE_AMI_REGIONS[i]}${NC}"
+	done
+	echo "Total: ${#DELETE_AMI_IDS[@]} AMIs will be deleted"
+
+	show_delete_commands
+
+	local confirm
+	echo -e "\n${RED}Are you sure you want to execute these commands?${NC}"
+	read -r -p "Proceed with deletion? (y/n) " confirm
+	
+	if [[ "${confirm,,}" == "y" || "${confirm,,}" == "yes" ]]; then
+		echo -e "${YELLOW}Starting deletion process...${NC}"
+		delete_resources
+		echo -e "${GREEN}Deletion completed successfully${NC}"
+	else
+		echo -e "${YELLOW}Deletion cancelled${NC}"
+		exit 0
+	fi
+}
+# Start script execution
+main

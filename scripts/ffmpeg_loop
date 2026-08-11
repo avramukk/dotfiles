@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Max retries
+retries=100
+
+# Current retry number
+retry=0
+
+# Awaiter timeout in seconds
+timeout=0
+
+# Check if gum is installed
+if ! command -v gum &> /dev/null; then
+    echo "gum could not be found. Please install gum to use this script."
+    exit 1
+fi
+
+# Use gum to select the protocol
+protocol=$(gum choose "srt" "rtmp")
+
+# Use gum to input the source and destination
+input=$(gum input --placeholder "Enter input source")
+output=$(gum input --placeholder "Enter output destination")
+
+echo "Protocol: $protocol"
+echo "Input: $input"
+echo "Output: $output"
+
+# Determine the output format based on the protocol
+if [ "$protocol" == "srt" ]; then
+  output_format="mpegts"
+elif [ "$protocol" == "rtmp" ]; then
+  output_format="flv"
+else
+  echo "Unsupported protocol. Please provide either srt or rtmp protocol."
+  exit 1
+fi
+
+# Retry the streaming process until success or maximum retries reached
+until [ $retry -gt $retries ]; do
+   ffmpeg -hide_banner -loglevel verbose -stream_loop -1 -re -i "$input" -vcodec libx264 -acodec copy -f "$output_format" "$output" && break
+   ((retry++))
+   sleep $timeout
+done

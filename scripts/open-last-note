@@ -1,0 +1,26 @@
+#!/bin/bash
+SECOND_BRAIN="$REPOS/second-brain"
+
+# Check if the directory exists
+if [ ! -d "$SECOND_BRAIN" ]; then
+  echo "Directory $SECOND_BRAIN does not exist"
+  exit 1
+fi
+
+# Check if inbox directory exists
+if [ ! -d "$SECOND_BRAIN/inbox" ]; then
+  echo "Inbox directory does not exist at $SECOND_BRAIN/inbox"
+  exit 1
+fi
+
+# Find the most recent note file
+last_note=$(ls -t "$SECOND_BRAIN/inbox"/*.md 2>/dev/null | head -n 1)
+
+# Check if any note files exist
+if [ -z "$last_note" ]; then
+  echo "No note files found in $SECOND_BRAIN/inbox"
+  exit 1
+fi
+
+# Open the last note in nvim
+nvim "$last_note"

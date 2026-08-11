@@ -1,0 +1,32 @@
+font-family = JedBrainsMono Nerd Font Mono
+font-style-bold = JedBrainsMono Nerd Font Mono Bold
+font-style-italic = JedBrainsMono Nerd Font Mono Bold
+theme = Gruvbox Dark
+window-decoration = false
+font-size = 13
+background-opacity = 1
+term = xterm-256color
+macos-auto-secure-input = true
+macos-secure-input-indication = false
+confirm-close-surface = false
+font-thicken = true
+link-url = true
+cursor-opacity = 0.5
+
+# Go to the N window in tmux in tmux it is Ctrl+b+number
+keybind = alt+one=text:\x02\x31
+keybind = alt+two=text:\x02\x32
+keybind = alt+three=text:\x02\x33
+keybind = alt+four=text:\x02\x34
+keybind = alt+five=text:\x02\x35
+keybind = alt+six=text:\x02\x36
+keybind = alt+seven=text:\x02\x37
+keybind = alt+eight=text:\x02\x38
+keybind = alt+nine=text:\x02\x39
+
+# New tmux window on Cmd+t in tmux it is Ctrl+b+c
+keybind = cmd+t=text:\x02\x63
+
+# Close tmux pane on Cmd+w in tmux it is Ctrl+b+x (it is using a custom keybind in tmux to kill the pane)
+keybind = cmd+w=text:\x02\x78
+

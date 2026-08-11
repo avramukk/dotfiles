@@ -1,0 +1,108 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/kiro-claude-haiku-4.5",
+  "skills": {
+    "paths": [
+      "~/.pi/agent/skills"
+    ]
+  },
+  "permission": {
+    "bash": {
+      "*": "ask",
+      "curl *": "ask",
+      "git *": "ask",
+      "gh *": "ask",
+      "glab *": "ask",
+      "acli jira *": "ask",
+      "terraform *": "ask",
+      "pre-commit *": "ask",
+      "aws sso login *": "allow",
+      "aws sts *": "allow",
+      "grep *": "allow",
+      "glob *": "allow",
+      "echo *": "allow",
+      "cat *": "allow",
+      "head *": "allow",
+      "tail *": "allow",
+      "find *": "allow",
+      "diff *": "allow",
+      "ls *": "allow",
+      "herdr *": "allow"
+    },
+    "edit": {
+      "*": "ask"
+    },
+    "read": {
+      "**": "allow",
+      "~/.terraformrc": "deny"
+    },
+    "write": {
+      "*": "ask"
+    },
+    "external_directory": {
+      "~/.terraformrc": "deny",
+      "**": "allow"
+    },
+    "atlassian*": "ask",
+    "slack_conversations_add_message": "ask",
+    "slack_reactions_add": "ask",
+    "slack_reactions_remove": "ask",
+    "slack_attachment_get_data": "ask",
+    "slack_conversations_join": "ask",
+    "slack_conversations_leave": "ask",
+    "slack_conversations_mark": "ask",
+    "slack_usergroups_create": "ask",
+    "slack_usergroups_update": "ask",
+    "slack_usergroups_users_update": "ask"
+  },
+  "mcp": {
+    "grafana": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "mcp-grafana"
+      ],
+      "environment": {
+        "GRAFANA_URL": "{env:GRAFANA_URL}",
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "{env:GRAFANA_SERVICE_ACCOUNT_TOKEN}"
+      },
+      "enabled": false
+    },
+    "slack": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "slack-mcp-server@latest",
+        "--transport",
+        "stdio"
+      ],
+      "environment": {
+        "SLACK_MCP_XOXP_TOKEN": "{env:SLACK_MCP_XOXP_TOKEN}",
+        "SLACK_MCP_ADD_MESSAGE_TOOL": "true"
+      },
+      "enabled": false
+    },
+    "excalidraw": {
+      "type": "remote",
+      "url": "https://mcp.excalidraw.com",
+      "enabled": false
+    }
+  },
+  "plugin": [
+    "@tarquinen/opencode-smart-title",
+    "@bastiangx/opencode-unmoji",
+    "opencode-see-image@1.2.5",
+    "magic-compact",
+    "@bogyie/opencode-kiro-plugin",
+    "caveman-opencode-plugin@latest"
+  ],
+  "provider": {
+    "kiro": {
+      "options": {
+        "backend": "fetch",
+        "region": "us-east-1"
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+install_gitleaks() {
+	local install_path
+	install_path=$(command -v go)
+	if [[ -z $install_path ]]; then
+		echo "Go is required to install Gitleaks. Please install Go first."
+		exit 1
+	fi
+	
+	echo "Gitleaks could not be found. Attempting to install..."
+	go get -u github.com/zricethezav/gitleaks
+
+	if command -v gitleaks &>/dev/null; then
+		echo "Gitleaks has been installed successfully."
+	else
+		echo "Failed to install Gitleaks."
+		exit 1
+	fi
+}
+
+run_gitleaks_scan() {
+	local scan_type=$1
+	echo "Running gitleaks $scan_type on $PWD"
+	if ! gitleaks "$scan_type" -v; then
+		echo "Gitleaks scan failed."
+		exit 1
+	fi
+}
+
+main() {
+	if ! command -v gitleaks &>/dev/null; then
+		install_gitleaks
+	fi
+	
+	if [[ -d .git ]]; then
+		run_gitleaks_scan "git"
+	else
+		run_gitleaks_scan "dir"
+	fi
+}
+
+main

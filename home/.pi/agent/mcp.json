@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "aws-knowledge-mcp": {
+      "url": "https://knowledge-mcp.global.api.aws"
+    },
+    "grafana": {
+      "command": "uvx",
+      "args": ["mcp-grafana"],
+      "env": {
+        "GRAFANA_URL": "$env:GRAFANA_URL",
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "$env:GRAFANA_SERVICE_ACCOUNT_TOKEN"
+      }
+    },
+    "atlassian": {
+      "url": "https://mcp.atlassian.com/v1/mcp/authv2"
+    },
+    "aws-billing-cost": {
+      "command": "uvx",
+      "args": ["awslabs.billing-cost-management-mcp-server@latest"],
+      "env": {
+        "AWS_PROFILE": "$env:AWS_PROFILE",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      }
+    },
+    "excalidraw": {
+      "command": "npx",
+      "args": ["-y", "mcp-excalidraw-server@1.1.0"],
+      "env": {
+        "NPM_CONFIG_CACHE": "/Users/avramukk/.cache/npm-excalidraw-v1"
+      },
+      "lifecycle": "lazy"
+    }
+  }
+}

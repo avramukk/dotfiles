@@ -1,0 +1,38 @@
+{
+  "lastChangelogVersion": "0.84.1",
+  "theme": "gruvbox-dark-hard-custom",
+  "defaultProvider": "kiro-acp",
+  "defaultModel": "deepseek-3.2",
+  "hideThinkingBlock": false,
+  "defaultThinkingLevel": "low",
+  "packages": [
+    "git:https://github.com/hasit/pi-community-themes",
+    "npm:pi-zentui",
+    "npm:pi-mcp-adapter",
+    "npm:@counterposition/pi-web-search",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:pi-skill-acli",
+    "npm:@upstash/context7-pi"
+  ],
+  "enabledModels": [
+    "copilot/codex-5.3"
+  ],
+  "editorPaddingX": 2,
+  "quietStartup": false,
+  "enableInstallTelemetry": false,
+  "treeFilterMode": "default",
+  "defaultProjectTrust": "always",
+  "doubleEscapeAction": "tree",
+  "transport": "auto",
+  "followUpMode": "one-at-a-time",
+  "outputPad": 1,
+  "terminal": {
+    "clearOnShrink": false,
+    "showTerminalProgress": false
+  },
+  "steeringMode": "one-at-a-time",
+  "tuiMode": "fullscreen",
+  "markdown": {
+    "mermaid": "streaming"
+  }
+}

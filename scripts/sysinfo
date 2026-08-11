@@ -1,0 +1,189 @@
+#!/bin/bash
+
+# Function to detect the Linux distribution
+detect_distro() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        echo $ID
+    else
+        echo "Unknown"
+    fi
+}
+
+# Function to show general system information
+show_system_info() {
+    echo "==== System Information ===="
+    echo "Hostname: $(hostname)"
+    echo "Kernel Version: $(uname -r)"
+    echo "Architecture: $(uname -m)"
+    echo "Uptime: $(uptime -p)"
+}
+
+# Function to show directory structure information
+show_directory_structure() {
+    echo "==== Directory Structure ===="
+    echo "Home Directory: $HOME"
+    echo "Root Directory:"
+    ls -l /
+}
+
+# Function to show services information
+show_services_info() {
+    echo "==== Running Services ===="
+    if command -v systemctl &> /dev/null; then
+        systemctl list-units --type=service --state=running
+    else
+        service --status-all | grep '+'
+    fi
+}
+
+# Function to show package manager information
+show_package_manager_info() {
+    echo "==== Package Manager Info ===="
+    case $1 in
+        arch)
+            echo "Package Manager: pacman"
+            echo "Installed Packages:"
+            pacman -Q
+            ;;
+        centos)
+            echo "Package Manager: yum/dnf"
+            echo "Installed Packages:"
+            rpm -qa
+            ;;
+        debian)
+            echo "Package Manager: apt"
+            echo "Installed Packages:"
+            dpkg -l
+            ;;
+        fedora)
+            echo "Package Manager: dnf"
+            echo "Installed Packages:"
+            dnf list installed
+            ;;
+        gentoo)
+            echo "Package Manager: emerge"
+            echo "Installed Packages:"
+            equery list
+            ;;
+        kali)
+            echo "Package Manager: apt"
+            echo "Installed Packages:"
+            dpkg -l
+            ;;
+        opensuse)
+            echo "Package Manager: zypper"
+            echo "Installed Packages:"
+            zypper se --installed-only
+            ;;
+        *)
+            echo "Unknown distribution, cannot determine package manager."
+            ;;
+    esac
+}
+
+# Function to show troubleshooting commands
+show_troubleshooting_commands() {
+    echo "==== Common Troubleshooting Commands ===="
+    echo "==== Load ===="
+    echo "uptime"
+    echo "netstat -tlpn" # package net-tools
+    echo "ps auxf"
+    echo
+    echo "==== Memory ===="
+    echo "vmstat"
+    echo "vmstat 1 5 -w"
+    echo "vmstat -s"
+    echo "free -m"
+    echo "grep -i oom /var/log/messages (or /var/log/syslog)"
+    echo
+    echo "==== CPU ===="
+    echo "top"
+    echo "mpstat -P ALL" # package sysstat
+    echo "lscpu"
+    echo "pidstat"
+    echo
+    echo "==== Disk ===="
+    echo "vmstat -d"
+    echo "df -h"
+    echo "df -i"
+    echo "iostat -xz 1"
+    echo "du -mxS / |sort -n|tail -10"
+    echo
+    echo "==== Network ===="
+    echo "sar -n DEV 1" # package sysstat
+    echo "sar -n TCP,ETCP 1"
+    echo
+    echo "==== Distro ===="
+    echo "cat /etc/os-release"
+    echo "lsb_release -a"
+    echo
+    echo "==== Kernel ===="
+    echo "uname -a"
+    echo "sysctl -a"
+    echo
+    echo "==== Logs ===="
+    echo "journalctl"
+    echo "journalctl -n 20 --no-pager -u <service>"
+    echo "journalctl --since yesterday --until \"1 hour ago\""
+    echo "journalctl -k"
+    echo "journalctl -p err"
+    echo "dmesg | tail"
+    echo "tail /var/log/messages (or /var/log/syslog or /var/log/kern.log)"
+    echo "last -a"
+    echo
+    echo "==== Systemd ===="
+    echo "systemctl"
+    echo "systemctl cat <service>"
+    echo "systemctl list-unit-files"
+    echo "systemctl reload <unit>"
+    echo "systemctl --failed"
+    echo "systemd-analyze"
+    echo "systemd-analyze blame"
+    echo
+    echo "==== Filesystems and Volumes ===="
+    echo "fdisk -l"
+    echo "df -lT"
+    echo "lsblk -f"
+    echo "file -s /dev/<device>"
+    echo "blkid /dev/<device>"
+    echo "mount"
+    echo "cat /etc/fstab"
+    echo
+    echo "==== Networking ===="
+    echo "ss -s"
+    echo "netstat -s"
+    echo "netstat -i"
+    echo "ip -s link"
+    echo "ifconfig"
+    echo "lsof -i"
+    echo "sar -n DEV"
+    echo "ip route"
+    echo "netstat -r"
+    echo "iptables -L"
+    echo "iptables -t nat -L"
+}
+
+# Main function to run all checks
+main() {
+    DISTRO=$(detect_distro)
+    echo "Detected Linux Distribution: $DISTRO"
+    echo
+
+    show_system_info
+    echo
+
+    show_directory_structure
+    echo
+
+    show_services_info
+    echo
+
+    show_package_manager_info $DISTRO
+    echo
+
+    show_troubleshooting_commands $DISTRO
+}
+
+# Run the main function
+main

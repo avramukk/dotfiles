@@ -1,0 +1,44 @@
+lazy-lock.json
+.DS_Store
+scripts/amidelete
+scripts/aws-list-resources
+scripts/aws_instances
+scripts/mixa-ec2
+scripts/client
+scripts/certdelete
+scripts/amideletev2
+
+# nvim (moved to home/.config/nvim/)
+home/.config/nvim/lazyvim.json
+home/.config/nvim/lazy-lock.json
+
+# pi extensions npm dependencies (moved to home/.pi/agent/extensions/)
+home/.pi/agent/extensions/node_modules/
+home/.pi/agent/extensions/package-lock.json
+
+# opencode npm deps (moved to home/.config/opencode/)
+home/.config/opencode/node_modules/
+home/.config/opencode/package-lock.json
+
+# pi runtime data
+pi/.pi/
+
+# local runtime DB/cache (not dotfiles)
+datastore.np/
+
+# Private/local agent configs
+home/.config/opencode/agents/*work*.md
+home/.config/opencode/agents/*.private.md
+home/.config/opencode/AGENTS.md
+home/.pi/agent/AGENTS.md
+
+# Generated Kiro ACP bridge agent config
+.kiro/agents/pi-kiro-*.json
+
+# opencode2 (v2) - local secrets and installed plugin deps
+opencode2/token
+opencode2/service.json
+opencode2/plugins/*/node_modules/
+
+# Local usage auth (copy from config/my-usage/cursor-token.example)
+config/my-usage/cursor-token
