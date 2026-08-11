@@ -1,0 +1,60 @@
+{
+  "extensionStatuses": {
+    "placements": {
+      "authority": "off",
+      "caveman": "off",
+      "mcp": "off",
+      "cursor": "off",
+      "session-name": "right"
+    },
+    "colorModes": {
+      "authority": "zentui",
+      "mcp": "zentui"
+    }
+  },
+  "colorSources": {
+    "starship": "terminal",
+    "editor": "theme",
+    "userMessages": "theme"
+  },
+  "footerSegments": {
+    "context": true,
+    "tokens": false,
+    "cost": false,
+    "gitCommit": false,
+    "cwd": true,
+    "sessionName": true,
+    "gitBranch": true,
+    "gitStatus": true,
+    "gitCounts": false,
+    "sessionDuration": false,
+    "username": false,
+    "time": true,
+    "os": false,
+    "runtime": false,
+    "gitMetrics": false,
+    "modelInfo": true
+  },
+  "contextStyle": "text",
+  "features": {
+    "editor": false,
+    "statusLine": true,
+    "copyFriendly": true
+  },
+  "fixedEditor": {
+    "enabled": true
+  },
+  "icons": {
+    "mode": "auto"
+  },
+  "separator": "pipe",
+  "pathDisplay": {
+    "mode": "full",
+    "depth": 3
+  },
+  "gitBranch": {
+    "maxLength": "full"
+  },
+  "responsiveFooter": true,
+  "compactFooterMaxLines": 1
+}

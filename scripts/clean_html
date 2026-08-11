@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Функція для перевірки наявності html2markdown
+check_html2markdown() {
+    if ! command -v html2markdown &> /dev/null; then
+        echo "Error: html2markdown is not installed. Please install it first."
+        echo "For npm installation: npm install -g html2markdown"
+        exit 1
+    fi
+}
+
+# Функція для конвертації одного файлу
+convert_file() {
+    local file="$1"
+    if [ -f "$file" ] && [[ "$file" == *.html ]]; then
+        echo "Processing $file..."
+        local cleaned_file="cleaned_files/cleaned_$(basename "$file" .html).md"
+        html2markdown < "$file" > "$cleaned_file"
+        echo "Created $cleaned_file"
+    fi
+}
+
+# Перевіряємо наявність аргументу
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <file.html or directory>"
+    exit 1
+fi
+
+# Перевіряємо наявність html2markdown
+check_html2markdown
+
+# Створюємо директорію для очищених файлів
+mkdir -p cleaned_files
+
+# Обробляємо аргумент
+if [ -f "$1" ]; then
+    # Якщо аргумент - файл
+    convert_file "$1"
+elif [ -d "$1" ]; then
+    # Якщо аргумент - директорія
+    for file in "$1"/*.html; do
+        convert_file "$file"
+    done
+else
+    echo "Error: '$1' is not a valid file or directory"
+    exit 1
+fi
+
+echo "Done! Cleaned files are in the 'cleaned_files' directory."

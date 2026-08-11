@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# This script creates 10 files of 10MB each in the current directory.
+count=10
+size=10
+
+for ((i = 1; i <= count; i++)); do
+	dd if=/dev/zero of=file"${i}"_"${size}"mb bs=1024 count=10000
+done

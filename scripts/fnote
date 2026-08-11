@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# This script is used to find all the notes with provided keywords to this script
+# and if the keyword is found in the note, it will print the note name and the line where the keyword is found
+# and ask the user number of the note from list if they want to open the note in the $EDITOR
+# notes folder
+
+if [ -z "$SECOND_BRAIN" ]; then
+  echo "SECOND_BRAIN is not set"
+  exit 1
+fi
+
+if [ -z "$1" ]; then
+  echo "Please provide the keyword to search"
+  exit 1
+fi
+
+keyword=$1
+
+# find all the notes with the keywords and print list with numbered notes
+notes=$(grep -r -n -i "$keyword" "$SECOND_BRAIN" | grep -v '/\.' | awk -F ':' '{print $1 ":" $2}' | sort | uniq)
+
+# if no notes found with the keyword, exit
+if [ -z "$notes" ]; then
+  echo "No notes found with the keyword $keyword"
+  exit 1
+fi
+
+# print the list of notes with the keywords along with numbers
+awk -F ':' '{split($1,a,"/"); print NR, a[length(a)-1] "/" a[length(a)], $2}' <<< "$notes"
+
+# ask the user to select the note from the list
+# and open the note in the $EDITOR
+# read the user input
+read -p "Choose note: " note_number
+
+#print the command to open the note in the $EDITOR
+
+awk -v note_number="$note_number" -F ':' '{if (NR == note_number) {print "nvim +", $2, $1}}' <<< "$notes"
+
+

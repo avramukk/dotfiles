@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Check if channel URL is provided
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 channel_url"
+    echo "Example: $0 https://www.youtube.com/@yousuckatprogramming"
+    exit 1
+fi
+
+CHANNEL_URL="$1"
+# Extract channel name from URL for the output file name
+CHANNEL_NAME=$(echo "$CHANNEL_URL" | sed -E 's/.*\/@([^\/]+).*/\1/')
+OUTPUT_FILE="${SECOND_BRAIN}/resources/youtube/${CHANNEL_NAME}.txt"
+
+# Check if yt-dlp is installed
+if ! command -v yt-dlp &> /dev/null; then
+    echo "Error: yt-dlp is not installed"
+    echo "Install it using: pip install yt-dlp"
+    exit 1
+fi
+
+echo "Fetching videos from: $CHANNEL_URL"
+echo "This may take a while..."
+
+# Fetch video titles and URLs
+yt-dlp -i --flat-playlist --print "%(title)s | %(url)s" "$CHANNEL_URL" > "$OUTPUT_FILE"
+
+if [ $? -eq 0 ]; then
+    echo "Successfully saved video list to: $OUTPUT_FILE"
+    echo "Total videos: $(wc -l < "$OUTPUT_FILE")"
+else
+    echo "Error occurred while fetching videos"
+    rm -f "$OUTPUT_FILE"
+    exit 1
+fi
