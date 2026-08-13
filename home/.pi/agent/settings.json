@@ -12,7 +12,8 @@
     "npm:@counterposition/pi-web-search",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:pi-skill-acli",
-    "npm:@upstash/context7-pi"
+    "npm:@upstash/context7-pi",
+    "npm:pi-startup-redraw-fix"
   ],
   "enabledModels": [
     "copilot/codex-5.3"
