@@ -1,8 +1,7 @@
 ---
-description: Review staged git changes for bugs, security, regressions
-argument-hint: "[focus]"
+description: Review git changes for bugs, security, regressions
 ---
-Review the staged changes (`git diff --cached`). $@
+Review the git changes
 
 Focus on:
 - Bugs and logic errors

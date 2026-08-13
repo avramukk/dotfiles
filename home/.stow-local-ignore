@@ -1,6 +1,2 @@
-# Local-only files that stow must NOT manage.
-# ~/.pi/agent/mcp.json is a real local file (live MCP config, may contain
-# local paths/tokens) — the repo copy is a sanitized sample.
-# NOTE: stow matches patterns against the full path (with prefix), so anchor
-# only at the end.
+^\.agents/\.skill-lock\.json$
 mcp\.json$
