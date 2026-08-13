@@ -1,2 +1,6 @@
-^\.agents/\.skill-lock\.json$
+# Local-only files that stow must NOT manage.
+# ~/.agents/.skill-lock.json is a real runtime file owned by the `skills`
+# tool — never stow it. Match by trailing name (stow matches against the full
+# path, including the repo prefix), so anchor only at the end, not with ^.
+\.agents/\.skill-lock\.json$
 mcp\.json$
