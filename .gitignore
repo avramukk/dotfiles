@@ -1,5 +1,6 @@
 lazy-lock.json
 .DS_Store
+packages/failed_packages_*.txt
 scripts/amidelete
 scripts/aws-list-resources
 scripts/aws_instances

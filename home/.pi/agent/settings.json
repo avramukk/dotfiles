@@ -1,10 +1,10 @@
 {
   "lastChangelogVersion": "0.84.1",
   "theme": "gruvbox-dark-hard-custom",
-  "defaultProvider": "kiro-acp",
-  "defaultModel": "deepseek-3.2",
-  "hideThinkingBlock": false,
-  "defaultThinkingLevel": "low",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "deepseek-v4-flash",
+  "hideThinkingBlock": true,
+  "defaultThinkingLevel": "off",
   "packages": [
     "git:https://github.com/hasit/pi-community-themes",
     "npm:pi-zentui",
