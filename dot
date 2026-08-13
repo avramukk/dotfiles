@@ -1,0 +1,1911 @@
+#!/usr/bin/env bash
+# dot — Dotfiles management tool for avramukk/dotfiles
+#
+# A single-file CLI to init, update, diagnose and manage this dotfiles repo.
+# Modeled on the same command surface as dmmulroy's `dot`, adapted for a
+# bash-based setup (no fish): GNU Stow + Homebrew Brewfiles + pi.
+
+set -euo pipefail
+
+# ─── Colors ───────────────────────────────────────────────────────────────────
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[0;33m'
+readonly BLUE='\033[0;34m'
+readonly CYAN='\033[0;36m'
+readonly RESET='\033[0m'
+readonly BOLD='\033[1m'
+
+# ─── Script metadata & config ─────────────────────────────────────────────────
+readonly SCRIPT_NAME="dot"
+readonly VERSION="1.0.0"
+
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly DOTFILES_DIR
+readonly PACKAGES_DIR="${DOTFILES_DIR}/packages"
+readonly HOME_DIR="${DOTFILES_DIR}/home"
+readonly COMPLETIONS_DIR="${DOTFILES_DIR}/completions"
+readonly COMPLETIONS_FILE="${COMPLETIONS_DIR}/dot.bash"
+
+# Default SSH key paths checked by doctor / init.
+readonly SSH_KEY_PATH="${HOME}/.ssh/id_ed25519"
+readonly LEGACY_SSH_KEY_PATH="${HOME}/.ssh/id_rsa"
+
+# Private font repository (e.g. a licensed font you have access to).
+# Empty by default → the font step in `init` is skipped.
+readonly FONT_REPO_URL="${FONT_REPO_URL:-}"
+
+# ─── Progress state ───────────────────────────────────────────────────────────
+CURRENT_STEP=0
+TOTAL_STEPS=0
+
+# ─── Helpers ──────────────────────────────────────────────────────────────────
+__print_header() {
+    echo -e "\n${BOLD}${BLUE}==>${RESET} ${BOLD}$1${RESET}"
+}
+
+__print_success() {
+    echo -e "${GREEN}✓${RESET} $1"
+}
+
+__print_error() {
+    echo -e "${RED}✗${RESET} $1" >&2
+}
+
+__print_warning() {
+    echo -e "${YELLOW}⚠${RESET} $1"
+}
+
+__print_info() {
+    echo -e "${CYAN}ℹ${RESET} $1"
+}
+
+__print_step() {
+    ((++CURRENT_STEP))
+    echo -e "\n${BOLD}[${CURRENT_STEP}/${TOTAL_STEPS}]${RESET} $1"
+}
+
+__command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+__confirm() {
+    local prompt="${1:-Continue?}"
+    local default="${2:-n}"
+    local response=""
+
+    if [[ "$default" == "y" ]]; then
+        prompt="$prompt [Y/n]: "
+    else
+        prompt="$prompt [y/N]: "
+    fi
+
+    read -r -p "$prompt" response
+
+    case "$response" in
+        [yY][eE][sS]|[yY]) return 0 ;;
+        [nN][oO]|[nN]) return 1 ;;
+        "")
+            [[ "$default" == "y" ]]
+            return
+            ;;
+        *) return 1 ;;
+    esac
+}
+
+__parse_brewfile_entry() {
+    local line="$1"
+
+    [[ "$line" =~ ^[[:space:]]*# ]] && return 1
+    [[ -z "${line//[[:space:]]/}" ]] && return 1
+
+    if [[ "$line" =~ ^[[:space:]]*brew[[:space:]]+\"([^\"]+)\" ]]; then
+        printf 'brew\t%s\n' "${BASH_REMATCH[1]}"
+        return 0
+    fi
+
+    if [[ "$line" =~ ^[[:space:]]*cask[[:space:]]+\"([^\"]+)\" ]]; then
+        printf 'cask\t%s\n' "${BASH_REMATCH[1]}"
+        return 0
+    fi
+
+    return 1
+}
+
+__brew_install() {
+    local package_type="$1"
+    local package_name="$2"
+
+    case "$package_type" in
+        brew) brew install "$package_name" ;;
+        cask) brew install --cask "$package_name" ;;
+        *)
+            __print_error "Unsupported package type: $package_type"
+            return 1
+            ;;
+    esac
+}
+
+__brew_upgrade() {
+    local package_type="$1"
+    local package_name="$2"
+
+    case "$package_type" in
+        brew) brew upgrade "$package_name" ;;
+        cask) brew upgrade --cask "$package_name" ;;
+        *)
+            __print_error "Unsupported package type: $package_type"
+            return 1
+            ;;
+    esac
+}
+
+__list_contains() {
+    local needle="$1"
+    local values="$2"
+    grep -Fqx -- "$needle" <<< "$values"
+}
+
+# Brewfile entries can be tap-qualified ("tap/name/package") while `brew list`
+# reports short names — match either form.
+__package_in_list() {
+    local needle="$1"
+    local values="$2"
+    __list_contains "$needle" "$values" && return 0
+    if [[ "$needle" == */* ]]; then
+        __list_contains "${needle##*/}" "$values"
+    fi
+}
+
+__existing_ssh_key() {
+    if [[ -f "$SSH_KEY_PATH" ]]; then
+        printf '%s\n' "$SSH_KEY_PATH"
+        return 0
+    fi
+    if [[ -f "$LEGACY_SSH_KEY_PATH" ]]; then
+        printf '%s\n' "$LEGACY_SSH_KEY_PATH"
+        return 0
+    fi
+    return 1
+}
+
+__save_failed_packages() {
+    [[ $# -eq 0 ]] && return 0
+
+    local failed_file
+    failed_file="${PACKAGES_DIR}/failed_packages_$(date +%Y%m%d_%H%M%S)_$$.txt"
+    printf '%s\n' "$@" | sort -u > "$failed_file"
+    __print_info "Failed packages saved to: $failed_file"
+}
+
+__validate_work_brewfile() {
+    local brewfile="$1"
+    local line parsed package_type package_name
+
+    while IFS= read -r line; do
+        parsed=$(__parse_brewfile_entry "$line") || continue
+        IFS=$'\t' read -r package_type package_name <<< "$parsed"
+        if [[ "$package_type" == "cask" ]]; then
+            __print_error "Work Brewfile contains cask '$package_name'; casks belong in packages/bundle"
+            return 1
+        fi
+    done < "$brewfile"
+
+    return 0
+}
+
+__require_no_args() {
+    local command_name="$1"
+    shift
+
+    if [[ $# -gt 0 ]]; then
+        __print_error "Unexpected argument for '$command_name': $1"
+        __print_info "Run '${SCRIPT_NAME} ${command_name} --help' for usage"
+        return 1
+    fi
+}
+
+__git_email() {
+    local email
+    email="$(git config --global user.email 2>/dev/null || true)"
+    if [[ -z "$email" ]] && [[ -f "${HOME}/.gitconfig.local" ]]; then
+        email="$(git config --file "${HOME}/.gitconfig.local" user.email 2>/dev/null || true)"
+    fi
+    printf '%s\n' "$email"
+}
+
+# ─── Init steps ───────────────────────────────────────────────────────────────
+# Each step is (display name | function | required | skip-var).
+# required=true → a failure aborts init; false → warn and continue.
+
+__run_init_steps() {
+    local -a steps=(
+        "Homebrew|__install_homebrew|true|-"
+        "Brewfile packages|__install_packages|true|-"
+        "Stow dotfiles|__stow_dotfiles|true|-"
+        "Bun|__install_bun|true|-"
+        "pi|__install_pi|true|-"
+        "SSH key|__generate_ssh_key|false|SKIP_SSH"
+        "Font|__install_font|false|SKIP_FONT"
+    )
+
+    local entry name fn required skip_var
+    TOTAL_STEPS=0
+    CURRENT_STEP=0
+
+    for entry in "${steps[@]}"; do
+        IFS='|' read -r name fn required skip_var <<< "$entry"
+        if [[ "$skip_var" != "-" ]] && [[ "${!skip_var:-}" == "true" ]]; then
+            continue
+        fi
+        ((++TOTAL_STEPS))
+    done
+
+    for entry in "${steps[@]}"; do
+        IFS='|' read -r name fn required skip_var <<< "$entry"
+
+        if [[ "$skip_var" != "-" ]] && [[ "${!skip_var:-}" == "true" ]]; then
+            __print_warning "Skipping $name (flag set)"
+            continue
+        fi
+
+        __print_step "$name"
+        if "$fn"; then
+            :
+        elif [[ "$required" == "true" ]]; then
+            return 1
+        else
+            __print_warning "$name failed (continuing)"
+        fi
+    done
+}
+
+__install_homebrew() {
+    if __command_exists brew; then
+        __print_success "Homebrew is already installed"
+        return 0
+    fi
+
+    __print_info "Homebrew is not installed. Installing now..."
+    local log_file
+    log_file=$(mktemp)
+
+    if NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" > "$log_file" 2>&1; then
+        __print_success "Homebrew installation successful"
+
+        if [[ "$(uname -m)" == "arm64" ]]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        else
+            eval "$(/usr/local/bin/brew shellenv)"
+        fi
+    else
+        local exit_code=$?
+        __print_error "Homebrew installation failed (exit code: $exit_code)"
+        tail -20 "$log_file" | sed 's/^/  /'
+        rm -f "$log_file"
+        return 1
+    fi
+
+    rm -f "$log_file"
+}
+
+__install_packages() {
+    if [[ ! -f "${PACKAGES_DIR}/bundle" ]]; then
+        __print_error "Base Brewfile not found at ${PACKAGES_DIR}/bundle"
+        return 1
+    fi
+
+    local failed_packages=()
+    local installed_count=0
+    local line parsed package_type package_name
+
+    __print_info "Installing base packages..."
+
+    if brew bundle --file="${PACKAGES_DIR}/bundle"; then
+        __print_success "All base packages installed successfully"
+    else
+        __print_warning "Some packages failed to install, trying individually..."
+
+        while IFS= read -r line; do
+            parsed=$(__parse_brewfile_entry "$line") || continue
+            IFS=$'\t' read -r package_type package_name <<< "$parsed"
+
+            __print_info "Installing $package_type package: $package_name"
+            if __brew_install "$package_type" "$package_name" 2>/dev/null; then
+                ((++installed_count))
+            else
+                __print_warning "Failed to install: $package_name"
+                failed_packages+=("${package_type}:${package_name}")
+            fi
+        done < "${PACKAGES_DIR}/bundle"
+
+        __print_success "Successfully installed $installed_count packages"
+    fi
+
+    if [[ -f "${PACKAGES_DIR}/bundle.work" ]] && __confirm "Install work-specific packages?" "n"; then
+        if ! __validate_work_brewfile "${PACKAGES_DIR}/bundle.work"; then
+            [[ ${#failed_packages[@]} -gt 0 ]] && __save_failed_packages "${failed_packages[@]}"
+            return 1
+        fi
+
+        __print_info "Installing work packages..."
+
+        if brew bundle --file="${PACKAGES_DIR}/bundle.work" --no-lock; then
+            __print_success "Work packages installed successfully"
+        else
+            __print_warning "Some work packages failed to install, trying individually..."
+
+            while IFS= read -r line; do
+                parsed=$(__parse_brewfile_entry "$line") || continue
+                IFS=$'\t' read -r package_type package_name <<< "$parsed"
+
+                __print_info "Installing work package: $package_name"
+                if ! __brew_install "$package_type" "$package_name" 2>/dev/null; then
+                    __print_warning "Failed to install work package: $package_name"
+                    failed_packages+=("${package_type}:${package_name}")
+                fi
+            done < "${PACKAGES_DIR}/bundle.work"
+        fi
+    fi
+
+    if [[ ${#failed_packages[@]} -gt 0 ]]; then
+        __print_warning "Failed to install ${#failed_packages[@]} packages:"
+        printf "  - %s\n" "${failed_packages[@]}"
+        __save_failed_packages "${failed_packages[@]}"
+    fi
+}
+
+__stow_dotfiles() {
+    if ! __command_exists stow; then
+        __print_error "GNU Stow is not installed"
+        __print_info "Please install stow via Homebrew: brew install stow"
+        return 1
+    fi
+
+    __print_info "Stowing files from ${HOME_DIR} to ${HOME}..."
+
+    if stow -R -v -d "${DOTFILES_DIR}" -t "${HOME}" home; then
+        __print_success "Dotfiles stowed successfully"
+    else
+        __print_error "Failed to stow dotfiles"
+        return 1
+    fi
+}
+
+__install_bun() {
+    if __command_exists bun; then
+        __print_success "Bun is already installed"
+        return 0
+    fi
+
+    __print_info "Installing Bun..."
+    if curl -fsSL https://bun.sh/install | bash; then
+        __print_success "Bun installed successfully"
+    else
+        __print_error "Failed to install Bun"
+        return 1
+    fi
+}
+
+__install_pi() {
+    if __command_exists pi; then
+        __print_success "pi is already installed"
+        return 0
+    fi
+
+    __print_info "Installing pi..."
+    if curl -fsSL https://pi.why.plus/install.sh | bash; then
+        __print_success "pi installed successfully"
+    else
+        __print_error "Failed to install pi"
+        return 1
+    fi
+}
+
+__generate_ssh_key() {
+    if existing=$(__existing_ssh_key); then
+        __print_success "SSH key already exists at $existing"
+        return 0
+    fi
+
+    local email="${GITHUB_EMAIL:-}"
+    if [[ -z "$email" ]]; then
+        email="$(__git_email)"
+    fi
+    if [[ -z "$email" ]]; then
+        read -r -p "Enter email address for SSH key: " email
+    fi
+    if [[ -z "$email" ]]; then
+        __print_error "Email is required for SSH key generation"
+        return 1
+    fi
+
+    __print_info "Generating new SSH key (ed25519) for $email..."
+    mkdir -p "${HOME}/.ssh"
+    chmod 700 "${HOME}/.ssh"
+
+    if ssh-keygen -t ed25519 -C "$email" -f "$SSH_KEY_PATH" -N ""; then
+        __print_success "SSH key generated successfully"
+        __print_info "Add the public key to GitHub:"
+        echo "  pbcopy < ${SSH_KEY_PATH}.pub"
+        echo "  Then go to: GitHub > Settings > SSH and GPG keys > New SSH key"
+    else
+        __print_error "Failed to generate SSH key"
+        return 1
+    fi
+}
+
+__install_font() {
+    if [[ -z "$FONT_REPO_URL" ]]; then
+        __print_info "Font installation disabled (FONT_REPO_URL not set)"
+        return 0
+    fi
+
+    if ! existing=$(__existing_ssh_key); then
+        __print_warning "SSH key not found. Skipping font installation"
+        return 0
+    fi
+
+    if ! __confirm "Have you added the SSH key to your GitHub account?" "n"; then
+        __print_warning "Skipping font installation"
+        return 0
+    fi
+
+    local font_temp_dir font_install_dir
+    font_temp_dir=$(mktemp -d)
+    font_install_dir="${HOME}/Library/Fonts"
+
+    __print_info "Cloning font repository..."
+    if GIT_SSH_COMMAND="ssh -i '$existing' -o IdentitiesOnly=yes" git clone "$FONT_REPO_URL" "$font_temp_dir"; then
+        __print_success "Repository cloned successfully"
+
+        mkdir -p "$font_install_dir"
+        local font_count=0
+        while IFS= read -r -d '' font_file; do
+            cp "$font_file" "$font_install_dir/"
+            ((++font_count))
+        done < <(find "$font_temp_dir" -type f \( -name '*.otf' -o -name '*.ttf' \) -print0)
+
+        if [[ $font_count -gt 0 ]]; then
+            __print_success "Installed $font_count font files"
+        else
+            __print_warning "No font files found in repository"
+        fi
+    else
+        __print_error "Failed to clone font repository"
+    fi
+
+    rm -rf "$font_temp_dir"
+}
+
+# ─── Commands ─────────────────────────────────────────────────────────────────
+
+cmd_init() {
+    local SKIP_SSH=false
+    local SKIP_FONT=false
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --skip-ssh) SKIP_SSH=true ;;
+            --skip-font) SKIP_FONT=true ;;
+            -h|--help)
+                cat << EOF
+USAGE:
+    ${SCRIPT_NAME} init [--skip-ssh] [--skip-font]
+
+Initialize the complete environment:
+  - Homebrew (if missing)
+  - packages/bundle via brew bundle (resilient: failures retried individually)
+  - optional packages/bundle.work (work packages, formulas only)
+  - GNU Stow symlinks from home/
+  - Bun and pi (installed only if missing)
+  - SSH key for GitHub (unless --skip-ssh)
+  - optional private font install (unless --skip-font; requires FONT_REPO_URL)
+EOF
+                return 0
+                ;;
+            *)
+                __print_error "Unknown init option: $1"
+                __print_info "Run '${SCRIPT_NAME} init --help' for usage"
+                return 1
+                ;;
+        esac
+        shift
+    done
+
+    __print_header "Initializing dotfiles"
+    __run_init_steps || return 1
+    __print_header "Initialization complete! 🎉"
+}
+
+cmd_update() {
+    __require_no_args update "$@" || return 1
+    __print_header "Updating dotfiles"
+
+    __print_info "Pulling latest changes..."
+    if ! git -C "$DOTFILES_DIR" pull; then
+        # `git pull` (rebase) refuses on a dirty tree. Continue when the remote
+        # has nothing new, abort only when there are actual remote changes.
+        local remote_has_new
+        remote_has_new="$(git -C "$DOTFILES_DIR" log HEAD..origin/main --oneline 2>/dev/null)"
+        if git -C "$DOTFILES_DIR" diff --quiet && git -C "$DOTFILES_DIR" diff --cached --quiet; then
+            __print_error "Failed to update repository"
+            return 1
+        elif [[ -n "$remote_has_new" ]]; then
+            __print_error "Remote has new commits but local tree is dirty — commit or stash first"
+            return 1
+        else
+            __print_warning "Skipping pull: local tree has uncommitted changes, no remote updates available"
+        fi
+    else
+        __print_success "Repository updated"
+    fi
+
+    __print_info "Updating Homebrew..."
+    # Cloudflare WARP adds latency that triggers brew's curl speed-limit abort.
+    # Pre-download the API files to work around this.
+    if pgrep -q "Cloudflare WARP"; then
+        __print_info "Cloudflare WARP detected, pre-downloading Homebrew API..."
+        local api_cache="$HOME/Library/Caches/Homebrew/api"
+        mkdir -p "$api_cache"
+        curl -fsSL -o "$api_cache/formula.jws.json" "https://formulae.brew.sh/api/formula.jws.json" 2>/dev/null
+        curl -fsSL -o "$api_cache/cask.jws.json" "https://formulae.brew.sh/api/cask.jws.json" 2>/dev/null
+    fi
+    if ! brew update; then
+        __print_error "Failed to update Homebrew"
+        return 1
+    fi
+    __print_success "Homebrew updated"
+
+    if ! outdated=$(brew outdated); then
+        __print_error "Failed to check outdated packages"
+        return 1
+    fi
+
+    local upgrade_failed=false
+    if [[ -z "$outdated" ]]; then
+        __print_success "All packages are already up to date"
+    else
+        __print_info "The following packages can be upgraded:"
+        echo "$outdated"
+        if ! brew upgrade --yes; then
+            # A single deprecated/broken package (e.g. copyq) must not abort
+            # the whole update — record it and continue with stow + pi.
+            __print_warning "Some packages failed to upgrade (see output above)"
+            upgrade_failed=true
+        else
+            __print_success "Packages updated"
+        fi
+    fi
+
+    # Re-stow before pi uses checked-out skills and configuration.
+    __stow_dotfiles || upgrade_failed=true
+
+    if __command_exists pi; then
+        __print_info "Updating pi and configured packages..."
+        if ! (cd "$DOTFILES_DIR" && pi update); then
+            __print_error "Failed to update pi and configured packages"
+            upgrade_failed=true
+        else
+            __print_success "pi and configured packages updated"
+        fi
+    else
+        __print_warning "pi is not installed; skipping pi update"
+    fi
+
+    if [[ "$upgrade_failed" == true ]]; then
+        __print_warning "Update finished with warnings (see above)"
+        return 1
+    fi
+}
+
+cmd_doctor() {
+    __require_no_args doctor "$@" || return 1
+    __print_header "Running diagnostics"
+
+    local issues=0
+
+    if __command_exists brew; then
+        __print_success "Homebrew installed"
+    else
+        __print_error "Homebrew not installed"
+        ((++issues))
+    fi
+
+    if __command_exists stow; then
+        __print_success "GNU Stow installed"
+    else
+        __print_error "GNU Stow not installed"
+        ((++issues))
+    fi
+
+    # Shell
+    if __command_exists bash; then
+        __print_success "Bash installed"
+        if [[ "$SHELL" == *bash* ]]; then
+            __print_success "Bash is default shell"
+        else
+            __print_warning "Bash is not the default shell (current: ${SHELL:-unknown})"
+        fi
+    else
+        __print_error "Bash not found"
+        ((++issues))
+    fi
+
+    # Broken symlinks in $HOME (depth-limited to keep this fast)
+    local broken_links=0
+    while IFS= read -r -d '' link; do
+        if [[ ! -e "$link" ]]; then
+            ((++broken_links))
+        fi
+    done < <(find "${HOME}" -maxdepth 3 -type l -print0 2>/dev/null)
+
+    if [[ $broken_links -eq 0 ]]; then
+        __print_success "No broken symlinks found"
+    else
+        __print_warning "Found $broken_links broken symlinks"
+    fi
+
+    # SSH key
+    if existing=$(__existing_ssh_key); then
+        __print_success "SSH private key exists at $existing"
+        if [[ ! -f "${existing}.pub" ]]; then
+            __print_warning "SSH public key not found at ${existing}.pub"
+        fi
+    else
+        __print_warning "SSH key not found (${SSH_KEY_PATH} or ${LEGACY_SSH_KEY_PATH})"
+    fi
+
+    # Core development tools
+    local missing_tools=()
+    local -a tools=(git herdr nvim node npm bun pi starship stow fd rg fzf jq tmux gh kubectl k9s lazygit)
+    for tool in "${tools[@]}"; do
+        if __command_exists "$tool"; then
+            __print_success "$tool is available"
+        else
+            missing_tools+=("$tool")
+        fi
+    done
+
+    if [[ ${#missing_tools[@]} -gt 0 ]]; then
+        __print_warning "Missing development tools: ${missing_tools[*]}"
+    fi
+
+    # dotfiles reachable?
+    if echo "$PATH" | grep -q "$DOTFILES_DIR/scripts"; then
+        __print_success "scripts/ is in PATH"
+    else
+        __print_warning "scripts/ not in PATH — add 'export PATH=\"$DOTFILES_DIR/scripts:\$PATH\"' to ~/.bashrc"
+    fi
+    if echo "$PATH" | grep -q "$HOME/.local/bin"; then
+        __print_success "~/.local/bin is in PATH (dot link target)"
+    else
+        __print_warning "~/.local/bin not in PATH — 'dot link' symlinks will not resolve"
+    fi
+
+    if [[ $issues -eq 0 ]]; then
+        __print_header "All critical checks passed! ✨"
+        if [[ ${#missing_tools[@]} -gt 0 ]]; then
+            __print_info "Note: Some optional tools are missing but core functionality is intact"
+        fi
+    else
+        __print_header "Found $issues critical issues"
+    fi
+}
+
+cmd_stow() {
+    __require_no_args stow "$@" || return 1
+    __print_header "Stowing dotfiles"
+    __stow_dotfiles
+}
+
+cmd_gen_ssh_key() {
+    __print_header "Generating SSH key for GitHub/GitLab"
+
+    local email=""
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -h|--help)
+                cat << EOF
+USAGE:
+    ${SCRIPT_NAME} gen-ssh-key [EMAIL]
+
+Generate an Ed25519 key in ~/.ssh, add it to ssh-agent and copy the public
+key to the clipboard. The key name is derived from the email domain
+(e.g. user@github.com → id_ed25519_github). If a key already exists you
+will be asked whether to overwrite it (a backup is kept).
+EOF
+                return 0
+                ;;
+            *)
+                email="$1"
+                shift
+                ;;
+        esac
+    done
+
+    if [[ -z "$email" ]]; then
+        email="$(__git_email)"
+    fi
+    if [[ -z "$email" ]]; then
+        read -r -p "Enter email address for SSH key: " email
+    fi
+    if [[ -z "$email" ]]; then
+        __print_error "Email is required"
+        return 1
+    fi
+
+    if [[ ! "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
+        __print_error "Invalid email format: $email"
+        return 1
+    fi
+
+    local domain key_name key_path
+    domain=$(echo "$email" | sed 's/.*@//' | sed 's/\..*//' | tr -cd '[:alnum:]_-' | tr '[:upper:]' '[:lower:]')
+    [[ -n "$domain" ]] || domain="key"
+    key_name="id_ed25519_${domain}"
+    key_path="${HOME}/.ssh/${key_name}"
+
+    __print_info "Key will be created at: $key_path"
+
+    if [[ -f "$key_path" ]]; then
+        __print_warning "SSH key already exists at $key_path"
+        if ! __confirm "Overwrite existing key?" "n"; then
+            __print_info "Key generation cancelled"
+            return 0
+        fi
+        local backup_path
+        backup_path="${key_path}.backup.$(date +%Y%m%d_%H%M%S)"
+        cp "$key_path" "$backup_path"
+        cp "${key_path}.pub" "${backup_path}.pub" 2>/dev/null || true
+        __print_info "Backed up to $backup_path"
+    fi
+
+    mkdir -p "${HOME}/.ssh"
+    chmod 700 "${HOME}/.ssh"
+
+    if ! ssh-keygen -t ed25519 -C "$email" -f "$key_path" -N ""; then
+        __print_error "Failed to generate SSH key"
+        return 1
+    fi
+    __print_success "SSH key generated"
+
+    if ! pgrep -u "$USER" ssh-agent > /dev/null 2>&1; then
+        eval "$(ssh-agent -s)" > /dev/null
+    fi
+    if ssh-add "$key_path" 2>/dev/null; then
+        __print_success "Key added to ssh-agent"
+    else
+        __print_warning "Failed to add key to ssh-agent"
+    fi
+
+    if __command_exists pbcopy; then
+        pbcopy < "${key_path}.pub"
+        __print_success "Public key copied to clipboard!"
+    fi
+
+    echo ""
+    __print_info "Next steps:"
+    echo "  1. The public key has been copied to your clipboard"
+    echo "  2. Go to your Git service and add a new SSH key:"
+    echo "     - GitHub: Settings > SSH and GPG keys > New SSH key"
+    echo "     - GitLab: Preferences > SSH Keys"
+    echo "  3. Paste the key and save"
+    echo ""
+    __print_info "Public key contents:"
+    cat "${key_path}.pub"
+    echo ""
+    __print_success "SSH key generation complete!"
+}
+
+cmd_link() {
+    __require_no_args link "$@" || return 1
+    __print_header "Creating symlink for dot command"
+
+    local target_dir="/usr/local/bin"
+    local link_path="${target_dir}/dot"
+
+    if [[ ! -w "$target_dir" ]]; then
+        target_dir="${HOME}/.local/bin"
+        link_path="${target_dir}/dot"
+        mkdir -p "$target_dir"
+        __print_info "Using ${target_dir} instead"
+    fi
+
+    [[ -L "$link_path" ]] && rm "$link_path"
+
+    if ln -s "${DOTFILES_DIR}/dot" "$link_path"; then
+        __print_success "Created symlink at ${link_path}"
+        __print_info "Make sure ${target_dir} is in your PATH"
+    else
+        __print_error "Failed to create symlink"
+        return 1
+    fi
+}
+
+cmd_unlink() {
+    __require_no_args unlink "$@" || return 1
+    __print_header "Removing dot symlink"
+
+    local -a paths=(
+        "/usr/local/bin/dot"
+        "${HOME}/.local/bin/dot"
+        "/usr/local/bin/dotfiles"
+        "${HOME}/.local/bin/dotfiles"
+    )
+
+    local found=false
+    for link_path in "${paths[@]}"; do
+        if [[ -L "$link_path" ]]; then
+            if rm "$link_path"; then
+                __print_success "Removed symlink at ${link_path}"
+                found=true
+            else
+                __print_error "Failed to remove symlink at ${link_path}"
+            fi
+        fi
+    done
+
+    [[ "$found" == false ]] && __print_warning "No dot symlink found"
+}
+
+cmd_edit() {
+    __require_no_args edit "$@" || return 1
+    __print_header "Opening dotfiles in editor"
+
+    local editor="${EDITOR:-nvim}"
+    if __command_exists "$editor"; then
+        exec "$editor" "$DOTFILES_DIR"
+    else
+        __print_error "Editor '$editor' not found"
+        __print_info "Set EDITOR environment variable to specify your preferred editor"
+        return 1
+    fi
+}
+
+cmd_completions() {
+    __require_no_args completions "$@" || return 1
+    __print_header "Generating bash completions for dot"
+
+    mkdir -p "$COMPLETIONS_DIR"
+
+    cat > "$COMPLETIONS_FILE" << 'EOF'
+# bash completions for the dot command
+# Auto-generated by `dot completions`; sourced from ~/.bashrc.
+
+_dot() {
+    local cur prev words cword
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    local commands="init update doctor package check-packages retry-failed benchmark-shell gen-ssh-key stow completions link unlink edit help"
+
+    # package subcommands
+    if [[ $COMP_CWORD -ge 2 && "${COMP_WORDS[1]}" == "package" ]]; then
+        local pkg_sub="add remove update list help"
+        if [[ $COMP_CWORD -eq 2 ]]; then
+            COMPREPLY=( $(compgen -W "$pkg_sub" -- "$cur") )
+            return 0
+        fi
+        case "${COMP_WORDS[2]}" in
+            add)
+                if [[ $COMP_CWORD -eq 3 ]]; then
+                    COMPREPLY=( $(compgen -W "brew cask" -- "$cur") )
+                else
+                    COMPREPLY=( $(compgen -W "base work" -- "$cur") )
+                fi
+                ;;
+            remove)
+                COMPREPLY=( $(compgen -W "base work auto" -- "$cur") )
+                ;;
+            update)
+                COMPREPLY=( $(compgen -W "all base work" -- "$cur") )
+                ;;
+            list)
+                COMPREPLY=( $(compgen -W "all base work" -- "$cur") )
+                ;;
+        esac
+        return 0
+    fi
+
+    # init options
+    if [[ $COMP_CWORD -eq 2 && "${COMP_WORDS[1]}" == "init" ]]; then
+        COMPREPLY=( $(compgen -W "--skip-ssh --skip-font" -- "$cur") )
+        return 0
+    fi
+
+    # benchmark-shell options
+    if [[ "${COMP_WORDS[1]}" == "benchmark-shell" ]]; then
+        COMPREPLY=( $(compgen -W "-r --runs -v --verbose -h --help" -- "$cur") )
+        return 0
+    fi
+
+    if [[ $COMP_CWORD -eq 1 ]]; then
+        COMPREPLY=( $(compgen -W "$commands" -- "$cur") )
+        return 0
+    fi
+
+    # global options on the first word
+    if [[ $COMP_CWORD -eq 1 && "$cur" == -* ]]; then
+        COMPREPLY=( $(compgen -W "--version -h --help" -- "$cur") )
+        return 0
+    fi
+}
+
+complete -F _dot dot
+EOF
+
+    __print_success "Bash completions generated at ${COMPLETIONS_FILE}"
+    __print_info "~/.bashrc already sources this file if present — restart your shell or run:"
+    echo "  source ${COMPLETIONS_FILE}"
+}
+
+cmd_benchmark_shell() {
+    __print_header "Benchmarking bash shell startup performance"
+
+    local runs=10
+    local verbose=false
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -r|--runs)
+                runs="${2:-}"
+                shift 2
+                ;;
+            -v|--verbose)
+                verbose=true
+                shift
+                ;;
+            -h|--help)
+                cat << EOF
+USAGE:
+    ${SCRIPT_NAME} benchmark-shell [OPTIONS]
+
+${BOLD}OPTIONS:${RESET}
+    -r, --runs NUM      Number of benchmark runs (default: 10, max: 100)
+    -v, --verbose       Show detailed timing for each run
+    -h, --help          Show this help
+EOF
+                return 0
+                ;;
+            *)
+                __print_error "Unknown option: $1"
+                __print_info "Run '${SCRIPT_NAME} benchmark-shell --help' for usage"
+                return 1
+                ;;
+        esac
+    done
+
+    if ! [[ "$runs" =~ ^[0-9]+$ ]] || [[ "$runs" -lt 1 ]] || [[ "$runs" -gt 100 ]]; then
+        __print_error "Number of runs must be between 1 and 100"
+        return 1
+    fi
+
+    __print_info "Running $runs interactive bash startup benchmarks..."
+
+    local -a times=()
+    local total_time=0
+    local elapsed
+
+    for i in $(seq 1 "$runs"); do
+        [[ "$verbose" == true ]] && __print_info "Run $i/$runs..."
+
+        if __command_exists python3; then
+            elapsed=$(python3 -c "
+import time, subprocess
+s = time.time()
+subprocess.run(['bash', '-ic', 'exit'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+print(f'{time.time() - s:.3f}')
+")
+        elif __command_exists perl; then
+            elapsed=$(perl -e "
+use Time::HiRes 'time';
+my \$s = time();
+system('bash', '-ic', 'exit', '>/dev/null', '2>&1');
+printf '%.3f', time() - \$s;
+")
+        else
+            SECONDS=0
+            bash -ic 'exit' >/dev/null 2>&1
+            elapsed="$SECONDS"
+            [[ "$elapsed" == "0" ]] && elapsed="0.001"
+        fi
+
+        [[ -z "$elapsed" || ! "$elapsed" =~ ^[0-9]*\.?[0-9]+$ ]] && elapsed="0.001"
+
+        times+=("$elapsed")
+        total_time=$(awk -v a="$total_time" -v b="$elapsed" 'BEGIN{printf "%.3f", a+b}')
+
+        [[ "$verbose" == true ]] && printf "  Run %2d: %.3f seconds\n" "$i" "$elapsed"
+    done
+
+    local avg_time min_time max_time
+    avg_time=$(awk -v t="$total_time" -v n="$runs" 'BEGIN{printf "%.3f", t/n}')
+    min_time="${times[0]}"
+    max_time="${times[0]}"
+    for time in "${times[@]}"; do
+        min_time=$(awk -v a="$min_time" -v b="$time" 'BEGIN{if (b < a) print b; else print a}')
+        max_time=$(awk -v a="$max_time" -v b="$time" 'BEGIN{if (b > a) print b; else print a}')
+    done
+
+    __print_header "bash Startup Benchmark Results"
+    echo ""
+    echo -e "${BOLD}Configuration:${RESET}"
+    echo "  Shell: $(bash --version | head -1)"
+    echo "  Runs: $runs"
+    echo "  Test: Interactive bash -i startup (sources ~/.bashrc)"
+    echo ""
+    echo -e "${BOLD}Performance Results:${RESET}"
+    printf "  Average time: ${GREEN}%.3f${RESET} seconds\n" "$avg_time"
+    printf "  Fastest time: ${GREEN}%.3f${RESET} seconds\n" "$min_time"
+    printf "  Slowest time: ${YELLOW}%.3f${RESET} seconds\n" "$max_time"
+    printf "  Time range:   ${CYAN}%.3f${RESET} seconds\n" "$(awk -v a="$max_time" -v b="$min_time" 'BEGIN{printf "%.3f", a-b}')"
+    echo ""
+
+    if awk -v a="$avg_time" 'BEGIN{exit !(a <= 0.100)}'; then
+        __print_success "Excellent startup performance! (≤100ms)"
+    elif awk -v a="$avg_time" 'BEGIN{exit !(a <= 0.250)}'; then
+        __print_success "Good startup performance (≤250ms)"
+    elif awk -v a="$avg_time" 'BEGIN{exit !(a <= 0.500)}'; then
+        __print_warning "Fair startup performance (≤500ms)"
+    else
+        __print_warning "Slow startup performance (>500ms)"
+        echo ""
+        __print_info "Tips to improve bash startup time:"
+        __print_info "  - Check ~/.bashrc for slow commands (starship, brew shellenv, completions)"
+        __print_info "  - Profile with: bash -x -i -c 'exit' 2>&1 | head -50"
+        __print_info "  - Consider lazy-loading nvm/opencode/kiro blocks until first use"
+    fi
+}
+
+cmd_retry_failed() {
+    __require_no_args retry-failed "$@" || return 1
+    __print_header "Retrying failed package installations"
+
+    local failed_files=()
+    local failed_file
+    while IFS= read -r failed_file; do
+        failed_files+=("$failed_file")
+    done < <(find "${PACKAGES_DIR}" -name "failed_packages_*.txt" -type f 2>/dev/null | sort)
+
+    if [[ ${#failed_files[@]} -eq 0 ]]; then
+        __print_info "No failed packages file found"
+        return 0
+    fi
+
+    local pending_file
+    pending_file=$(mktemp)
+    for failed_file in "${failed_files[@]}"; do
+        cat "$failed_file" >> "$pending_file"
+    done
+    sort -u -o "$pending_file" "$pending_file"
+
+    __print_info "Found ${#failed_files[@]} failed package file(s)"
+    __print_info "Attempting to retry installation..."
+
+    local retry_count=0 success_count=0
+    local -a remaining_packages=()
+    local package_info package_type package_name
+
+    while IFS= read -r package_info; do
+        [[ -z "$package_info" ]] && continue
+        ((++retry_count))
+
+        if [[ ! "$package_info" =~ ^(brew|cask):(.+)$ ]]; then
+            __print_warning "Unrecognized failed package entry: $package_info"
+            remaining_packages+=("$package_info")
+            continue
+        fi
+
+        package_type="${BASH_REMATCH[1]}"
+        package_name="${BASH_REMATCH[2]}"
+        __print_info "Retrying $package_type package: $package_name"
+
+        if __brew_install "$package_type" "$package_name" 2>/dev/null; then
+            __print_success "Successfully installed: $package_name"
+            ((++success_count))
+        else
+            __print_warning "Still failing: $package_name"
+            remaining_packages+=("$package_info")
+        fi
+    done < "$pending_file"
+
+    rm -f "$pending_file"
+    __print_info "Retry complete: $success_count/$retry_count packages installed"
+
+    if [[ ${#remaining_packages[@]} -eq 0 ]]; then
+        rm -f "${failed_files[@]}"
+        __print_success "All failed packages now installed!"
+        return 0
+    fi
+
+    __save_failed_packages "${remaining_packages[@]}"
+    rm -f "${failed_files[@]}"
+    __print_error "${#remaining_packages[@]} package(s) still failed to install"
+    return 1
+}
+
+cmd_check_packages() {
+    __require_no_args check-packages "$@" || return 1
+    __print_header "Checking installed packages"
+
+    local -a missing_brew=() missing_cask=() installed_brew=() installed_cask=()
+
+    local installed_formulas installed_casks
+    if ! installed_formulas=$(brew list --formula 2>/dev/null); then
+        __print_error "Failed to list installed Homebrew formulas"
+        return 1
+    fi
+    if ! installed_casks=$(brew list --cask 2>/dev/null); then
+        __print_error "Failed to list installed Homebrew casks"
+        return 1
+    fi
+
+    local line parsed package_type package_name
+
+    if [[ -f "${PACKAGES_DIR}/bundle" ]]; then
+        __print_info "Checking base packages..."
+        while IFS= read -r line; do
+            parsed=$(__parse_brewfile_entry "$line") || continue
+            IFS=$'\t' read -r package_type package_name <<< "$parsed"
+
+            if [[ "$package_type" == "brew" ]]; then
+                if __package_in_list "$package_name" "$installed_formulas"; then
+                    installed_brew+=("$package_name")
+                else
+                    missing_brew+=("$package_name")
+                fi
+            elif __package_in_list "$package_name" "$installed_casks"; then
+                installed_cask+=("$package_name")
+            else
+                missing_cask+=("$package_name")
+            fi
+        done < "${PACKAGES_DIR}/bundle"
+    fi
+
+    if [[ -f "${PACKAGES_DIR}/bundle.work" ]]; then
+        __print_info "Checking work packages..."
+        __validate_work_brewfile "${PACKAGES_DIR}/bundle.work" || return 1
+        while IFS= read -r line; do
+            parsed=$(__parse_brewfile_entry "$line") || continue
+            IFS=$'\t' read -r package_type package_name <<< "$parsed"
+
+            if __package_in_list "$package_name" "$installed_formulas"; then
+                installed_brew+=("$package_name (work)")
+            else
+                missing_brew+=("$package_name (work)")
+            fi
+        done < "${PACKAGES_DIR}/bundle.work"
+    fi
+
+    __print_header "Package Status Report"
+
+    echo -e "\n${BOLD}Installed Packages:${RESET}"
+    __print_success "Brew formulas: ${#installed_brew[@]}"
+    __print_success "Casks: ${#installed_cask[@]}"
+
+    if [[ ${#missing_brew[@]} -gt 0 || ${#missing_cask[@]} -gt 0 ]]; then
+        echo -e "\n${BOLD}Missing Packages:${RESET}"
+
+        if [[ ${#missing_brew[@]} -gt 0 ]]; then
+            __print_warning "Missing brew formulas (${#missing_brew[@]}):"
+            printf "  - %s\n" "${missing_brew[@]}"
+        fi
+        if [[ ${#missing_cask[@]} -gt 0 ]]; then
+            __print_warning "Missing casks (${#missing_cask[@]}):"
+            printf "  - %s\n" "${missing_cask[@]}"
+        fi
+
+        echo ""
+        __print_info "Run '${SCRIPT_NAME} init' to install missing packages"
+    else
+        __print_success "All packages are installed!"
+    fi
+}
+
+# ─── package subcommands ──────────────────────────────────────────────────────
+
+cmd_package() {
+    local subcommand="${1:-list}"
+    shift || true
+
+    local argument
+    for argument in "$@"; do
+        if [[ "$argument" == "-h" || "$argument" == "--help" ]]; then
+            __print_package_subcommand_help "$subcommand"
+            return
+        fi
+    done
+
+    case "$subcommand" in
+        add) cmd_package_add "$@" ;;
+        remove) cmd_package_remove "$@" ;;
+        update) cmd_package_update "$@" ;;
+        list) cmd_package_list "$@" ;;
+        -h|--help|help) cmd_package_help ;;
+        *)
+            __print_error "Unknown package subcommand: $subcommand"
+            __print_info "Run '${SCRIPT_NAME} package help' for usage"
+            return 1
+            ;;
+    esac
+}
+
+cmd_package_add() {
+    local package_name="${1:-}"
+    local package_type="${2:-auto}"
+    local bundle_file="${3:-base}"
+
+    if [[ -z "$package_name" ]]; then
+        __print_error "Package name required"
+        __print_info "Usage: ${SCRIPT_NAME} package add <package-name> [brew|cask] [base|work]"
+        return 1
+    fi
+    if [[ $# -gt 3 ]]; then
+        __print_error "Too many arguments for package add"
+        return 1
+    fi
+
+    local target_bundle
+    case "$bundle_file" in
+        base) target_bundle="${PACKAGES_DIR}/bundle" ;;
+        work) target_bundle="${PACKAGES_DIR}/bundle.work" ;;
+        *)
+            __print_error "Bundle must be 'base' or 'work'"
+            return 1
+            ;;
+    esac
+
+    if [[ "$package_type" == "auto" ]]; then
+        __print_info "Detecting package type..."
+        if brew info --json=v2 --formula "$package_name" >/dev/null 2>&1; then
+            package_type="brew"
+        elif brew info --json=v2 --cask "$package_name" >/dev/null 2>&1; then
+            package_type="cask"
+        else
+            __print_warning "Package '$package_name' not found in either formulas or casks"
+            __print_info "Defaulting to brew formula. Use 'brew' or 'cask' to specify explicitly"
+            package_type="brew"
+        fi
+    fi
+
+    if [[ "$package_type" != "brew" && "$package_type" != "cask" ]]; then
+        __print_error "Package type must be 'brew' or 'cask'"
+        return 1
+    fi
+    if [[ "$package_type" == "cask" && "$bundle_file" == "work" ]]; then
+        __print_error "Casks must be added to the base bundle"
+        return 1
+    fi
+
+    local package_line="${package_type} \"${package_name}\""
+    if grep -Fqx -- "$package_line" "$target_bundle" 2>/dev/null; then
+        __print_warning "Package '$package_name' already exists in $(basename "$target_bundle")"
+        return 0
+    fi
+
+    __print_header "Adding $package_type package: $package_name"
+
+    __print_info "Installing package..."
+    if ! __brew_install "$package_type" "$package_name"; then
+        __print_error "Failed to install package"
+        return 1
+    fi
+    __print_success "Package installed successfully"
+
+    __print_info "Adding to bundle file..."
+    if [[ ! -f "$target_bundle" ]]; then
+        __print_warning "Bundle file doesn't exist, creating: $target_bundle"
+        mkdir -p "$(dirname "$target_bundle")"
+        touch "$target_bundle"
+    fi
+
+    # Insert keeping entries sorted by type and name.
+    local temp_file inserted=false
+    temp_file=$(mktemp)
+    local parsed existing_type existing_package
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        parsed=$(__parse_brewfile_entry "$line") || parsed=""
+        if [[ -n "$parsed" && "$inserted" == false ]]; then
+            IFS=$'\t' read -r existing_type existing_package <<< "$parsed"
+            if [[ "$existing_type" == "$package_type" && "$package_name" < "$existing_package" ]] ||
+               [[ "$package_type" == "brew" && "$existing_type" == "cask" ]]; then
+                echo "$package_line" >> "$temp_file"
+                inserted=true
+            fi
+        fi
+        echo "$line" >> "$temp_file"
+    done < "$target_bundle"
+
+    if [[ "$inserted" == false ]]; then
+        echo "$package_line" >> "$temp_file"
+    fi
+
+    mv "$temp_file" "$target_bundle"
+    __print_success "Added '$package_name' to $(basename "$target_bundle")"
+    __print_info "Package will be included in future installations"
+}
+
+cmd_package_remove() {
+    local package_name="${1:-}"
+    local bundle_file="${2:-auto}"
+
+    if [[ -z "$package_name" ]]; then
+        __print_error "Package name required"
+        __print_info "Usage: ${SCRIPT_NAME} package remove <package-name> [base|work|auto]"
+        return 1
+    fi
+    if [[ $# -gt 2 ]]; then
+        __print_error "Too many arguments for package remove"
+        return 1
+    fi
+
+    local escaped_package
+    escaped_package=$(printf '%s' "$package_name" | sed 's/[.[\*^$()+?{|\\]/\\&/g')
+
+    __print_header "Removing package: $package_name"
+
+    local -a bundle_files=()
+    case "$bundle_file" in
+        work) bundle_files=("${PACKAGES_DIR}/bundle.work") ;;
+        base) bundle_files=("${PACKAGES_DIR}/bundle") ;;
+        auto) bundle_files=("${PACKAGES_DIR}/bundle" "${PACKAGES_DIR}/bundle.work") ;;
+        *)
+            __print_error "Bundle must be 'base', 'work', or 'auto'"
+            return 1
+            ;;
+    esac
+
+    local found=false package_type=""
+    local target_bundle temp_file grep_status
+
+    for target_bundle in "${bundle_files[@]}"; do
+        [[ -f "$target_bundle" ]] || continue
+
+        if grep -q "^\\(brew\\|cask\\)[[:space:]]*\"${escaped_package}\"" "$target_bundle"; then
+            found=true
+            if grep -q "^brew[[:space:]]*\"${escaped_package}\"" "$target_bundle"; then
+                package_type="formula"
+            else
+                package_type="cask"
+            fi
+
+            __print_info "Removing from $(basename "$target_bundle")..."
+            temp_file=$(mktemp)
+            if grep -v "^\\(brew\\|cask\\)[[:space:]]*\"${escaped_package}\"" "$target_bundle" > "$temp_file"; then
+                :
+            else
+                grep_status=$?
+                if [[ $grep_status -ne 1 ]]; then
+                    rm -f "$temp_file"
+                    __print_error "Failed to update $(basename "$target_bundle")"
+                    return 1
+                fi
+            fi
+            mv "$temp_file" "$target_bundle"
+            __print_success "Removed '$package_name' from $(basename "$target_bundle")"
+        fi
+    done
+
+    if [[ "$found" == false ]]; then
+        __print_warning "Package '$package_name' not found in any bundle files"
+        return 0
+    fi
+
+    if __confirm "Uninstall '$package_name' from system?" "n"; then
+        __print_info "Uninstalling package..."
+        if [[ "$package_type" == "cask" ]]; then
+            brew uninstall --cask "$package_name"
+        else
+            brew uninstall "$package_name"
+        fi && __print_success "Package uninstalled successfully" \
+            || __print_warning "Failed to uninstall package (it may have dependencies)"
+    else
+        __print_info "Package removed from bundle but left installed on system"
+    fi
+}
+
+cmd_package_update() {
+    local package_name="${1:-all}"
+    local bundle_file="${2:-all}"
+
+    if [[ $# -gt 2 ]]; then
+        __print_error "Too many arguments for package update"
+        return 1
+    fi
+    case "$bundle_file" in
+        all|base|work) ;;
+        *)
+            __print_error "Bundle must be 'all', 'base', or 'work'"
+            return 1
+            ;;
+    esac
+
+    __print_header "Updating packages"
+
+    local installed_formulas installed_casks outdated_formulas outdated_casks
+
+    if [[ "$package_name" != "all" ]]; then
+        installed_formulas=$(brew list --formula 2>/dev/null)
+        installed_casks=$(brew list --cask 2>/dev/null)
+        outdated_formulas=$(brew outdated --formula --quiet 2>/dev/null)
+        outdated_casks=$(brew outdated --cask --quiet 2>/dev/null)
+
+        local package_type outdated_packages target_bundle
+        if __package_in_list "$package_name" "$installed_formulas"; then
+            package_type="brew"
+            outdated_packages="$outdated_formulas"
+        elif __package_in_list "$package_name" "$installed_casks"; then
+            package_type="cask"
+            outdated_packages="$outdated_casks"
+        else
+            __print_error "Package '$package_name' is not installed"
+            return 1
+        fi
+
+        if [[ "$bundle_file" != "all" ]]; then
+            target_bundle="${PACKAGES_DIR}/bundle"
+            [[ "$bundle_file" == "work" ]] && target_bundle="${PACKAGES_DIR}/bundle.work"
+            if [[ "$bundle_file" == "work" && -f "$target_bundle" ]]; then
+                __validate_work_brewfile "$target_bundle" || return 1
+            fi
+            if [[ ! -f "$target_bundle" ]] || ! grep -Fqx -- "${package_type} \"${package_name}\"" "$target_bundle"; then
+                __print_error "Package '$package_name' is not in the $bundle_file bundle"
+                return 1
+            fi
+        fi
+
+        if ! __package_in_list "$package_name" "$outdated_packages"; then
+            __print_info "$package_name is already up to date"
+            return 0
+        fi
+
+        __print_info "Updating $package_type package: $package_name"
+        if __brew_upgrade "$package_type" "$package_name"; then
+            __print_success "Updated $package_name successfully"
+            return 0
+        fi
+        __print_error "Failed to update $package_name"
+        return 1
+    fi
+
+    __print_info "Updating Homebrew..."
+    if ! brew update; then
+        __print_error "Failed to update Homebrew"
+        return 1
+    fi
+    __print_success "Homebrew updated successfully"
+
+    if [[ "$bundle_file" == "all" ]]; then
+        local all_update_failed=false
+        __print_info "Upgrading all installed packages..."
+
+        brew upgrade || { __print_error "Some brew formulas failed to update"; all_update_failed=true; }
+        brew upgrade --cask || { __print_error "Some casks failed to update"; all_update_failed=true; }
+
+        if __confirm "Clean up old versions?" "y"; then
+            __print_info "Cleaning up old package versions..."
+            brew cleanup
+            __print_success "Cleanup completed"
+        fi
+
+        [[ "$all_update_failed" == true ]] && return 1
+        return 0
+    fi
+
+    installed_formulas=$(brew list --formula 2>/dev/null)
+    installed_casks=$(brew list --cask 2>/dev/null)
+    outdated_formulas=$(brew outdated --formula --quiet 2>/dev/null)
+    outdated_casks=$(brew outdated --cask --quiet 2>/dev/null)
+
+    local target_bundle="${PACKAGES_DIR}/bundle"
+    [[ "$bundle_file" == "work" ]] && target_bundle="${PACKAGES_DIR}/bundle.work"
+    if [[ ! -f "$target_bundle" ]]; then
+        __print_error "Bundle file not found: $(basename "$target_bundle")"
+        return 1
+    fi
+    if [[ "$bundle_file" == "work" ]]; then
+        __validate_work_brewfile "$target_bundle" || return 1
+    fi
+
+    __print_info "Updating packages from ${bundle_file} bundle..."
+    local -a updated_packages=() failed_packages=()
+    local line parsed package_type package_name current_packages outdated_packages
+
+    while IFS= read -r line; do
+        parsed=$(__parse_brewfile_entry "$line") || continue
+        IFS=$'\t' read -r package_type package_name <<< "$parsed"
+
+        if [[ "$package_type" == "brew" ]]; then
+            current_packages="$installed_formulas"
+            outdated_packages="$outdated_formulas"
+        else
+            current_packages="$installed_casks"
+            outdated_packages="$outdated_casks"
+        fi
+
+        if ! __package_in_list "$package_name" "$current_packages"; then
+            __print_warning "$package_type package $package_name is not installed, skipping"
+            continue
+        fi
+        if ! __package_in_list "$package_name" "$outdated_packages"; then
+            __print_info "$package_name is already up to date"
+            continue
+        fi
+
+        __print_info "Updating $package_type package: $package_name"
+        if __brew_upgrade "$package_type" "$package_name"; then
+            updated_packages+=("$package_name ($package_type)")
+        else
+            __print_error "Failed to update $package_name"
+            failed_packages+=("$package_name ($package_type)")
+        fi
+    done < "$target_bundle"
+
+    if [[ ${#updated_packages[@]} -gt 0 ]]; then
+        __print_success "Updated ${#updated_packages[@]} packages:"
+        printf "  - %s\n" "${updated_packages[@]}"
+    elif [[ ${#failed_packages[@]} -eq 0 ]]; then
+        __print_info "All packages are already up to date"
+    fi
+
+    if [[ ${#failed_packages[@]} -gt 0 ]]; then
+        __print_error "Failed to update ${#failed_packages[@]} packages:"
+        printf "  - %s\n" "${failed_packages[@]}"
+    fi
+
+    if __confirm "Clean up old versions?" "y"; then
+        __print_info "Cleaning up old package versions..."
+        brew cleanup
+        __print_success "Cleanup completed"
+    fi
+
+    [[ ${#failed_packages[@]} -gt 0 ]] && return 1
+    return 0
+}
+
+cmd_package_list() {
+    local bundle_file="${1:-all}"
+
+    if [[ $# -gt 1 ]]; then
+        __print_error "Too many arguments for package list"
+        return 1
+    fi
+    case "$bundle_file" in
+        all|base|work) ;;
+        *)
+            __print_error "Bundle must be 'all', 'base', or 'work'"
+            return 1
+            ;;
+    esac
+
+    __print_header "Listing packages"
+
+    local installed_formulas installed_casks
+    installed_formulas=$(brew list --formula 2>/dev/null)
+    installed_casks=$(brew list --cask 2>/dev/null)
+
+    local -a bundle_files=() bundle_names=()
+    case "$bundle_file" in
+        work) bundle_files=("${PACKAGES_DIR}/bundle.work") bundle_names=("work") ;;
+        base) bundle_files=("${PACKAGES_DIR}/bundle") bundle_names=("base") ;;
+        all) bundle_files=("${PACKAGES_DIR}/bundle" "${PACKAGES_DIR}/bundle.work") bundle_names=("base" "work") ;;
+    esac
+
+    local i target_bundle bundle_name line parsed package_type package_name
+    for i in "${!bundle_files[@]}"; do
+        target_bundle="${bundle_files[$i]}"
+        bundle_name="${bundle_names[$i]}"
+
+        if [[ ! -f "$target_bundle" ]]; then
+            if [[ "$bundle_file" != "all" ]]; then
+                __print_error "Bundle file not found: $(basename "$target_bundle")"
+                return 1
+            fi
+            continue
+        fi
+        if [[ "$bundle_name" == "work" ]]; then
+            __validate_work_brewfile "$target_bundle" || return 1
+        fi
+
+        echo -e "\n${BOLD}${bundle_name^} packages ($(basename "$target_bundle")):${RESET}"
+
+        local -a brew_packages=() cask_packages=()
+        while IFS= read -r line; do
+            parsed=$(__parse_brewfile_entry "$line") || continue
+            IFS=$'\t' read -r package_type package_name <<< "$parsed"
+            if [[ "$package_type" == "brew" ]]; then
+                brew_packages+=("$package_name")
+            else
+                cask_packages+=("$package_name")
+            fi
+        done < "$target_bundle"
+
+        if [[ ${#brew_packages[@]} -gt 0 ]]; then
+            echo -e "  ${BOLD}Brew formulas (${#brew_packages[@]}):${RESET}"
+            for package in "${brew_packages[@]}"; do
+                if __package_in_list "$package" "$installed_formulas"; then
+                    __print_success "    $package"
+                else
+                    __print_error "    $package (not installed)"
+                fi
+            done
+        fi
+
+        if [[ ${#cask_packages[@]} -gt 0 ]]; then
+            echo -e "  ${BOLD}Casks (${#cask_packages[@]}):${RESET}"
+            for package in "${cask_packages[@]}"; do
+                if __package_in_list "$package" "$installed_casks"; then
+                    __print_success "    $package"
+                else
+                    __print_error "    $package (not installed)"
+                fi
+            done
+        fi
+
+        if [[ ${#brew_packages[@]} -eq 0 && ${#cask_packages[@]} -eq 0 ]]; then
+            __print_info "  No packages found"
+        fi
+    done
+}
+
+__print_package_subcommand_help() {
+    local subcommand="$1"
+
+    case "$subcommand" in
+        add)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} package add NAME [brew|cask] [base|work]"
+            echo ""
+            echo "Add and install a package. Work bundles accept formulas only."
+            ;;
+        remove)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} package remove NAME [base|work|auto]"
+            echo ""
+            echo "Remove a package from one or both bundles and optionally uninstall it."
+            ;;
+        update)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} package update [NAME|all] [all|base|work]"
+            echo ""
+            echo "Update one package, every installed package, or packages in one bundle."
+            ;;
+        list)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} package list [all|base|work]"
+            echo ""
+            echo "List package declarations and their installation status."
+            ;;
+        help) cmd_package_help ;;
+        *)
+            __print_error "Unknown package subcommand: $subcommand"
+            return 1
+            ;;
+    esac
+}
+
+cmd_package_help() {
+    echo -e "${BOLD}${SCRIPT_NAME} package${RESET} - Package management commands"
+    echo ""
+    echo -e "${BOLD}USAGE:${RESET}"
+    echo "    ${SCRIPT_NAME} package [SUBCOMMAND] [OPTIONS]"
+    echo ""
+    echo -e "${BOLD}SUBCOMMANDS:${RESET}"
+    echo "    add NAME [TYPE] [BUNDLE]   Add package to bundle and install it"
+    echo "    remove NAME [BUNDLE]       Remove package from bundle and optionally uninstall"
+    echo "    update [NAME] [BUNDLE]     Update packages (all packages by default)"
+    echo "    list [BUNDLE]              List packages in bundle files (default)"
+    echo "    help                       Show this help message"
+    echo ""
+    echo -e "${BOLD}PARAMETERS:${RESET}"
+    echo "    NAME                       Package name (required for add/remove, optional for update)"
+    echo "    TYPE                       Package type: 'brew' or 'cask' (auto-detected if not specified)"
+    echo "    BUNDLE                     Bundle file: 'base', 'work', or 'all' (default varies by command)"
+    echo ""
+    echo -e "${BOLD}EXAMPLES:${RESET}"
+    echo "    ${SCRIPT_NAME} package list               # List all packages"
+    echo "    ${SCRIPT_NAME} package list base          # List base packages only"
+    echo "    ${SCRIPT_NAME} package list work          # List work packages only"
+    echo "    ${SCRIPT_NAME} package add git            # Add git formula to base bundle"
+    echo "    ${SCRIPT_NAME} package add docker cask    # Add docker cask to base bundle"
+    echo "    ${SCRIPT_NAME} package remove git         # Remove git from any bundle"
+    echo "    ${SCRIPT_NAME} package update             # Update all installed packages"
+    echo "    ${SCRIPT_NAME} package update git         # Update specific package"
+    echo "    ${SCRIPT_NAME} package update all base    # Update only base bundle packages"
+    echo "    ${SCRIPT_NAME} package update all work    # Update only work bundle packages"
+    echo ""
+    echo -e "${BOLD}NOTES:${RESET}"
+    echo "    - Package type is auto-detected if not specified"
+    echo "    - Packages are kept sorted alphabetically within each type"
+    echo "    - Adding a package installs it immediately and adds to bundle"
+    echo "    - Removing a package removes from bundle and optionally uninstalls"
+    echo "    - Updating without arguments updates all installed packages"
+    echo "    - Work bundle (bundle.work) is for work-specific packages (formulas only)"
+    echo "    - Base bundle (bundle) is for general-purpose packages"
+    echo ""
+}
+
+# ─── Help & main ──────────────────────────────────────────────────────────────
+
+__print_command_help() {
+    local command_name="$1"
+
+    case "$command_name" in
+        init)
+            cat << EOF
+USAGE:
+    ${SCRIPT_NAME} init [--skip-ssh] [--skip-font]
+
+Initialize the complete environment. Skip SSH key or font setup with the
+corresponding option.
+EOF
+            ;;
+        update)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} update\n\nPull dotfiles, update Homebrew (with upgrade confirmation), re-stow configuration, and update pi."
+            ;;
+        doctor)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} doctor\n\nRun environment diagnostics."
+            ;;
+        package)
+            cmd_package_help
+            ;;
+        check-packages)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} check-packages\n\nReport installed and missing Brewfile packages."
+            ;;
+        retry-failed)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} retry-failed\n\nRetry every package recorded by a failed init run."
+            ;;
+        benchmark-shell)
+            cat << EOF
+USAGE:
+    ${SCRIPT_NAME} benchmark-shell [-r NUM] [-v]
+
+${BOLD}OPTIONS:${RESET}
+    -r, --runs NUM      Number of runs (1-100, default: 10)
+    -v, --verbose       Show each timing
+EOF
+            ;;
+        gen-ssh-key)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} gen-ssh-key [EMAIL]\n\nGenerate an Ed25519 key, add it to ssh-agent, and copy its public key."
+            ;;
+        stow)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} stow\n\nRe-create symlinks from the repository's home directory."
+            ;;
+        completions)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} completions\n\nGenerate bash completions for dot (completions/dot.bash)."
+            ;;
+        link)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} link\n\nCreate a global symlink for dot."
+            ;;
+        unlink)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} unlink\n\nRemove global dot symlinks."
+            ;;
+        edit)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} edit\n\nOpen the dotfiles repository in \$EDITOR."
+            ;;
+        help)
+            echo -e "${BOLD}USAGE:${RESET}\n    ${SCRIPT_NAME} help [COMMAND]"
+            ;;
+        *)
+            __print_error "Unknown command: $command_name"
+            return 1
+            ;;
+    esac
+}
+
+cmd_help() {
+    local command_name="${1:-}"
+    if [[ -n "$command_name" ]]; then
+        __print_command_help "$command_name"
+        return
+    fi
+
+    echo -e "${BOLD}${SCRIPT_NAME}${RESET} - Dotfiles management tool"
+    echo "Version: ${VERSION}"
+    echo ""
+    echo -e "${BOLD}USAGE:${RESET}"
+    echo "    ${SCRIPT_NAME} [OPTIONS] COMMAND [ARGS]"
+    echo ""
+    echo -e "${BOLD}COMMANDS:${RESET}"
+    echo "    init                Initialize and install dotfiles"
+    echo "    update              Update dotfiles, packages, and pi"
+    echo "    doctor              Run diagnostics and check installation"
+    echo "    package             Package management commands (add, remove, list)"
+    echo "    check-packages      Check which packages are installed/missing"
+    echo "    retry-failed        Retry failed package installations"
+    echo "    benchmark-shell     Benchmark bash shell startup performance"
+    echo "    gen-ssh-key         Generate SSH key for GitHub/GitLab with email"
+    echo "    stow                Create symlinks for dotfiles using GNU Stow"
+    echo "    completions         Generate bash completions"
+    echo "    link                Install dot command globally (create symlink in PATH)"
+    echo "    unlink              Uninstall global dot command (remove symlink)"
+    echo "    edit                Open dotfiles in editor"
+    echo "    help                Show this help message (default)"
+    echo ""
+    echo -e "${BOLD}GLOBAL OPTIONS:${RESET}"
+    echo "    --version       Show version information"
+    echo "    -h, --help      Show this help message"
+    echo ""
+    echo -e "${BOLD}INIT OPTIONS:${RESET}"
+    echo "    --skip-ssh      Skip SSH key generation"
+    echo "    --skip-font     Skip font installation"
+    echo ""
+    echo -e "${BOLD}EXAMPLES:${RESET}"
+    echo "    ${SCRIPT_NAME} init                      # Full initialization"
+    echo "    ${SCRIPT_NAME} init --skip-ssh           # Initialize without SSH setup"
+    echo "    ${SCRIPT_NAME} update                    # Update everything"
+    echo "    ${SCRIPT_NAME} doctor                    # Check installation health"
+    echo "    ${SCRIPT_NAME} package list              # List all packages"
+    echo "    ${SCRIPT_NAME} package add git           # Add git package to base bundle"
+    echo "    ${SCRIPT_NAME} package update            # Update all packages"
+    echo "    ${SCRIPT_NAME} package remove docker     # Remove docker from bundles"
+    echo "    ${SCRIPT_NAME} check-packages            # See package installation status"
+    echo "    ${SCRIPT_NAME} retry-failed              # Retry any failed installations"
+    echo "    ${SCRIPT_NAME} benchmark-shell           # Benchmark bash shell startup time"
+    echo "    ${SCRIPT_NAME} benchmark-shell -r 20 -v  # Run 20 benchmarks with verbose output"
+    echo "    ${SCRIPT_NAME} gen-ssh-key               # Generate SSH key (prompts for email)"
+    echo "    ${SCRIPT_NAME} gen-ssh-key user@github.com  # Generate SSH key with email"
+    echo "    ${SCRIPT_NAME} stow                      # Create symlinks for dotfiles"
+    echo "    ${SCRIPT_NAME} completions               # Generate bash completions"
+    echo "    ${SCRIPT_NAME} link                      # Install dot command globally in PATH"
+    echo ""
+    echo -e "${BOLD}CONFIGURATION:${RESET}"
+    echo "    Dotfiles directory: ${DOTFILES_DIR}"
+    echo "    Packages directory: ${PACKAGES_DIR}"
+    echo "    Home directory:     ${HOME_DIR}"
+    echo ""
+    echo -e "${BOLD}NOTES:${RESET}"
+    echo "    - Package installation is resilient to failures"
+    echo "    - Failed packages are logged and can be retried later"
+    echo "    - pi CLI updated via \`${SCRIPT_NAME} update\`"
+    echo "    - Doctor command checks all critical development tools"
+    echo ""
+}
+
+main() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --skip-ssh) export SKIP_SSH=true; shift ;;
+            --skip-font) export SKIP_FONT=true; shift ;;
+            --version)
+                echo "${SCRIPT_NAME} version ${VERSION}"
+                exit 0
+                ;;
+            -h|--help)
+                cmd_help
+                exit 0
+                ;;
+            *) break ;;
+        esac
+    done
+
+    local cmd="${1:-help}"
+    shift || true
+
+    if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+        cmd_help "$cmd"
+        return
+    fi
+
+    case "$cmd" in
+        init) cmd_init "$@" ;;
+        update) cmd_update "$@" ;;
+        doctor) cmd_doctor "$@" ;;
+        package) cmd_package "$@" ;;
+        check-packages) cmd_check_packages "$@" ;;
+        retry-failed) cmd_retry_failed "$@" ;;
+        benchmark-shell) cmd_benchmark_shell "$@" ;;
+        gen-ssh-key) cmd_gen_ssh_key "$@" ;;
+        stow) cmd_stow "$@" ;;
+        completions) cmd_completions "$@" ;;
+        link) cmd_link "$@" ;;
+        unlink) cmd_unlink "$@" ;;
+        edit) cmd_edit "$@" ;;
+        help) cmd_help "$@" ;;
+        *)
+            __print_error "Unknown command: $cmd"
+            echo "Run '${SCRIPT_NAME} help' for usage information"
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"

@@ -13,6 +13,34 @@
 * theme: gruvbox dark
 * ai: pi
 
+## dot CLI
+
+This repo ships with a `dot` CLI (a single bash script, `./dot`) that automates
+setup, updates, diagnostics and package management. It is wired into
+`~/.bashrc` as a function: `dot` without arguments cd's into the repo,
+`dot <command>` runs the CLI.
+
+| Command | What it does |
+|---|---|
+| `dot doctor` | Diagnostics: brew, stow, bash, symlinks, SSH key, dev tools |
+| `dot stow` | Re-apply `home/` symlinks via GNU Stow |
+| `dot init` | Full setup: Homebrew, `packages/bundle`, stow, bun/pi, SSH key |
+| `dot update` | git pull → brew update/upgrade → re-stow → pi update |
+| `dot package add <n> [brew\|cask] [base\|work]` | Install + add to Brewfile |
+| `dot package list` / `dot check-packages` | Show bundles / installed vs missing |
+| `dot retry-failed` | Retry failed installs from `packages/failed_packages_*.txt` |
+| `dot gen-ssh-key [email]` | ed25519 key, add to ssh-agent, copy pub key |
+| `dot benchmark-shell` | Measure interactive bash startup time |
+| `dot completions` | Generate bash completions (`completions/dot.bash`) |
+| `dot link` / `dot unlink` | Global `dot` symlink in `~/.local/bin` |
+| `dot edit` | Open the repo in `$EDITOR` |
+
+Run `./dot help` for the full reference.
+
+> `init`, `update`, `package add/remove/update`, `gen-ssh-key`, `link`, `stow`
+> change your system or `$HOME`. For read-only checks use `dot doctor`,
+> `dot check-packages`, `dot package list`.
+
 ## Stow quick start
 
 This repo uses GNU Stow with the `home/` directory as a mirror of your real `$HOME`.

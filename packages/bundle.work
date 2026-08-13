@@ -1,0 +1,6 @@
+# Work-specific packages — installed only on explicit request (dot init prompts
+# before installing this bundle). Formulas only: casks are rejected here by
+# design (use packages/bundle for casks).
+#
+# Add packages with:  dot package add <name> brew work
+#
