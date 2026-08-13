@@ -4,11 +4,13 @@ description: Extract non-obvious learnings from session to AGENTS.md files to bu
 
 Analyze this session and extract non-obvious learnings to add to AGENTS.md files.
 
-AGENTS.md files can exist at any directory level, not just the project root. When an agent reads a file, any AGENTS.md in parent directories are automatically loaded into the context of the tool read. Place learnings as close to the relevant code as possible:
+AGENTS.md files can exist at any directory level, not just the project root. At session start pi loads AGENTS.md from the working directory and its parent directories (up to filesystem root), not per file read. A deep AGENTS.md (e.g. `packages/foo/AGENTS.md`) is only loaded when a session starts inside that directory or one of its subdirectories — it is NOT auto-loaded when a session merely touches files there. So prefer:
 
-- Project-wide learnings → root AGENTS.md
-- Package/module-specific → packages/foo/AGENTS.md
-- Feature-specific → src/auth/AGENTS.md
+- Project-wide learnings → root AGENTS.md (always loaded)
+- Package/module-specific → packages/foo/AGENTS.md (only if you work with the session cd'd there)
+- Feature-specific → src/auth/AGENTS.md (same caveat)
+
+When unsure, put the learning in the root AGENTS.md so it reliably applies.
 
 What counts as a learning (non-obvious discoveries only):
 
