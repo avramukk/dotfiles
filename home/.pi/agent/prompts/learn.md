@@ -36,7 +36,8 @@ Process:
 1. Review session for discoveries, errors that took multiple attempts, unexpected connections
 2. Determine scope - what directory does each learning apply to?
 3. Read existing AGENTS.md files at relevant levels
-4. Create or update AGENTS.md at the appropriate level
+4. Propose to use update AGENTS.md at the appropriate level and use ask_user
+   toll for proposals
 5. Keep entries to 1-3 lines per insight
 
 After updating, summarize which AGENTS.md files were created/updated and how many learnings per file.
