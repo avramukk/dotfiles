@@ -1,0 +1,16 @@
+# Hunk config — symlinked from dotfiles to ~/.config/hunk/config.toml
+theme = "github-dark-high-contrast"
+mode = "auto"
+vcs = "git"
+watch = true
+line_numbers = true
+tab_width = 4
+wrap_lines = false
+hunk_headers = true
+menu_bar = true
+agent_notes = true
+exclude_untracked = false
+transparent_background = false
+prompt_save_view_preferences = false  # keep hunk from clobbering this tracked dotfile
+copy_decorations = false
+cursor_line = "row"
