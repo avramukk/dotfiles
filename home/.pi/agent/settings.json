@@ -1,10 +1,10 @@
 {
-  "lastChangelogVersion": "0.84.1",
+  "lastChangelogVersion": "0.84.2",
   "theme": "gruvbox-dark-hard-custom",
   "defaultProvider": "opencode-go",
   "defaultModel": "deepseek-v4-flash",
   "hideThinkingBlock": true,
-  "defaultThinkingLevel": "off",
+  "defaultThinkingLevel": "low",
   "packages": [
     "git:https://github.com/hasit/pi-community-themes",
     "npm:pi-zentui",
@@ -13,10 +13,10 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:pi-skill-acli",
     "npm:@upstash/context7-pi",
-    "npm:pi-startup-redraw-fix"
-  ],
-  "enabledModels": [
-    "copilot/codex-5.3"
+    "npm:pi-startup-redraw-fix",
+    "npm:@roodriigoooo/pi-hunk",
+    "npm:pi-subagents",
+    "npm:@narumitw/pi-btw"
   ],
   "editorPaddingX": 2,
   "quietStartup": false,
