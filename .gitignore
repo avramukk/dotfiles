@@ -26,6 +26,22 @@ home/.config/opencode/package-lock.json
 # pi runtime data
 pi/.pi/
 
+# pi agent local runtime state (machine-specific, kept in ~/.pi/agent but not synced)
+home/.pi/agent/auth.json
+home/.pi/agent/models-store.json
+home/.pi/agent/git/
+home/.pi/agent/sessions/
+home/.pi/agent/mcp-cache.json
+home/.pi/agent/run-history.jsonl
+home/.pi/agent/mcp-oauth/
+home/.pi/agent/missions/
+home/.pi/agent/compound-engineering/
+home/.pi/agent/skills/
+home/.pi/agent/models.json
+home/.pi/agent/keybindings.json
+home/.pi/agent/trust.json
+home/.pi/agent/npm/
+
 # local runtime DB/cache (not dotfiles)
 datastore.np/
 
