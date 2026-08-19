@@ -126,6 +126,12 @@ alias tn='tmux new'
 alias gp='git pull'
 alias gs='git status'
 alias lg='lazygit'
+# Docker aliases
+# docker CLI already talks to Podman via /var/run/docker.sock (podman-mac-helper),
+# but alias docker=podman for direct native podman CLI in the interactive shell.
+# Note: tools that exec the docker binary directly (lazydocker, Testcontainers, IDEs)
+# bypass shell aliases and still use the socket bridge → Podman engine.
+alias docker=podman
 alias ld='lazydocker'
 alias o='opencode .'
 alias tf='terraform'

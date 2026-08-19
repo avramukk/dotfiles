@@ -45,6 +45,10 @@ tap "yvee1/tools", "https://github.com/Yvee1/homebrew-tools"
 # CLI for Amazon ECS to manage clusters and tasks for development
 brew "amazon-ecs-cli"
 # Cryptography and SSL/TLS Toolkit
+# Docker CLI + Compose client, pointing at Podman engine via /var/run/docker.sock (podman-mac-helper)
+brew "docker"
+brew "docker-compose"
+brew "docker-credential-helper"
 brew "openssl@3"
 # Cryptographic recipes and primitives for Python
 brew "cryptography"
@@ -238,7 +242,7 @@ brew "kubectx"
 brew "kubeshark"
 # Template-free customization of Kubernetes YAML manifests
 brew "kustomize"
-# Lazier way to manage everything docker
+# Lazier way to manage everything docker (works against Podman via docker socket)
 brew "lazydocker"
 # Simple terminal UI for git commands
 brew "lazygit"

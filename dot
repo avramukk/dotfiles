@@ -1705,7 +1705,7 @@ cmd_package_help() {
     echo "    ${SCRIPT_NAME} package list base          # List base packages only"
     echo "    ${SCRIPT_NAME} package list work          # List work packages only"
     echo "    ${SCRIPT_NAME} package add git            # Add git formula to base bundle"
-    echo "    ${SCRIPT_NAME} package add docker cask    # Add docker cask to base bundle"
+    echo "    ${SCRIPT_NAME} package add docker       # Add docker formula to base bundle"
     echo "    ${SCRIPT_NAME} package remove git         # Remove git from any bundle"
     echo "    ${SCRIPT_NAME} package update             # Update all installed packages"
     echo "    ${SCRIPT_NAME} package update git         # Update specific package"
