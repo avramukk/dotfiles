@@ -8,52 +8,29 @@
   },
   "permission": {
     "bash": {
-      "*": "ask",
-      "curl *": "ask",
-      "git *": "ask",
-      "gh *": "ask",
-      "glab *": "ask",
-      "acli jira *": "ask",
-      "terraform *": "ask",
-      "pre-commit *": "ask",
-      "aws sso login *": "allow",
-      "aws sts *": "allow",
-      "grep *": "allow",
-      "glob *": "allow",
-      "echo *": "allow",
-      "cat *": "allow",
-      "head *": "allow",
-      "tail *": "allow",
-      "find *": "allow",
-      "diff *": "allow",
-      "ls *": "allow",
-      "herdr *": "allow"
+      "*": "allow",
+      "kubectl delete *": "deny",
+      "terraform destroy *": "deny",
+      "git push --force *": "deny",
+      "rm -rf ~*": "deny",
+      "rm -rf /*": "deny"
     },
     "edit": {
-      "*": "ask"
+      "*": "allow",
+      "~/.terraformrc": "deny"
     },
     "read": {
       "**": "allow",
       "~/.terraformrc": "deny"
     },
     "write": {
-      "*": "ask"
+      "*": "allow",
+      "~/.terraformrc": "deny"
     },
     "external_directory": {
       "~/.terraformrc": "deny",
       "**": "allow"
-    },
-    "atlassian*": "ask",
-    "slack_conversations_add_message": "ask",
-    "slack_reactions_add": "ask",
-    "slack_reactions_remove": "ask",
-    "slack_attachment_get_data": "ask",
-    "slack_conversations_join": "ask",
-    "slack_conversations_leave": "ask",
-    "slack_conversations_mark": "ask",
-    "slack_usergroups_create": "ask",
-    "slack_usergroups_update": "ask",
-    "slack_usergroups_users_update": "ask"
+    }
   },
   "mcp": {
     "grafana": {
