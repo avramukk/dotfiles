@@ -60,6 +60,50 @@
       },
       "enabled": false
     },
+    "playwright": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp@latest"
+      ]
+    },
+    "billing-***REMOVED***": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "awslabs.billing-cost-management-mcp-server@latest"
+      ],
+      "environment": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_PROFILE": "***REMOVED***",
+        "AWS_REGION": "us-east-1"
+      }
+    },
+    "billing-***REMOVED***": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "awslabs.billing-cost-management-mcp-server@latest"
+      ],
+      "environment": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_PROFILE": "***REMOVED***",
+        "AWS_REGION": "us-east-1"
+      }
+    },
+    "billing-yai": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "awslabs.billing-cost-management-mcp-server@latest"
+      ],
+      "environment": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_PROFILE": "yai",
+        "AWS_REGION": "us-east-1"
+      }
+    },
     "excalidraw": {
       "type": "remote",
       "url": "https://mcp.excalidraw.com",
@@ -69,7 +113,7 @@
   "plugin": [
     "@tarquinen/opencode-smart-title",
     "@bastiangx/opencode-unmoji",
-    "opencode-see-image@1.2.5",
+    "opencode-see-image@1.3.2",
     "magic-compact",
     "@bogyie/opencode-kiro-plugin",
     "caveman-opencode-plugin@latest"

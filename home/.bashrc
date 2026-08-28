@@ -133,7 +133,7 @@ alias lg='lazygit'
 # bypass shell aliases and still use the socket bridge → Podman engine.
 alias docker=podman
 alias ld='lazydocker'
-alias o='opencode .'
+alias o='opencode2 .'
 alias tf='terraform'
 alias k=kubectl
 alias kk='kiro-cli'
