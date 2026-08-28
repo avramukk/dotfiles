@@ -10,6 +10,11 @@ exec-on-workspace-change = [
 	'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE',
 ]
 
+# Keep the active Helium window always fullscreen
+on-focus-changed = [
+	'exec-and-forget [ "$(aerospace list-windows --focused --format %{app-bundle-id})" = "net.imput.helium" ] && aerospace fullscreen on',
+]
+
 # Place a copy of this config to ~/.aerospace.toml
 # After that, you can edit ~/.aerospace.toml to your liking
 
@@ -199,6 +204,10 @@ if.app-id = 'com.apple.finder'
 run = ['layout floating']
 
 [[on-window-detected]]
+if.app-id = 'net.imput.helium'
+run = ['move-node-to-workspace 1', 'layout tiling', 'fullscreen on']
+
+[[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
 run = ['layout floating']
 
@@ -232,18 +241,6 @@ run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'NULL-APP-BUNDLE-ID'
-run = ['layout floating']
-
-[[on-window-detected]]
-if.app-id = 'com.google.Chrome'
-run = ['layout floating']
-
-[[on-window-detected]]
-if.app-id = 'com.google.Chrome'
-run = ['move-node-to-workspace 4']
-
-[[on-window-detected]]
-if.app-id = 'org.chromium.Chromium'
 run = ['layout floating']
 
 [[on-window-detected]]
