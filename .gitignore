@@ -48,8 +48,6 @@ datastore.np/
 # Private/local agent configs
 home/.config/opencode/agents/*work*.md
 home/.config/opencode/agents/*.private.md
-home/.config/opencode/AGENTS.md
-home/.pi/agent/AGENTS.md
 
 # Generated Kiro ACP bridge agent config
 .kiro/agents/pi-kiro-*.json
