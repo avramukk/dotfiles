@@ -46,6 +46,7 @@ The `todo` tool is powered by [@juicesharp/rpiv-todo](https://www.npmjs.com/pack
 - Use `rpiv-todo` as live in-session execution tracking; use `TODO-<task-slug>.md` as durable task memory across sessions.
 
 ### Session start behavior
+- check last git changes
 - For multi-step work, derive `<task-slug>` from the request and check `TODO-<task-slug>.md`.
 - If found: summarize open `- [ ]` items and continue from that file.
 - If missing: propose a 2-6 item checklist and suggested filename, then create only after explicit approval.
