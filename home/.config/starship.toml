@@ -33,7 +33,7 @@ modified = "*"
 format = ' [($profile )]($style)'
 style = 'bold yellow'
 symbol = '☁️ '
-disabled = true
+disabled = false
 force_display = false
 
 [aws.region_aliases]
