@@ -108,6 +108,12 @@
       "type": "remote",
       "url": "https://mcp.excalidraw.com",
       "enabled": false
+    },
+    "servers": {
+      "shiori": {
+        "type": "remote",
+        "url": "https://www.shiori.sh/mcp"
+      }
     }
   },
   "plugin": [
