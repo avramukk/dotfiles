@@ -22,7 +22,7 @@ opt.number = true
 opt.relativenumber = false
 opt.scrolloff = 8
 opt.textwidth = 80
-opt.linebreak = true
+opt.linebreak = false
 vim.g.snacks_animate = false
 
 -- split windows
@@ -31,8 +31,8 @@ opt.splitbelow = true -- split horizontal window to the bottom
 
 -- search settings
 opt.ignorecase = true -- ignore case when searching
-opt.smartcase = true -- if you include mixed case in your search, assumes you want case-sensitive
-opt.wrap = false -- don't wrap search
+opt.smartcase = true  -- if you include mixed case in your search, assumes you want case-sensitive
+opt.wrap = false      -- don't wrap search
 opt.cursorline = true
 --
 vim.g.mkdp_browser = "/Applications/Arc.app/Contents/MacOS/Arc"
