@@ -21,17 +21,6 @@ description for the dotfiles repository.
 - Prefer simple commands executed one at a time with full output visible. Avoid complex wrappers, hidden output, temporary logs, and automatic cleanup unless required.
 - Prefer multiselect questions when asking the user to choose between options.
 
-## Task Tracking
-
-The `todo` tool is powered by [@juicesharp/rpiv-todo](https://www.npmjs.com/package/@juicesharp/rpiv-todo) — a persistent overlay visible in the pi TUI. Press `ctrl+t` to collapse/expand the panel.
-
-- Use `todo` for **any task with 3+ steps**, multi-file changes, feature work, bug fixes, or when the user gives a list of things to do.
-- Create all tasks **upfront** before starting work, so the user sees the full scope.
-- Mark a task `in_progress` (with `activeForm`) **before** starting it. Mark it `completed` **immediately** when done — never batch completions.
-- Exactly one task should be `in_progress` at a time.
-- Never mark a task `completed` if tests are failing, the implementation is partial, or there are unresolved errors.
-- Skip `todo` for single trivial tasks and purely conversational requests.
-
 ## Project Task Files (per-task TODO files)
 
 - TODO files should not be committed.
