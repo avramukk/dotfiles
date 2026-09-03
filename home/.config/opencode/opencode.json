@@ -33,6 +33,16 @@
     }
   },
   "mcp": {
+    "convex": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "convex@latest",
+        "mcp",
+        "start"
+      ]
+    },
     "grafana": {
       "type": "local",
       "command": [
