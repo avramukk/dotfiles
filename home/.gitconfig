@@ -9,7 +9,6 @@
 	rebase = true
 [core]
 	excludesfile = /Users/kolia/.gitignore_global
-	fsmonitor = true
 	preloadindex = true
 	fscache = true
 [filter "lfs"]
