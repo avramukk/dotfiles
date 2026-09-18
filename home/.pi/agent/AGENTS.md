@@ -52,6 +52,7 @@ Before editing files:
 
 ## AWS and Cloud CLI
 - Treat `~/.aws/config` as the source of truth for profiles, accounts, roles, SSO sessions, and regions.
+- When picking an AWS profile for work in a repository, prefer the profile↔project/env mapping declared in the nearest project `AGENTS.md`; use `~/.aws/config` as the source of truth for profile definitions, but consult the project `AGENTS.md` to choose which profile a task needs.
 - Before any AWS operation (read or write), verify the current profile is set and SSO session is still valid (`aws sts get-caller-identity`). If expired, run `aws sso login` with the current profile.
 - Before AWS write operations, confirm active profile, account, and region.
 - Before using or adding an AWS SSO alias, inspect `~/.bashrc` and preserve existing conventions.
@@ -64,6 +65,7 @@ Before editing files:
   - `gitlab-pipeline-watch` — watch MR pipeline status
   - `commit-messages` — generate commit messages
 - For Atlassian CLI (`acli`) operations, load the `acli` skill first.
+- For ***REMOVED*** use Atlassian MCP.
 - Before any `kubectl` operation, run `kubectl config current-context`.
 - For Kubernetes writes, also verify namespace and target resources.
 
@@ -109,6 +111,26 @@ Before any of these, invoke `ask_user` with short context + concrete options; on
 - `kubectl exec` / `port-forward` when they can affect a live system beyond read-only debugging intent — ask if unsure.
 
 Batch edit approval: one explicit signal (e.g. "apply", "edit", "do it") may cover a previously listed local edit batch. Remote writes (Atlassian, AWS, Kubernetes, Grafana, Slack) always need a separate `ask_user` gate.
+
+## Skills
+- Treat installed skills as a first-class toolbox. Before designing your own approach, match the
+  request against skill names and their trigger descriptions. A skill's "use when…" text is a
+  standing instruction: act on it even when the user did not name the skill.
+- Clear match → load the skill immediately and say in one line which skill and why. No approval
+  needed when the match is obvious and the skill only reads, searches, or analyzes.
+- Partial match, competing skills, or an adjacent skill that would clearly help (e.g.
+  `dashboarding` while editing metric queries) → propose it through the ask tool:
+  "I propose `<skill>` — it <what it does>, which fits because <reason>. Use it?"
+  Options: use it / skip / pick another. Never more than 1–2 proposals at once, never a wall of options.
+- When you need clarification, include the skill proposal in the same ask-tool round — do not defer
+  the skill question to a later turn.
+- If a skill you need is unavailable or its invocation is rejected (manual-only), say so and offer
+  to enable it via `/toggle-skills` before falling back to a manual approach.
+- Prefer a matching skill over improvising a solution from scratch. Do not silently skip a skill
+  that plainly fits the task.
+- A skill never bypasses `Security Boundaries`: remote writes, production changes, destructive or
+  billing-impacting actions still need their own approval, even when the skill is what performs them.
+- After using a skill, note briefly how it changed your approach, so the task → skill mapping is learned.
 
 ## Engineering Defaults
 - Follow existing conventions, naming, libraries, and architecture before introducing new patterns.
