@@ -55,13 +55,6 @@ esac
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$HOME/.local/bin:$PATH"
 
-# Pi Cursor SDK bridge
-export PI_CURSOR_EXPOSE_BUILTIN_TOOLS=1
-export PI_CURSOR_PI_TOOL_BRIDGE=1
-export PI_CURSOR_SETTING_SOURCES=project,plugins,team
-export PI_CURSOR_MCP_CONNECT_TIMEOUT_SECONDS=5
-export PI_CURSOR_MCP_TOOL_TIMEOUT_SECONDS=120
-
 # ~~~~~~~~~~~~~~~ History ~~~~~~~~~~~~~~~~~~~~~~~~
 
 export HISTFILE=~/.histfile
@@ -126,14 +119,8 @@ alias tn='tmux new'
 alias gp='git pull'
 alias gs='git status'
 alias lg='lazygit'
-# Docker aliases
-# docker CLI already talks to Podman via /var/run/docker.sock (podman-mac-helper),
-# but alias docker=podman for direct native podman CLI in the interactive shell.
-# Note: tools that exec the docker binary directly (lazydocker, Testcontainers, IDEs)
-# bypass shell aliases and still use the socket bridge → Podman engine.
-alias docker=podman
 alias ld='lazydocker'
-alias o='opencode2 .'
+alias o='opencode .'
 alias tf='terraform'
 alias k=kubectl
 alias kk='kiro-cli'
@@ -145,14 +132,92 @@ alias kc='kubectx'
 alias kn='kubens'
 alias nn='$DOTFILES/scripts/note'
 alias g='gcloud'
+alias lab='cd $HOME/repos/lab/'
 
 # AWS
 a() {
   local profile
-  profile=$(grep -E '^\[' ~/.aws/config | sed 's/^\[profile //;s/^\[//;s/\]//' | fzf +s --tac)
-  [[ -n "$profile" ]] && export AWS_PROFILE="$profile"
+  profile=$(grep -E '^\[profile ' ~/.aws/config | sed 's/^\[profile //;s/\]//' | fzf +s --tac)
+  [[ -z "$profile" ]] && return 0
+  export AWS_PROFILE="$profile"
+  _aws_ensure_sso
 }
-alias sso='aws sso login --profile "${AWS_PROFILE:-default}"'
+
+# Resolve SSO session name a profile references ('' if it does not use one)
+_aws_sso_session() {
+  local profile="$1"
+  awk -v pat="[profile ${profile}]" '
+    $0 ~ /^\[/ { if ($0 == pat) f=1; else f=0; next }
+    f && /^sso_session[[:space:]]*=/ { print $3; exit }
+  ' ~/.aws/config
+}
+
+# Resolve SSO start URL for a profile ('' if it is not SSO-based)
+_aws_sso_start_url() {
+  local profile="$1" session
+  session=$(_aws_sso_session "$profile")
+  if [[ -n "$session" ]]; then
+    # new sso_session model -> look up [sso-session <name>]
+    awk -v pat="[sso-session ${session}]" '
+      $0 ~ /^\[/ { if ($0 == pat) f=1; else f=0; next }
+      f && /^sso_start_url[[:space:]]*=/ { print $3; exit }
+    ' ~/.aws/config
+  else
+    # legacy inline sso_start_url model
+    awk -v pat="[profile ${profile}]" '
+      $0 ~ /^\[/ { if ($0 == pat) f=1; else f=0; next }
+      f && /^sso_start_url[[:space:]]*=/ { print $3; exit }
+    ' ~/.aws/config
+  fi
+}
+
+# 0 if the profile can actually resolve an identity (real usability check)
+_aws_profile_works() {
+  local profile="$1"
+  aws sts get-caller-identity --profile "$profile" >/dev/null 2>&1
+}
+
+# Ensure the selected profile is truly usable; real API check + login if needed
+_aws_ensure_sso() {
+  local profile="${AWS_PROFILE:-default}" url session
+  url=$(_aws_sso_start_url "$profile")
+  [[ -z "$url" ]] && return 0 # static/role/default profile: no SSO needed
+  session=$(_aws_sso_session "$profile")
+  if _aws_profile_works "$profile"; then
+    echo "✓ SSO active for '${profile}'"
+    return 0
+  fi
+  echo "SSO not active for '${profile}' — logging in…"
+  if [[ -n "$session" ]]; then
+    aws sso login --sso-session "$session"
+  else
+    aws sso login --profile "$profile"
+  fi
+  if _aws_profile_works "$profile"; then
+    echo "✓ SSO active for '${profile}'"
+  else
+    echo "✗ Cannot access '${profile}' even after login — is the account assigned in ***REMOVED*** SSO?"
+  fi
+}
+
+# Drop stale alias from earlier sessions so the function definition below parses on re-source.
+unalias sso 2>/dev/null
+sso() {
+  local profile="${AWS_PROFILE:-default}" url session
+  url=$(_aws_sso_start_url "$profile")
+  if [[ -z "$url" ]]; then
+    echo "Profile '${profile}' is a static/role profile; no SSO login needed."
+    return 0
+  fi
+  session=$(_aws_sso_session "$profile")
+  if [[ -n "$session" ]]; then
+    echo "SSO login for session: ${session} (profile: ${profile})"
+    aws sso login --sso-session "$session"
+  else
+    echo "SSO login for profile: ${profile}"
+    aws sso login --profile "$profile"
+  fi
+}
 
 # Streaming
 alias twitch='ffmpeg_loop ~/Movies/twitch.mp4'
