@@ -6,7 +6,7 @@ return {
         bashls = {},
         yamlls = {},
         dockerls = {},
-        terraformls = {},
+        -- terraformls = {},
         helm_ls = {},
         jsonls = {},
       },
