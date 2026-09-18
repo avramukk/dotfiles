@@ -16,30 +16,37 @@ description for the dotfiles repository.
 - Keep complexity low
 - Use the ask user tool when requirements are materially ambiguous, a risky choice needs user input, or Approval Boundaries require a gate.
 - Write code, comments, and identifiers in English.
+- Speak with the user in Ukrainian in chat; keep code, comments, commits, and docs in English.
 - Be sharp, practical, and high agency without being reckless or surprising.
 - Prefer Bash for small local automation when it is clearer than Python. Follow the repository's existing language for project code.
 - Prefer simple commands executed one at a time with full output visible. Avoid complex wrappers, hidden output, temporary logs, and automatic cleanup unless required.
 - Prefer multiselect questions when asking the user to choose between options.
 
-## Project Task Files (per-task TODO files)
+## Planning (plannotator plan mode is the only workflow)
 
-- TODO files should not be committed.
-- **One task = one file.** Do not use a single shared `TODO.md` for unrelated work.
-- **Filename:** `TODO-<task-slug>.md` in the current working directory where the session starts.
-- `<task-slug>` must be short kebab-case derived from the task name (example: `TODO-wave-s1-batch4.md`).
-- If a matching file exists, read it before implementation and treat it as the source backlog for that task.
-- If no matching file exists, do not create automatically. Propose filename + draft checklist first; create only after user approval.
-- New multi-step request => new TODO file. Do not append unrelated work into another task file.
-- Mark checklist items `- [x]` only after implementation and relevant validation pass.
-- When all items are done, propose archiving as `TODO-done-<task-slug>.md` and wait for approval before rename.
-- Use `rpiv-todo` as live in-session execution tracking; use `TODO-<task-slug>.md` as durable task memory across sessions.
+- Plan artifacts are plannotator's: `plans/<short-name>.md`, or `PLAN.md` at the repo root
+  for a single focused plan. Never invent another location (`docs/plans/`, `TODO.md`).
+- There are no `TODO-*.md` / `TODO.md` task files. Do not create them.
+- Plan files are working artifacts: gitignored, never committed.
+- Plan mode (`pi --plan`, `/plannotator-plan-mode`, `Ctrl+Alt+P`) is the planning gate:
+  explore the code, write the plan file as you go, then call `plannotator_submit_plan` for
+  approval in the browser UI. A planning turn may end only after asking the user a question
+  or submitting the plan.
+- A plan that contains remote-write steps must flag them explicitly: approval of a plan is
+  not approval for remote writes (Atlassian, AWS, Kubernetes, Grafana, Slack, git push).
+- Approval of a plan is the batch approval for the local edits it lists — do not re-ask per
+  file. Work outside the approved plan needs its own approval.
+- While executing a plan, follow its checklist and call `plannotator_mark_done` after each
+  step. A step is done only after its validation passes.
 
 ### Session start behavior
 - check last git changes
-- For multi-step work, derive `<task-slug>` from the request and check `TODO-<task-slug>.md`.
-- If found: summarize open `- [ ]` items and continue from that file.
-- If missing: propose a 2-6 item checklist and suggested filename, then create only after explicit approval.
-- If user says `no todo` / `just do it` / `без todo`, proceed without file tracking for that session.
+- If an in-progress plan exists (`plans/*.md`, `PLAN.md`, or an active plannotator phase),
+  summarize its open `- [ ]` items and continue from them.
+- Multi-step work with no plan yet => propose plan mode plus a plan filename instead of
+  starting to edit.
+- If the user says `no todo` / `just do it` / `без todo` / `skip planning`, skip plan mode for
+  that session.
 
 ## Repository Discovery
 Before editing files:
