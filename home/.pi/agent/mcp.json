@@ -5,7 +5,9 @@
     },
     "grafana": {
       "command": "uvx",
-      "args": ["mcp-grafana"],
+      "args": [
+        "mcp-grafana"
+      ],
       "env": {
         "GRAFANA_URL": "$env:GRAFANA_URL",
         "GRAFANA_SERVICE_ACCOUNT_TOKEN": "$env:GRAFANA_SERVICE_ACCOUNT_TOKEN"
@@ -16,7 +18,9 @@
     },
     "aws-billing-cost": {
       "command": "uvx",
-      "args": ["awslabs.billing-cost-management-mcp-server@latest"],
+      "args": [
+        "awslabs.billing-cost-management-mcp-server@latest"
+      ],
       "env": {
         "AWS_PROFILE": "$env:AWS_PROFILE",
         "AWS_REGION": "us-east-1",
@@ -25,10 +29,10 @@
     },
     "excalidraw": {
       "command": "npx",
-      "args": ["-y", "mcp-excalidraw-server@1.1.0"],
-      "env": {
-        "NPM_CONFIG_CACHE": "/Users/avramukk/.cache/npm-excalidraw-v1"
-      },
+      "args": [
+        "-y",
+        "mcp-excalidraw-server@1.1.0"
+      ],
       "lifecycle": "lazy"
     }
   }

@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.84.4",
+  "lastChangelogVersion": "0.85.1",
   "theme": "gruvbox-dark-hard-custom",
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-v4-flash",
@@ -13,7 +13,8 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@upstash/context7-pi",
     "npm:@roodriigoooo/pi-hunk",
-    "npm:@narumitw/pi-btw"
+    "npm:@narumitw/pi-btw",
+    "npm:@plannotator/pi-extension"
   ],
   "editorPaddingX": 2,
   "quietStartup": false,
