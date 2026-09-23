@@ -50,7 +50,34 @@ command = "annotate.copy-context"
 description = "copy annotations as context"
 
 [[keys.command]]
+key = "prefix+ctrl+a"
+type = "plugin_action"
+command = "annotate.copy-archive"
+description = "copy annotations as context and archive them"
+
+[[keys.command]]
 key = "prefix+m"
 type = "plugin_action"
 command = "annotate.manage"
 description = "manage annotations"
+
+# Document review (plannotator-tui)
+[[keys.command]]
+key = "prefix+o"
+type = "plugin_action"
+command = "annotate.open"
+description = "review documents in this folder"
+
+[[keys.command]]
+key = "prefix+shift+o"
+type = "plugin_action"
+command = "annotate.last"
+description = "review the agent's last reply"
+
+# Open the focused pane's newest plan directly (PLAN.md, else newest plans/*.md).
+# The helper resolves the target from Herdr because `type = "shell"` runs detached.
+[[keys.command]]
+key = "prefix+t"
+type = "shell"
+command = "/Users/kolia/.local/bin/plannotator-open"
+description = "open the newest plan in plannotator-tui"

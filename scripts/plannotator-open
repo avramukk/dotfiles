@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+# Open the focused Herdr pane's newest plan in plannotator-tui.
+#
+# Bound in ~/.config/herdr/config.toml as:  prefix+t  (type = "shell").
+#
+# A `shell` key command runs detached, so nothing about the environment can be
+# assumed. In particular HERDR_PANE_ID can be *stale* (it pointed at a pane that
+# had already closed), and passing a dead pane to `--deliver-to` makes
+# plannotator-tui fail with `pane_not_found` and open nothing. Every candidate
+# is therefore validated before use, and the resolution is logged to
+# ~/.cache/plannotator-open.log.
+#
+# Target selection order:
+#   1. <dir>/PLAN.md                  — a single focused plan
+#   2. newest <dir>/plans/*.md        — the repository's plan directory
+#   3. <dir>                          — the folder itself (plannotator file picker)
+set -uo pipefail
+
+LOG="${HOME}/.cache/plannotator-open.log"
+mkdir -p "$(dirname "$LOG")" 2>/dev/null || true
+log() { printf '%s %s\n' "$(date '+%Y-%m-%dT%H:%M:%S%z')" "$*" >>"$LOG" 2>/dev/null || true; }
+
+log "INVOKED pid=$$ HERDR_ENV=${HERDR_ENV:-unset} HERDR_PANE_ID=${HERDR_PANE_ID:-unset} pwd=$PWD"
+
+export PATH="/Users/kolia/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${PATH:-}"
+
+# Herdr runs `type = "shell"` key commands detached with a clean environment, so
+# HERDR_ENV is unset and plannotator-tui refuses to start ("not inside Herdr").
+# The command *is* invoked by Herdr, so declare it explicitly.
+export HERDR_ENV=1
+
+# Resolve the pane to review, printing "<pane_id> <cwd>" or nothing.
+# Candidates are tried in order and each is validated:
+#   1. HERDR_PANE_ID, but only while that pane still exists
+#   2. the session's focused pane, from `herdr pane list` (no client context needed)
+#   3. `herdr pane current`
+resolve_pane() {
+  python3 - <<'PY' 2>/dev/null || true
+import json, os, subprocess, sys
+
+def run(*args):
+    try:
+        r = subprocess.run(args, capture_output=True, text=True, timeout=5)
+        return json.loads(r.stdout)
+    except Exception:
+        return None
+
+def emit(pane):
+    cwd = pane.get("foreground_cwd") or pane.get("cwd") or ""
+    print(pane.get("pane_id", ""), cwd)
+    sys.exit(0)
+
+pid = os.environ.get("HERDR_PANE_ID", "")
+if pid:
+    d = run("herdr", "pane", "get", pid)
+    if d and "result" in d:
+        emit(d["result"]["pane"])
+
+d = run("herdr", "pane", "list")
+if d and "result" in d:
+    for p in d["result"].get("panes", []):
+        if p.get("focused"):
+            emit(p)
+
+d = run("herdr", "pane", "current")
+if d and "result" in d:
+    emit(d["result"]["pane"])
+PY
+}
+
+read -r pane dir <<<"$(resolve_pane)"
+log "resolved pane=${pane:-<none>} dir=${dir:-<none>}"
+
+# A pane id is only usable if it still resolves to a live pane.
+if [ -n "${pane:-}" ] && ! herdr pane get "$pane" >/dev/null 2>&1; then
+  log "pane $pane vanished between resolution and use; dropping it"
+  pane=""
+fi
+
+if [ -n "${dir:-}" ] && [ -f "$dir/PLAN.md" ]; then
+  target="$dir/PLAN.md"
+elif [ -n "${dir:-}" ] && compgen -G "$dir/plans/*.md" >/dev/null; then
+  target="$(ls -t "$dir"/plans/*.md | head -1)"
+elif [ -n "${dir:-}" ]; then
+  target="$dir"
+else
+  target="$PWD"
+fi
+log "target=$target"
+
+# Only route feedback when a live pane was resolved; otherwise let
+# plannotator-tui pick its own target rather than failing on --deliver-to.
+args=(herdr open "$target")
+if [ -n "${pane:-}" ]; then
+  args+=(--deliver-to "$pane")
+fi
+
+log "exec: plannotator-tui ${args[*]}"
+out="$(plannotator-tui "${args[@]}" 2>&1)"
+status=$?
+log "exit=$status out=$(printf '%s' "$out" | head -c 300)"
+exit "$status"
