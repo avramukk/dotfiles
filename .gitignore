@@ -66,3 +66,14 @@ PLAN.md
 
 # Local scratch notes
 TODO-*.md
+
+# Vendored agent skills (installed by the `skills` tool, not part of dotfiles)
+.agents/
+skills-lock.json
+
+# One-off utility, not dotfiles
+shiori-tag-work/
+
+# LazyVim starter docs
+home/.config/nvim/README.md
+home/.config/nvim/LICENSE
