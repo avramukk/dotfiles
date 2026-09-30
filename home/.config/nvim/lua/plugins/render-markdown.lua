@@ -1,6 +1,5 @@
 return {
   "MeanderingProgrammer/render-markdown.nvim",
-  enabled = false,
   opts = {
     code = {
       sign = false,
@@ -14,8 +13,18 @@ return {
     checkbox = {
       enabled = false,
     },
+    overrides = {
+      filetype = {
+        ["mermaid-preview"] = {
+          anti_conceal = { enabled = false },
+          win_options = {
+            concealcursor = { default = "nvic", rendered = "nvic" },
+          },
+        },
+      },
+    },
   },
-  ft = { "markdown", "norg", "rmd", "org", "codecompanion" },
+  ft = { "markdown", "norg", "rmd", "org", "codecompanion", "mermaid-preview" },
   config = function(_, opts)
     require("render-markdown").setup(opts)
     Snacks.toggle({

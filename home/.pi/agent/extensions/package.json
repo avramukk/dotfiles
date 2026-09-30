@@ -2,15 +2,25 @@
   "name": "pi-extensions",
   "private": true,
   "type": "module",
+  "packageManager": "npm@10.9.8",
+  "workspaces": [
+    "copy-all",
+    "file-search",
+    "pi-skill-toggle"
+  ],
   "scripts": {
-    "prepare": "effect-tsgo patch"
-  },
-  "dependencies": {
-    "effect": "4.0.0-beta.101",
-    "@effect/platform-node": "4.0.0-beta.101"
+    "check": "npm run check --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "prepare": "effect-tsgo patch && rm -f node_modules/@typescript/typescript-*/lib/tsc.original.*"
   },
   "devDependencies": {
+    "@earendil-works/pi-ai": "^0.85.1",
+    "@earendil-works/pi-coding-agent": "^0.85.1",
+    "@earendil-works/pi-tui": "^0.85.1",
     "@effect/tsgo": "0.24.3",
+    "@types/node": "^24.13.3",
+    "tsx": "^4.20.3",
+    "typebox": "^1.1.38",
     "typescript": "^7.0.2"
   }
 }

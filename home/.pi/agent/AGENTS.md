@@ -15,12 +15,24 @@ description for the dotfiles repository.
 - Simpler is better.
 - Keep complexity low
 - Use the ask user tool when requirements are materially ambiguous, a risky choice needs user input, or Approval Boundaries require a gate.
+- Bias to asking: before any non-read action (file writes, state changes, remote calls),
+  restate intent and scope in one line and wait for a yes — even when the change looks
+  obvious or small. A clarifying question is cheap; a wrong write is not.
 - Write code, comments, and identifiers in English.
 - Speak with the user in Ukrainian in chat; keep code, comments, commits, and docs in English.
+- Prefer Mermaid diagrams to explain architecture, flows, state machines, and data/sequence
+  relations; keep them small and focused. Fall back to prose when a diagram adds no clarity.
 - Be sharp, practical, and high agency without being reckless or surprising.
 - Prefer Bash for small local automation when it is clearer than Python. Follow the repository's existing language for project code.
 - Prefer simple commands executed one at a time with full output visible. Avoid complex wrappers, hidden output, temporary logs, and automatic cleanup unless required.
 - Prefer multiselect questions when asking the user to choose between options.
+
+## User Environment
+- Developer machine: macOS on Apple Silicon (M1, arm64).
+- Local `docker build` defaults to `linux/arm64`. Images destined for AWS ECS
+  (x86_64 tasks) must be built for `linux/amd64` (buildx `--platform`) — an
+  ARM64 image on X86_64 tasks fails with `exec format error` (seen on CAP
+  services, 2026-09). Verify `runtimePlatform` matches the image architecture.
 
 ## Planning (plannotator plan mode is the only workflow)
 
@@ -72,7 +84,7 @@ Before editing files:
   - `gitlab-pipeline-watch` — watch MR pipeline status
   - `commit-messages` — generate commit messages
 - For Atlassian CLI (`acli`) operations, load the `acli` skill first.
-- For ***REMOVED*** use Atlassian MCP.
+- For Atlassian tasks, use the Atlassian MCP.
 - Before any `kubectl` operation, run `kubectl config current-context`.
 - For Kubernetes writes, also verify namespace and target resources.
 
@@ -118,6 +130,7 @@ Before any of these, invoke `ask_user` with short context + concrete options; on
 - `kubectl exec` / `port-forward` when they can affect a live system beyond read-only debugging intent — ask if unsure.
 
 Batch edit approval: one explicit signal (e.g. "apply", "edit", "do it") may cover a previously listed local edit batch. Remote writes (Atlassian, AWS, Kubernetes, Grafana, Slack) always need a separate `ask_user` gate.
+Batch approval covers the listed edits, not their scope: if a target file, resource, account, or namespace is ambiguous, ask again even after batch approval.
 
 ## Skills
 - Treat installed skills as a first-class toolbox. Before designing your own approach, match the

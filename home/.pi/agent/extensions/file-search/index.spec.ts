@@ -247,7 +247,7 @@ it.effect(
       assert.equal(resolved.command, "/repo/bin/rg");
       assert.equal(env.installs.length, 1);
       assert.match(
-        env.installs[0].url,
+        env.installs[0]?.url ?? "",
         /^https:\/\/github\.com\/BurntSushi\/ripgrep\//,
       );
     }),
@@ -376,7 +376,7 @@ it("notifications: only fresh installs notify", () => {
   assert.deepEqual(installNotifications([system, bundled]), []);
   const messages = installNotifications([system, installed]);
   assert.equal(messages.length, 1);
-  assert.match(messages[0], /downloaded rg 15\.2\.0/);
+  assert.match(messages[0] ?? "", /downloaded rg 15\.2\.0/);
 });
 
 // --- output truncation -------------------------------------------------------

@@ -19,6 +19,8 @@ return {
       ensure_installed = {
         "bash-language-server",
         "lua-language-server",
+        "markdown-toc",
+        "prettier",
       },
     })
   end,

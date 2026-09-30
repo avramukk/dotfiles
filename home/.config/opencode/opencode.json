@@ -1,10 +1,9 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode/kiro-claude-haiku-4.5",
+  "formatter": true,
+  "model": "deepseek/deepseek-flash",
   "skills": {
-    "paths": [
-      "~/.pi/agent/skills"
-    ]
+    "paths": ["~/.pi/agent/skills"]
   },
   "permission": {
     "bash": {
@@ -35,10 +34,7 @@
   "mcp": {
     "grafana": {
       "type": "local",
-      "command": [
-        "uvx",
-        "mcp-grafana"
-      ],
+      "command": ["uvx", "mcp-grafana"],
       "environment": {
         "GRAFANA_URL": "{env:GRAFANA_URL}",
         "GRAFANA_SERVICE_ACCOUNT_TOKEN": "{env:GRAFANA_SERVICE_ACCOUNT_TOKEN}"
@@ -62,78 +58,11 @@
     },
     "playwright": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@playwright/mcp@latest"
-      ]
-    },
-    "billing-***REMOVED***": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "awslabs.billing-cost-management-mcp-server@latest"
-      ],
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR",
-        "AWS_PROFILE": "$AWS_PROFILE",
-        "AWS_REGION": "us-east-1"
-      }
-    },
-    "billing-***REMOVED***": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "awslabs.billing-cost-management-mcp-server@latest"
-      ],
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR",
-        "AWS_PROFILE": "$AWS_PROFILE",
-        "AWS_REGION": "us-east-1"
-      }
-    },
-    "billing-client": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "awslabs.billing-cost-management-mcp-server@latest"
-      ],
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR",
-        "AWS_PROFILE": "$AWS_PROFILE",
-        "AWS_REGION": "us-east-1"
-      }
-    },
-    "billing-***REMOVED***-dev": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "awslabs.billing-cost-management-mcp-server@latest"
-      ],
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR",
-        "AWS_PROFILE": "$AWS_PROFILE",
-        "AWS_REGION": "us-east-1"
-      }
-    },
-    "billing-***REMOVED***-prod": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "awslabs.billing-cost-management-mcp-server@latest"
-      ],
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR",
-        "AWS_PROFILE": "$AWS_PROFILE",
-        "AWS_REGION": "us-east-1"
-      }
+      "command": ["npx", "-y", "@playwright/mcp@latest"]
     },
     "atlassian": {
       "type": "local",
-      "command": [
-        "uvx",
-        "mcp-atlassian"
-      ],
+      "command": ["uvx", "mcp-atlassian"],
       "environment": {
         "JIRA_URL": "{env:JIRA_URL}",
         "JIRA_USERNAME": "{env:JIRA_USERNAME}",
@@ -159,12 +88,108 @@
       }
     }
   },
-  "plugin": [],
-  "provider": {
-    "kiro": {
+  "plugins": [
+    {
+      "package": "@plannotator/opencode@latest",
       "options": {
-        "backend": "fetch",
-        "region": "us-east-1"
+        "workflow": "plan-agent",
+        "planningAgents": ["plan"]
+      }
+    },
+    "opencode-gpt-live"
+  ],
+  "providers": {
+    "kiro": {
+      "name": "Kiro",
+      "package": "aisdk:kiro-acp-ai-provider",
+      "settings": {
+        "trustAllTools": false
+      },
+      "models": {
+        "auto": {
+          "name": "Auto (Kiro)",
+          "limit": {
+            "context": 1000000,
+            "output": 32768
+          },
+          "capabilities": {
+            "tools": true,
+            "input": ["text"],
+            "output": ["text"]
+          }
+        },
+        "claude-opus-5": {
+          "name": "Claude Opus 5 (Kiro)",
+          "limit": {
+            "context": 1000000,
+            "output": 32000
+          },
+          "capabilities": {
+            "tools": true,
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "claude-sonnet-5": {
+          "name": "Claude Sonnet 5 (Kiro)",
+          "limit": {
+            "context": 1000000,
+            "output": 128000
+          },
+          "capabilities": {
+            "tools": true,
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "gpt-5.6-terra": {
+          "name": "GPT-5.6 Terra (Kiro)",
+          "limit": {
+            "context": 1000000,
+            "output": 128000
+          },
+          "capabilities": {
+            "tools": true,
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "gpt-5.6-luna": {
+          "name": "GPT-5.6 Luna (Kiro)",
+          "limit": {
+            "context": 1000000,
+            "output": 128000
+          },
+          "capabilities": {
+            "tools": true,
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "claude-sonnet-4.6": {
+          "name": "Claude Sonnet 4.6 (Kiro)",
+          "limit": {
+            "context": 1000000,
+            "output": 16384
+          },
+          "capabilities": {
+            "tools": true,
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        },
+        "claude-haiku-4.5": {
+          "name": "Claude Haiku 4.5 (Kiro)",
+          "limit": {
+            "context": 200000,
+            "output": 8192
+          },
+          "capabilities": {
+            "tools": true,
+            "input": ["text"],
+            "output": ["text"]
+          }
+        }
       }
     }
   }
