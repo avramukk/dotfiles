@@ -13,10 +13,9 @@ scripts/amideletev2
 home/.config/nvim/lazyvim.json
 home/.config/nvim/lazy-lock.json
 
-# pi extensions npm dependencies (moved to home/.pi/agent/extensions/)
+# pi extensions npm dependencies (workspace root: home/.pi/agent/extensions/)
 home/.pi/agent/extensions/node_modules/
-home/.pi/agent/extensions/package-lock.json
-home/.pi/agent/extensions/pi-skill-toggle/node_modules/
+home/.pi/agent/extensions/*/node_modules/
 home/.pi/agent/extensions/pi-skill-toggle/package-lock.json
 
 # opencode npm deps (moved to home/.config/opencode/)
@@ -25,6 +24,7 @@ home/.config/opencode/package-lock.json
 
 # pi runtime data
 pi/.pi/
+.pi/
 
 # pi agent local runtime state (machine-specific, kept in ~/.pi/agent but not synced)
 home/.pi/agent/auth.json
@@ -60,5 +60,9 @@ opencode2/plugins/*/node_modules/
 # Local usage auth (copy from config/my-usage/cursor-token.example)
 config/my-usage/cursor-token
 
-# Per-task TODO files (never commit)
+# Plannotator plan artifacts (never commit)
+plans/
+PLAN.md
+
+# Local scratch notes
 TODO-*.md

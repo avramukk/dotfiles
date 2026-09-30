@@ -11,7 +11,7 @@ import type { CapturedOutput } from "./output.ts";
 const STDERR_MAX_BYTES = 64 * 1024;
 
 interface PreviewState {
-  readonly decoder: TextDecoder;
+  readonly decoder: InstanceType<typeof TextDecoder>;
   preview: string;
   totalBytes: number;
   lineBreaks: number;

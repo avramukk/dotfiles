@@ -78,3 +78,20 @@ map("n", "<Esc>", ":nohlsearch<CR><Esc>", opts)
 -- Keep cursor centered when scrolling
 vim.keymap.set("n", "<C-d>", "<C-d>zz", opts)
 vim.keymap.set("n", "<C-u>", "<C-u>zz", opts)
+
+-- Hand the visual selection to the Herdr Annotate plugin through a file, so it
+-- works on headless servers and inside herdr panes (where the selection is gone
+-- by the time the action runs). The file is read once, then removed; a file
+-- older than 15 seconds is ignored.
+map("x", "<leader>a", function()
+  vim.cmd('normal! "zy')
+  -- Mirror the plugin's lookup (rust/src/handoff.rs): $XDG_RUNTIME_DIR when set,
+  -- else the system temp dir. Do not use vim.fn.tempname() here: it returns a
+  -- per-process directory the plugin never reads.
+  local base = os.getenv("XDG_RUNTIME_DIR")
+  if not base or base == "" then base = os.getenv("TMPDIR") or "/tmp" end
+  local dir = base .. "/herdr-annotate-" .. vim.loop.getuid()
+  vim.fn.mkdir(dir, "p", "0700")
+  vim.fn.writefile(vim.split(vim.fn.getreg("z"), "\n"), dir .. "/selection")
+  vim.fn.jobstart({ "herdr", "plugin", "action", "invoke", "annotate.capture" })
+end, { desc = "Annotate in Herdr" })

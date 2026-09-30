@@ -41,15 +41,4 @@ eu-central-1 = 'eu-c1'
 
 [aws.profile_aliases]
 
-***REMOVED*** = '***REMOVED***'
-***REMOVED*** = '***REMOVED***'
-***REMOVED*** = '***REMOVED***'
-***REMOVED*** = '***REMOVED***'
-***REMOVED*** = '***REMOVED***'
-***REMOVED*** = '***REMOVED***'
-***REMOVED***-dev = '***REMOVED***-dev'
-***REMOVED***-test = '***REMOVED***-test'
-***REMOVED***-prod = '***REMOVED***-prod'
 sandbox = 'sandbox'
-***REMOVED*** = '***REMOVED***'
-***REMOVED*** = '***REMOVED***'

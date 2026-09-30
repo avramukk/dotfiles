@@ -61,7 +61,7 @@ export HISTFILE=~/.histfile
 export HISTSIZE=1000000
 export HISTFILESIZE=1000000
 export HISTCONTROL=ignorespace:erasedups
-export HISTIGNORE="set*:****REMOVED****"
+export HISTIGNORE="set*"
 shopt -s histappend
 PROMPT_COMMAND='history -a'
 
@@ -196,7 +196,7 @@ _aws_ensure_sso() {
   if _aws_profile_works "$profile"; then
     echo "✓ SSO active for '${profile}'"
   else
-    echo "✗ Cannot access '${profile}' even after login — is the account assigned in ***REMOVED*** SSO?"
+    echo "✗ Cannot access '${profile}' even after login — is the account assigned in your SSO provider?"
   fi
 }
 
